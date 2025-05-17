@@ -1,0 +1,77 @@
+﻿@model TimeTwoFix.Web.Models.ClientModels.ReadClientViewModel
+
+@{
+    ViewData["Title"] = "Client Details";
+}
+
+<div class="container mt-4">
+    <h1 class="text-center text-primary">Client Details</h1>
+    <p class="text-center text-muted">View detailed information about this client.</p>
+
+    <div class="card shadow-sm bg-light p-4">
+        <div class="card-body">
+            <div class="p-3 bg-white rounded">
+                <dl class="row">
+                    <dt class="col-sm-4 text-muted"><i class="bi bi-person"></i> Name:</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.FirstName) @Html.DisplayFor(model => model.LastName)</dd>
+
+                    <dt class="col-sm-4 text-muted"><i class="bi bi-telephone"></i> Phone:</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.PhoneNumber)</dd>
+
+                    <dt class="col-sm-4 text-muted"><i class="bi bi-map"></i> Address:</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.Address), @Html.DisplayFor(model => model.City)</dd>
+
+                    <dt class="col-sm-4 text-muted"><i class="bi bi-envelope"></i> Email:</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.Email)</dd>
+
+                    <dt class="col-sm-4 text-muted"><i class="bi bi-pencil-square"></i> Notes:</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.Notes)</dd>
+
+                    <dt class="col-sm-4 text-muted"><i class="bi bi-clock"></i> Created At:</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.CreatedAt)</dd>
+
+                    <dt class="col-sm-4 text-muted"><i class="bi bi-clock-history"></i> Updated At:</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.UpdatedAt)</dd>
+                </dl>
+            </div>
+
+            <h4 class="mt-4">Owned Vehicles</h4>
+            <hr />
+            @if (Model.Vehicles != null && Model.Vehicles.Any())
+            {
+                <table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th><i class="bi bi-car-front"></i> Make</th>
+                            <th>Model</th>
+                            <th>License Plate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var vehicle in Model.Vehicles)
+                        {
+                            <tr>
+                                <td>@vehicle.Brand</td>
+                                <td>@vehicle.Model</td>
+                                <td>@vehicle.LicensePlate</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-muted">No vehicles owned by this client.</p>
+            }
+
+            <div class="d-flex justify-content-center mt-4 gap-3">
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to List
+                </a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                    <i class="bi bi-pencil-square"></i> Edit Client
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

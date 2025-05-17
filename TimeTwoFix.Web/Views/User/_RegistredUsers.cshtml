@@ -1,0 +1,82 @@
+﻿@model Tuple<List<ReadUserViewModel>, List<ReadRoleViewModel>>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <h4>Registered Users</h4>
+        @if (Model.Item1 != null && Model.Item1.Any())
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>City</th>
+                        <th>Zip Code</th>
+                        <th>Phone Number</th>
+                        <th>Email</th>
+                        <th>Hire Date</th>
+                        <th>Years of Experience</th>
+                        <th>Last Employer</th>
+                        <th>Status</th>
+                        <th>Specialization</th>
+                        <th>ToolBox Number</th>
+                        <th>Able to Shift</th>
+                        <th>Warehouse Name</th>
+                        <th>Warehouse Location</th>
+                        <th>Able to Shift Warehouse</th>
+                        <th>Team Size</th>
+                        <th>Office Number</th>
+                        <th>Years in Management</th>
+                        <th>Workstation Number</th>
+                        <th>Phone Extension</th>
+                        <th>Spoken Language</th>
+                        <th>Business Knowledge</th>
+                        <th>Image</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.Item1)
+                    {
+                        <tr>
+                            <td>@user.FirstName @user.LastName</td>
+                            <td>@user.Address</td>
+                            <td>@user.City</td>
+                            <td>@user.ZipCode</td>
+                            <td>@user.PhoneNumber</td>
+                            <td>@user.Email</td>
+                            <td>@user.HireDate.ToShortDateString()</td>
+                            <td>@user.YearsOfExperience</td>
+                            <td>@user.LastEmployer</td>
+                            <td>@user.Status</td>
+                            <td>@user.Specialization</td>
+                            <td>@user.ToolBoxNumber</td>
+                            <td>@(user.AbleToShift ? "Yes" : "No")</td>
+                            <td>@user.WarehouseName</td>
+                            <td>@user.WarehouseLocation</td>
+                            <td>@(user.AbleToShiftWareHouse ? "Yes" : "No")</td>
+                            <td>@user.TeamSize</td>
+                            <td>@user.OfficeNumber</td>
+                            <td>@user.YearsInManagement</td>
+                            <td>@user.WorkStationNumber</td>
+                            <td>@user.PhoneExtension</td>
+                            <td>@user.SpokenLanguage</td>
+                            <td>@(user.BusinessKnowledge ? "Yes" : "No")</td>
+                            <td>
+                                <img src="@user.ImageURL" alt="User Image" width="50" height="50" />
+                            </td>
+                            <td>
+                                <a href="#" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="#" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-muted">No users found.</p>
+        }
+    </div>
+</div>

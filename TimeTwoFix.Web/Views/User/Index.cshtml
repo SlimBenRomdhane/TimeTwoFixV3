@@ -1,0 +1,49 @@
+﻿@* @using TimeTwoFix.Web.Models.UserModels
+@model Tuple<List<ReadUserViewModel>, List<ReadRoleViewModel>> *@
+
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center">User Management Dashboard</h2>
+
+    <!-- User Actions -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Create New User</h5>
+                    <p class="card-text">Select the type of user you want to create.</p>
+                    <div class="d-grid gap-2">
+                        <a asp-action="CreateMechanic" class="btn btn-primary">Mechanic</a>
+                        <a asp-action="CreateWorkShopManager" class="btn btn-success">Workshop Manager</a>
+                        <a asp-action="CreateGeneralManager" class="btn btn-warning">General Manager</a>
+                        <a asp-action="CreateAssistant" class="btn btn-info">Front Desk Assistant</a>
+                        <a asp-action="CreateWareHouseManager" class="btn btn-dark">Warehouse Manager</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Create New Role</h5>
+                    <div class="d-grid gap-2">
+                        <a asp-action="CreateRole" class="btn btn-primary">Create New Role</a>
+                    </div>
+                    
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+    <!-- Roles List Section -->
+    <partial name="_AvailableRoles" model="Model" />
+    <!-- Users List Section -->
+    <partial name="_RegistredUsers" model="Model" />
+
+   
+</div>

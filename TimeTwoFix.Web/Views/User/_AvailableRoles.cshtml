@@ -1,0 +1,37 @@
+﻿@model Tuple<List<ReadUserViewModel>, List<ReadRoleViewModel>>
+<div class="row mt-5">
+    <div class="col-12">
+        <h4>Available Roles</h4>
+        @if (Model.Item2 != null && Model.Item2.Any())
+        {
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Role Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var role in Model.Item2)
+                    {
+                        <tr>
+                            <td>@role.Name</td>
+                            <td>@role.Description</td>
+                            <td>@role.IsActive</td>
+                            <td>
+                                <a href="/Role/Edit/@role.Name" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="/Role/Delete/@role.Name" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p class="text-muted">No roles found.</p>
+        }
+    </div>
+</div>

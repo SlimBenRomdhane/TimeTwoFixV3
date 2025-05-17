@@ -1,0 +1,84 @@
+﻿@model IEnumerable<TimeTwoFix.Web.Models.ClientModels.ReadClientViewModel>
+
+@{
+    ViewData["Title"] = "Clients List";
+}
+
+<div class="container mt-4">
+    <h1 class="text-center">Clients Management Dashboard</h1>
+
+    <!-- Search Form -->
+    <form asp-action="Index" method="post" class="mb-4 bg-light p-3 rounded">
+        <div class="row g-2">
+            <div class="col-md-3">
+                <input type="text" name="searchName" class="form-control" placeholder="Search by Name...">
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="searchPhone" class="form-control" placeholder="Search by Phone...">
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="searchEmail" class="form-control" placeholder="Search by Email...">
+            </div>
+            <div class="col-md-3 text-end">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Search
+                </button>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="bi bi-x-circle"></i> Reset
+                </a>
+                <a asp-action="LoadDeleted" class="btn btn-danger">
+                    <i class="bi bi-trash"></i> Show Deleted
+                </a>
+            </div>
+        </div>
+    </form>
+
+    <div class="text-end mb-3">
+        <a asp-action="Create" class="btn btn-success">
+            <i class="bi bi-plus-lg"></i> Add New Client
+        </a>
+    </div>
+
+    <!-- Client Cards -->
+    @if(Model != null)
+    {
+        <div class="row">
+            @foreach (var item in Model)
+            {
+                <div class="col-md-4">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body text-center">
+                            <h5 class="card-title"><i class="bi bi-person-circle"></i> @item.FirstName @item.LastName</h5>
+
+                            <div class="d-flex justify-content-center gap-3 mb-3">
+                                <span><i class="bi bi-phone"></i> @item.PhoneNumber</span>
+                                <span><i class="bi bi-map"></i> @item.City</span>
+                                <span><i class="bi bi-envelope"></i> @item.Email</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">
+                                    <i class="bi bi-eye"></i> View Details
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">
+                                    <i class="bi bi-pencil-square"></i> Edit
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">
+                                    <i class="bi bi-trash"></i> Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    }else
+    {
+        {
+            <p class="text-muted">No record found.</p>
+        }
+    }
+
+    
+</div>

@@ -1,0 +1,155 @@
+﻿@model TimeTwoFix.Web.Models.UserModels.CreateFrontDeskAssistantViewModel
+
+@{
+    ViewData["Title"] = "Create Assistant";
+}
+
+<div class="container mt-4">
+    <h1 class="text-center text-primary">Register Front Desk Assistant</h1>
+    <p class="text-center text-muted">Fill in the details below to add a new assistant.</p>
+
+    <div class="card shadow-sm bg-light p-4">
+        <form asp-action="CreateAssistant">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="row g-3">
+                <!-- First Name -->
+                <div class="col-md-6">
+                    <label asp-for="FirstName" class="form-label text-dark"></label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+                <!-- Last Name -->
+                <div class="col-md-6">
+                    <label asp-for="LastName" class="form-label text-dark"></label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+
+                <!-- Address -->
+                <div class="col-md-12">
+                    <label asp-for="Address" class="form-label text-dark"></label>
+                    <input asp-for="Address" class="form-control" />
+                    <span asp-validation-for="Address" class="text-danger"></span>
+                </div>
+
+                <!-- City & ZipCode -->
+                <div class="col-md-6">
+                    <label asp-for="City" class="form-label text-dark"></label>
+                    <input asp-for="City" class="form-control" />
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="ZipCode" class="form-label text-dark"></label>
+                    <input asp-for="ZipCode" class="form-control" />
+                    <span asp-validation-for="ZipCode" class="text-danger"></span>
+                </div>
+
+                <!-- Phone Number & Email -->
+                <div class="col-md-6">
+                    <label asp-for="PhoneNumber" class="form-label text-dark"></label>
+                    <input asp-for="PhoneNumber" class="form-control" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Email" class="form-label text-dark"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <!-- Password & Confirm Password -->
+                <div class="col-md-6">
+                    <label asp-for="Password" class="form-label text-dark"></label>
+                    <input asp-for="Password" type="password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="ConfirmPassword" class="form-label text-dark"></label>
+                    <input asp-for="ConfirmPassword" type="password" class="form-control" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+
+                <!-- Hire Date -->
+                <div class="col-md-6">
+                    <label asp-for="HireDate" class="form-label text-dark">Hire Date</label>
+                    <input asp-for="HireDate" type="date" class="form-control" />
+                    <span asp-validation-for="HireDate" class="text-danger"></span>
+                </div>
+
+                <!-- Years of Experience & Last Employer -->
+                <div class="col-md-6">
+                    <label asp-for="YearsOfExperience" class="form-label text-dark"></label>
+                    <input asp-for="YearsOfExperience" class="form-control" />
+                    <span asp-validation-for="YearsOfExperience" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="LastEmployer" class="form-label text-dark"></label>
+                    <input asp-for="LastEmployer" class="form-control" />
+                    <span asp-validation-for="LastEmployer" class="text-danger"></span>
+                </div>
+
+                <!-- Workstation & Phone Extension -->
+                <div class="col-md-6">
+                    <label asp-for="WorkStationNumber" class="form-label text-dark"></label>
+                    <input asp-for="WorkStationNumber" class="form-control" />
+                    <span asp-validation-for="WorkStationNumber" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="PhoneExtension" class="form-label text-dark"></label>
+                    <input asp-for="PhoneExtension" class="form-control" />
+                    <span asp-validation-for="PhoneExtension" class="text-danger"></span>
+                </div>
+
+                <!-- Spoken Language Dropdown -->
+                <div class="col-md-6">
+                    <label asp-for="SpokenLanguage" class="form-label text-dark"></label>
+                    <select asp-for="SpokenLanguage" class="form-control">
+                        <option value="">Select a Language</option>
+                        <option value="English">English</option>
+                        <option value="Spanish">Spanish</option>
+                        <option value="French">French</option>
+                        <option value="Arabic">Arabic</option>
+                        <option value="Mandarin Chinese">Mandarin Chinese</option>
+                        <option value="Hindi">Hindi</option>
+                        <option value="Portuguese">Portuguese</option>
+                        <option value="Russian">Russian</option>
+                        <option value="German">German</option>
+                        <option value="Japanese">Japanese</option>
+                        <option value="Italian">Italian</option>
+                        <option value="Dutch">Dutch</option>
+                        <option value="Turkish">Turkish</option>
+                        <option value="Korean">Korean</option>
+                        <option value="Swahili">Swahili</option>
+                    </select>
+                    <span asp-validation-for="SpokenLanguage" class="text-danger"></span>
+                </div>
+
+                <!-- Business Knowledge Checkbox -->
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="BusinessKnowledge" />
+                        @Html.DisplayNameFor(model => model.BusinessKnowledge)
+                    </label>
+                </div>
+
+                <!-- Profile Image Upload -->
+                <div class="col-md-12">
+                    <label asp-for="ImageURL" class="form-label text-dark">Profile Picture</label>
+                    <input asp-for="ImageURL" type="file" class="form-control" accept="image/*" />
+                    <span asp-validation-for="ImageURL" class="text-danger"></span>
+                </div>
+
+                <div class="text-center mt-4">
+                    <input type="submit" value="Create Assistant" class="btn btn-primary" />
+                    <a asp-action="Index" class="btn btn-secondary ms-2">Back to List</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
