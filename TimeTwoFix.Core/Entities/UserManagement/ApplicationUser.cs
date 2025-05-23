@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TimeTwoFix.Core.Entities.UserManagement
 {
@@ -30,7 +31,7 @@ namespace TimeTwoFix.Core.Entities.UserManagement
         public decimal HourlyWage { get; set; }
 
         [Range(0, 50)]
-        public int yearsOfExperience { get; set; }
+        public int YearsOfExperience { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -39,8 +40,12 @@ namespace TimeTwoFix.Core.Entities.UserManagement
         //Indicates if the user is currently employed, on leave, or terminated...
         [Required]
         [MaxLength(50)]
+
         public string Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+
+        [NotMapped]
+        public override string? NormalizedEmail { get; set ; }
     }
 }

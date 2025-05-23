@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TimeTwoFix.Application.ClientServices.Dtos;
 using TimeTwoFix.Application.ClientServices.Interfaces;
@@ -8,6 +9,7 @@ using TimeTwoFix.Web.Models.ClientModels;
 
 namespace TimeTwoFix.Web.Controllers
 {
+    [Authorize(Roles = "FrontDeskAssistant")]
     public class ClientController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -25,11 +27,6 @@ namespace TimeTwoFix.Web.Controllers
         public async Task<IActionResult> Index(int pageNumber, int pageSize)
         {
             var clients = await _clientServices.GetAllAsyncServiceGeneric();
-            ////Apply pagination
-            //var pagedClients = clients.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-            //ViewBag.PageNumber = pageNumber;
-            //ViewBag.PageSize = pageSize;
-            //ViewBag.TotalPages = (int)Math.Ceiling((double)pagedClients.Count / pageSize);
 
             var clientsDto = _mapper.Map<IEnumerable<ReadClientDto>>(clients);
             var clientsViewModel = _mapper.Map<IEnumerable<ReadClientViewModel>>(clientsDto);

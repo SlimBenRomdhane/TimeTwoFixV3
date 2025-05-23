@@ -20,12 +20,14 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.UserManagement
             _signInManager = signInManager;
         }
 
+        //Created in Application layer
         public async Task<IdentityResult> CreateUserAsync(ApplicationUser user, string password)
         {
             var result = await _userManager.CreateAsync(user, password);
             return result;
         }
 
+        //Created in Application layer
         public async Task<IdentityResult> CreateRoleAsync(ApplicationRole role)
         {
             var result = await _roleManager.CreateAsync(role);
@@ -62,6 +64,7 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.UserManagement
             return user;
         }
 
+        //Created in the Application layer
         public async Task<bool> RoleExistsAsync(string role)
         {
             var result = await _roleManager.RoleExistsAsync(role);
@@ -86,6 +89,7 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.UserManagement
             return applicationUsers;
         }
 
+        //Created in the Application layer
         public async Task<IEnumerable<ApplicationRole?>> GetAllRoles()
         {
             var applicationRoles = await _roleManager.Roles.ToListAsync();

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TimeTwoFix.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCatalog : Migration
+    public partial class InitDataBase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -75,7 +75,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     HireDate = table.Column<DateOnly>(type: "date", nullable: false),
                     HourlyWage = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    yearsOfExperience = table.Column<int>(type: "int", nullable: false),
+                    YearsOfExperience = table.Column<int>(type: "int", nullable: false),
                     LastEmployer = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -97,8 +97,10 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -568,11 +570,11 @@ namespace TimeTwoFix.Infrastructure.Migrations
                 columns: new[] { "Id", "CreatedAt", "Description", "IsActive", "Name", "NormalizedName", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 5, 17, 17, 21, 26, 471, DateTimeKind.Utc).AddTicks(1600), "Mechanic role with access to work orders and interventions.", true, "Mechanic", "MECHANIC", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, new DateTime(2025, 5, 17, 17, 21, 26, 471, DateTimeKind.Utc).AddTicks(1605), "Front Desk Assistant role with access to client management and appointments.", true, "FrontDeskAssistant", "FRONTDESKASSISTANT", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 3, new DateTime(2025, 5, 17, 17, 21, 26, 471, DateTimeKind.Utc).AddTicks(1607), "Warehouse Manager role with access to spare parts and inventory management.", true, "WareHouseManager", "WAREHOUSEMANAGER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 4, new DateTime(2025, 5, 17, 17, 21, 26, 471, DateTimeKind.Utc).AddTicks(1608), "Workshop Manager role with access to workshop operations and team management.", true, "WorkshopManager", "WORKSHOPMANAGER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 5, new DateTime(2025, 5, 17, 17, 21, 26, 471, DateTimeKind.Utc).AddTicks(1609), "General Manager role with access to all operations and management.", true, "GeneralManager", "GENERALMANAGER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 1, new DateTime(2025, 5, 23, 20, 2, 4, 985, DateTimeKind.Utc).AddTicks(5662), "Mechanic role with access to work orders and interventions.", true, "Mechanic", "MECHANIC", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, new DateTime(2025, 5, 23, 20, 2, 4, 985, DateTimeKind.Utc).AddTicks(5668), "Front Desk Assistant role with access to client management and appointments.", true, "FrontDeskAssistant", "FRONTDESKASSISTANT", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, new DateTime(2025, 5, 23, 20, 2, 4, 985, DateTimeKind.Utc).AddTicks(5669), "Warehouse Manager role with access to spare parts and inventory management.", true, "WareHouseManager", "WAREHOUSEMANAGER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 4, new DateTime(2025, 5, 23, 20, 2, 4, 985, DateTimeKind.Utc).AddTicks(5670), "Workshop Manager role with access to workshop operations and team management.", true, "WorkshopManager", "WORKSHOPMANAGER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 5, new DateTime(2025, 5, 23, 20, 2, 4, 985, DateTimeKind.Utc).AddTicks(5671), "General Manager role with access to all operations and management.", true, "GeneralManager", "GENERALMANAGER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.CreateIndex(
@@ -600,6 +602,11 @@ namespace TimeTwoFix.Infrastructure.Migrations
                 table: "Clients",
                 column: "Email",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "EmailIndex",
+                table: "Employees",
+                column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",

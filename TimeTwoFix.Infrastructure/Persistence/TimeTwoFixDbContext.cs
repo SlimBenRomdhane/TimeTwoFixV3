@@ -50,10 +50,10 @@ namespace TimeTwoFix.Infrastructure.Persistence
                 x.Ignore(c => c.LockoutEnabled);
                 x.Ignore(c => c.LockoutEnd);
                 x.Ignore(c => c.TwoFactorEnabled);
-                x.Ignore(c => c.SecurityStamp);
+                //x.Ignore(c => c.SecurityStamp);
 
                 x.Ignore(c => c.AccessFailedCount);
-                x.Ignore(c => c.NormalizedEmail);
+                //x.Ignore(c => c.NormalizedEmail);
                 x.HasDiscriminator<string>("RoleTypeDiscriminator")
                     .HasValue<FrontDeskAssistant>(nameof(FrontDeskAssistant))
                     .HasValue<Mechanic>(nameof(Mechanic))
@@ -77,6 +77,7 @@ namespace TimeTwoFix.Infrastructure.Persistence
             modelBuilder.Entity<InterventionSparePart>(x => x.HasIndex(isp => isp.DeliveryNote).IsUnique());
             modelBuilder.Entity<Client>().HasQueryFilter(c => !c.IsDeleted);
             modelBuilder.SeedRoles();
+            modelBuilder.SeedUser();
         }
     }
 }

@@ -8,18 +8,19 @@ namespace TimeTwoFix.Application.UserServices.Interfaces
 {
     public interface IUserService
     {
-        // Role Management
-        //Task<IdentityResult> CreateRoleAsync(ApplicationRole role);
-        //Task<IdentityResult> UpdateRoleAsync(ApplicationRole role);
-        //Task<IdentityResult> DeleteRoleAsync(ApplicationRole role);
-        //Task<ApplicationRole> GetRoleByIdAsync(string roleId);
-        //Task<ApplicationRole> GetRoleByNameAsync(string roleName);
+        /// User management
+        Task<IdentityResult> CreateUserAsync(CreateUserDto createUserDto);
+        Task<ReadUserDto?> GetUserByEmailAsync(string email);
+        Task<IEnumerable<ReadUserDto>> GetAllApplicationUsers();
+        Task<IdentityResult> UpdateUserAsync(UpdateUserDto updateUserDto);
+        Task<IdentityResult> DeleteUserAsync(int userId);
+        Task<bool> CheckPasswordAsync(ReadUserDto readUserDto, string password);
+        Task<IList<string>> GetUserRolesAsync(ReadUserDto readUserDto);
+        Task<IdentityResult> AddOrUpdateUserToRoleAsync(ReadUserDto readUserDto, ReadRoleDto readRoleDto);
+        Task<SignInResult> SignInAsync(string email, string password, bool isPersistent);
+        Task SignOutAsync();
 
 
         Task<IEnumerable<ReadUserDto>> GetUsersByMultipleParam(UserFilterDto userFilterDto);
-
-        Task<IEnumerable<ReadUserDto>> GetAllApplicationUsers();
-
-        Task<IEnumerable<ReadRoleDto>> GetAllApplicationRoles();
     }
 }

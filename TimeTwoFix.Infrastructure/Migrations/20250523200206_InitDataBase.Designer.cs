@@ -12,8 +12,8 @@ using TimeTwoFix.Infrastructure.Persistence;
 namespace TimeTwoFix.Infrastructure.Migrations
 {
     [DbContext(typeof(TimeTwoFixDbContext))]
-    [Migration("20250517182908_UpdatingRoleTable")]
-    partial class UpdatingRoleTable
+    [Migration("20250523200206_InitDataBase")]
+    partial class InitDataBase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -744,7 +744,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 5, 17, 18, 29, 7, 625, DateTimeKind.Utc).AddTicks(2386),
+                            CreatedAt = new DateTime(2025, 5, 23, 20, 2, 4, 985, DateTimeKind.Utc).AddTicks(5662),
                             Description = "Mechanic role with access to work orders and interventions.",
                             IsActive = true,
                             Name = "Mechanic",
@@ -754,7 +754,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 5, 17, 18, 29, 7, 625, DateTimeKind.Utc).AddTicks(2393),
+                            CreatedAt = new DateTime(2025, 5, 23, 20, 2, 4, 985, DateTimeKind.Utc).AddTicks(5668),
                             Description = "Front Desk Assistant role with access to client management and appointments.",
                             IsActive = true,
                             Name = "FrontDeskAssistant",
@@ -764,7 +764,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2025, 5, 17, 18, 29, 7, 625, DateTimeKind.Utc).AddTicks(2395),
+                            CreatedAt = new DateTime(2025, 5, 23, 20, 2, 4, 985, DateTimeKind.Utc).AddTicks(5669),
                             Description = "Warehouse Manager role with access to spare parts and inventory management.",
                             IsActive = true,
                             Name = "WareHouseManager",
@@ -774,7 +774,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2025, 5, 17, 18, 29, 7, 625, DateTimeKind.Utc).AddTicks(2396),
+                            CreatedAt = new DateTime(2025, 5, 23, 20, 2, 4, 985, DateTimeKind.Utc).AddTicks(5670),
                             Description = "Workshop Manager role with access to workshop operations and team management.",
                             IsActive = true,
                             Name = "WorkshopManager",
@@ -784,7 +784,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2025, 5, 17, 18, 29, 7, 625, DateTimeKind.Utc).AddTicks(2397),
+                            CreatedAt = new DateTime(2025, 5, 23, 20, 2, 4, 985, DateTimeKind.Utc).AddTicks(5671),
                             Description = "General Manager role with access to all operations and management.",
                             IsActive = true,
                             Name = "GeneralManager",
@@ -849,6 +849,10 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -864,6 +868,9 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         .HasMaxLength(21)
                         .HasColumnType("nvarchar(21)");
 
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -876,13 +883,16 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<int>("YearsOfExperience")
+                        .HasColumnType("int");
+
                     b.Property<int>("ZipCode")
                         .HasColumnType("int");
 
-                    b.Property<int>("yearsOfExperience")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()

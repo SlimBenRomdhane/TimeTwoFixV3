@@ -9,9 +9,8 @@ namespace TimeTwoFix.Application.UserServices.Services
 {
     public class RoleService : IRoleService
     {
-        //private readonly UserManager<ApplicationUser> _userManager;
+
         private readonly RoleManager<ApplicationRole> _roleManager;
-        //private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IMapper _mapper;
         public RoleService(RoleManager<ApplicationRole> roleManage, IMapper mapper)
         {
@@ -22,14 +21,7 @@ namespace TimeTwoFix.Application.UserServices.Services
         public async Task<bool> RoleExistsAsync(string roleName)
         {
             var exists = await _roleManager.RoleExistsAsync(roleName);
-            if (exists)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return exists;
         }
         public async Task<ReadRoleDto?> GetRoleByNameAsync(string roleName)
         {
@@ -45,7 +37,7 @@ namespace TimeTwoFix.Application.UserServices.Services
         {
             if (createRoleDto == null)
             {
-                throw new Exception("Role cannot be null");
+                throw new ArgumentNullException(nameof(createRoleDto));
             }
 
 
@@ -62,15 +54,8 @@ namespace TimeTwoFix.Application.UserServices.Services
                 Description = createRoleDto.Description,
                 IsActive = createRoleDto.IsActive
             };
-            var createdRole = await _roleManager.CreateAsync(role);
-            if (createdRole.Succeeded)
-            {
-                return IdentityResult.Success;
-            }
-            else
-            {
-                return IdentityResult.Failed(new IdentityError { Description = "Role creation failed" });
-            }
+            var result = await _roleManager.CreateAsync(role);
+            return result;
         }
 
         public async Task<IdentityResult> DeleteRoleAsync(string roleName)
@@ -80,7 +65,7 @@ namespace TimeTwoFix.Application.UserServices.Services
             if (roleDto == null)
                 return IdentityResult.Failed(new IdentityError { Description = "Role not found" });
 
-            var actualRole = await _roleManager.FindByNameAsync(roleDto.RoleName);
+            var actualRole = await _roleManager.FindByNameAsync(roleDto.Name);
             if (actualRole == null)
                 return IdentityResult.Failed(new IdentityError { Description = "Role not found" });
             var result = await _roleManager.DeleteAsync(actualRole);
@@ -97,38 +82,27 @@ namespace TimeTwoFix.Application.UserServices.Services
         public async Task<IEnumerable<ReadRoleDto>> GetAllRolesAsync()
         {
             var roles = await _roleManager.Roles.ToListAsync();
-            if (roles == null)
-            {
-                throw new Exception("Roles not found");
-            }
             var res = _mapper.Map<IEnumerable<ReadRoleDto>>(roles);
             return res;
         }
 
-        public Task<IdentityResult> UpdateRoleNameAsync(UpdateRoleDto updateRoleDto)
+        public async Task<IdentityResult> UpdateRoleNameAsync(UpdateRoleDto updateRoleDto)
         {
-            var role = GetRoleByNameAsync(updateRoleDto.RoleName);
+            var role = await GetRoleByNameAsync(updateRoleDto.RoleName);
             if (role == null)
             {
-                return Task.FromResult(IdentityResult.Failed(new IdentityError { Description = "Role not found" }));
+                throw new ArgumentNullException(nameof(role));
             }
             var actualRole = _roleManager.Roles.FirstOrDefault(r => r.Name == updateRoleDto.RoleName);
             if (actualRole == null)
             {
-                return Task.FromResult(IdentityResult.Failed(new IdentityError { Description = "Role not found" }));
+                return IdentityResult.Failed(new IdentityError { Description = "Role not found" });
             }
             actualRole.Name = updateRoleDto.RoleName;
             actualRole.Description = updateRoleDto.Description;
             actualRole.IsActive = updateRoleDto.IsActive;
-            var result = _roleManager.UpdateAsync(actualRole);
-            if (result.Result.Succeeded)
-            {
-                return Task.FromResult(IdentityResult.Success);
-            }
-            else
-            {
-                return Task.FromResult(IdentityResult.Failed(new IdentityError { Description = "Role update failed" }));
-            }
+            var result = await _roleManager.UpdateAsync(actualRole);
+            return result;
 
         }
     }

@@ -1,11 +1,13 @@
+using Microsoft.AspNetCore.Identity;
 using TimeTwoFix.Application.Extension;
+using TimeTwoFix.Core.Entities.UserManagement;
 using TimeTwoFix.Infrastructure.Extension;
 
 namespace TimeTwoFix.Web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,23 @@ namespace TimeTwoFix.Web
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            // Configuring Sessions
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+
+            });
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/User/Login";
+                options.AccessDeniedPath = "/User/Login";
+            });
+
+
+
 
             var app = builder.Build();
 
@@ -30,7 +49,9 @@ namespace TimeTwoFix.Web
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            app.UseSession();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseRouting();
 
             app.UseAuthorization();

@@ -1,6 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
+using TimeTwoFix.Application.UserServices.Dtos.Roles;
 using TimeTwoFix.Application.UserServices.Dtos.Users;
+using TimeTwoFix.Application.UserServices.Interfaces;
 using TimeTwoFix.Core.Entities.UserManagement;
 using TimeTwoFix.Core.Interfaces;
 using TimeTwoFix.Web.Models.RoleModels;
@@ -8,14 +13,19 @@ using TimeTwoFix.Web.Models.UserModels;
 
 namespace TimeTwoFix.Web.Controllers
 {
+    [Authorize]
     public class UserController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IUserService _userService;
+        private readonly IRoleService _roleService;
         private readonly IMapper _mapper;
 
-        public UserController(IUnitOfWork unitOfWork, IMapper mapper)
+        public UserController(IUnitOfWork unitOfWork, IMapper mapper, IRoleService roleService, IUserService userService)
         {
             _unitOfWork = unitOfWork;
+            _userService = userService;
+            _roleService = roleService;
             _mapper = mapper;
         }
 
@@ -29,7 +39,7 @@ namespace TimeTwoFix.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var check = await _unitOfWork.ApplicationUsers.RoleExistsAsync(createRoleViewModel.RoleName);
+                var check = await _roleService.RoleExistsAsync(createRoleViewModel.RoleName);
                 if (!check)
                 {
                     var roleName = new ApplicationRole
@@ -38,7 +48,8 @@ namespace TimeTwoFix.Web.Controllers
                         Description = createRoleViewModel.Description,
                         IsActive = createRoleViewModel.IsActive
                     };
-                    var result = await _unitOfWork.ApplicationUsers.CreateRoleAsync(roleName);
+                    var roleDto = _mapper.Map<CreateRoleDto>(createRoleViewModel);
+                    var result = await _roleService.CreateRoleAsync(roleDto);
                     if (result.Succeeded)
                     {
                         return RedirectToAction("Index");
@@ -55,10 +66,10 @@ namespace TimeTwoFix.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var users = (await _unitOfWork.ApplicationUsers.GetAllUsers()).ToList();
-            var roles = (await _unitOfWork.ApplicationUsers.GetAllRoles()).ToList();
-            var userViewModel = _mapper.Map<IEnumerable<ReadUserViewModel>>(users).ToList();
-            var roleViewModel = _mapper.Map<IEnumerable<ReadRoleViewModel>>(roles).ToList();
+            var usersDto = await _userService.GetAllApplicationUsers();
+            var rolesDto = await _roleService.GetAllRolesAsync();
+            var userViewModel = _mapper.Map<IEnumerable<ReadUserViewModel>>(usersDto).ToList();
+            var roleViewModel = _mapper.Map<IEnumerable<ReadRoleViewModel>>(rolesDto).ToList();
 
             //var mechanics = users.OfType<Mechanic>().ToList();
             //var assistants = users.OfType<FrontDeskAssistant>().ToList();
@@ -87,16 +98,25 @@ namespace TimeTwoFix.Web.Controllers
             {
                 try
                 {
-                    var mechanicDto = _mapper.Map<ReadUserDto>(createMechanicViewModel);
-                    var mechanic = _mapper.Map<Mechanic>(mechanicDto);
-                    mechanic.UserName = createMechanicViewModel.Email;
-                    mechanic.Status = "Active";
-                    var result = await _unitOfWork.ApplicationUsers.CreateUserAsync(mechanic, createMechanicViewModel.Password);
+                    var mechanicDto = _mapper.Map<CreateUserDto>(createMechanicViewModel);
+                    mechanicDto.UserName = createMechanicViewModel.Email;
+                    mechanicDto.Status = "Active";
+                    mechanicDto.UserType = "Mechanic";
+
+                    var result = await _userService.CreateUserAsync(mechanicDto);
+
                     if (!result.Succeeded)
                     {
                         throw new Exception("Failed to create user");
                     }
-                    var res = await _unitOfWork.ApplicationUsers.AddUserToRoleAsync(mechanic, "Mechanic");
+
+                    var createdUser = await _userService.GetUserByEmailAsync(mechanicDto.Email);
+                    if (createdUser == null)
+                    {
+                        throw new Exception("Failed to retrieve created user");
+                    }
+                    var userAssignedRole = _mapper.Map<ReadUserDto>(createdUser);
+                    var res = await _userService.AddOrUpdateUserToRoleAsync(userAssignedRole, new ReadRoleDto { Name = "Mechanic" });
                     if (!res.Succeeded)
                     {
                         throw new Exception("Failed to add user to role");
@@ -129,16 +149,22 @@ namespace TimeTwoFix.Web.Controllers
             {
                 try
                 {
-                    var assistantDto = _mapper.Map<ReadUserDto>(createFrontDeskAssistantViewModel);
-                    var assistant = _mapper.Map<FrontDeskAssistant>(assistantDto);
-                    assistant.UserName = createFrontDeskAssistantViewModel.Email;
-                    assistant.Status = "Active";
-                    var result = await _unitOfWork.ApplicationUsers.CreateUserAsync(assistant, createFrontDeskAssistantViewModel.Password);
+                    var assistantDto = _mapper.Map<CreateUserDto>(createFrontDeskAssistantViewModel);
+                    assistantDto.UserName = createFrontDeskAssistantViewModel.Email;
+                    assistantDto.Status = "Active";
+                    assistantDto.UserType = "FrontDeskAssistant";
+                    var result = await _userService.CreateUserAsync(assistantDto);
                     if (!result.Succeeded)
                     {
                         throw new Exception("Failed to create user");
                     }
-                    var res = await _unitOfWork.ApplicationUsers.AddUserToRoleAsync(assistant, "FrontDeskAssistant");
+                    var createdUser = await _userService.GetUserByEmailAsync(assistantDto.Email);
+                    if (createdUser == null)
+                    {
+                        throw new Exception("Failed to retrieve created user");
+                    }
+                    var userAssignedRole = _mapper.Map<ReadUserDto>(createdUser);
+                    var res = await _userService.AddOrUpdateUserToRoleAsync(userAssignedRole, new ReadRoleDto { Name = "FrontDeskAssistant" });
                     if (!res.Succeeded)
                     {
                         throw new Exception("Failed to add user to role");
@@ -171,16 +197,22 @@ namespace TimeTwoFix.Web.Controllers
             {
                 try
                 {
-                    var warehouseManagerDto = _mapper.Map<ReadUserDto>(createWareHouseManagerViewModel);
-                    var warehouseManager = _mapper.Map<WareHouseManager>(warehouseManagerDto);
-                    warehouseManager.UserName = createWareHouseManagerViewModel.Email;
-                    warehouseManager.Status = "Active";
-                    var result = await _unitOfWork.ApplicationUsers.CreateUserAsync(warehouseManager, createWareHouseManagerViewModel.Password);
+                    var wareHouseManagerDto = _mapper.Map<CreateUserDto>(createWareHouseManagerViewModel);
+                    wareHouseManagerDto.UserName = createWareHouseManagerViewModel.Email;
+                    wareHouseManagerDto.Status = "Active";
+                    wareHouseManagerDto.UserType = "WareHouseManager";
+                    var result = await _userService.CreateUserAsync(wareHouseManagerDto);
                     if (!result.Succeeded)
                     {
                         throw new Exception("Failed to create user");
                     }
-                    var res = await _unitOfWork.ApplicationUsers.AddUserToRoleAsync(warehouseManager, "WareHouseManager");
+                    var createdUser = await _userService.GetUserByEmailAsync(wareHouseManagerDto.Email);
+                    if (createdUser == null)
+                    {
+                        throw new Exception("Failed to retrieve created user");
+                    }
+                    var userAssignedRole = _mapper.Map<ReadUserDto>(createdUser);
+                    var res = await _userService.AddOrUpdateUserToRoleAsync(userAssignedRole, new ReadRoleDto { Name = "WareHouseManager" });
                     if (!res.Succeeded)
                     {
                         throw new Exception("Failed to add user to role");
@@ -213,16 +245,22 @@ namespace TimeTwoFix.Web.Controllers
             {
                 try
                 {
-                    var workshopManagerDto = _mapper.Map<ReadUserDto>(createWorkshopManagerViewModel);
-                    var workshopManager = _mapper.Map<WorkshopManager>(workshopManagerDto);
-                    workshopManager.UserName = createWorkshopManagerViewModel.Email;
-                    workshopManager.Status = "Active";
-                    var result = await _unitOfWork.ApplicationUsers.CreateUserAsync(workshopManager, createWorkshopManagerViewModel.Password);
+                    var workShopManagerDto = _mapper.Map<CreateUserDto>(createWorkshopManagerViewModel);
+                    workShopManagerDto.UserName = createWorkshopManagerViewModel.Email;
+                    workShopManagerDto.Status = "Active";
+                    workShopManagerDto.UserType = "WorkShopManager";
+                    var result = await _userService.CreateUserAsync(workShopManagerDto);
                     if (!result.Succeeded)
                     {
                         throw new Exception("Failed to create user");
                     }
-                    var res = await _unitOfWork.ApplicationUsers.AddUserToRoleAsync(workshopManager, "WorkshopManager");
+                    var createdUser = await _userService.GetUserByEmailAsync(workShopManagerDto.Email);
+                    if (createdUser == null)
+                    {
+                        throw new Exception("Failed to retrieve created user");
+                    }
+                    var userAssignedRole = _mapper.Map<ReadUserDto>(createdUser);
+                    var res = await _userService.AddOrUpdateUserToRoleAsync(userAssignedRole, new ReadRoleDto { Name = "WorkShopManager" });
                     if (!res.Succeeded)
                     {
                         throw new Exception("Failed to add user to role");
@@ -255,16 +293,22 @@ namespace TimeTwoFix.Web.Controllers
             {
                 try
                 {
-                    var generalManagerDto = _mapper.Map<ReadUserDto>(createGeneralManagerViewModel);
-                    var generalManager = _mapper.Map<GeneralManager>(generalManagerDto);
-                    generalManager.UserName = createGeneralManagerViewModel.Email;
-                    generalManager.Status = "Active";
-                    var result = await _unitOfWork.ApplicationUsers.CreateUserAsync(generalManager, createGeneralManagerViewModel.Password);
+                    var generalManagerDto = _mapper.Map<CreateUserDto>(createGeneralManagerViewModel);
+                    generalManagerDto.UserName = createGeneralManagerViewModel.Email;
+                    generalManagerDto.Status = "Active";
+                    generalManagerDto.UserType = "GeneralManager";
+                    var result = await _userService.CreateUserAsync(generalManagerDto);
                     if (!result.Succeeded)
                     {
                         throw new Exception("Failed to create user");
                     }
-                    var res = await _unitOfWork.ApplicationUsers.AddUserToRoleAsync(generalManager, "GeneralManager");
+                    var createdUser = await _userService.GetUserByEmailAsync(generalManagerDto.Email);
+                    if (createdUser == null)
+                    {
+                        throw new Exception("Failed to retrieve created user");
+                    }
+                    var userAssignedRole = _mapper.Map<ReadUserDto>(createdUser);
+                    var res = await _userService.AddOrUpdateUserToRoleAsync(userAssignedRole, new ReadRoleDto { Name = "GeneralManager" });
                     if (!res.Succeeded)
                     {
                         throw new Exception("Failed to add user to role");
@@ -279,6 +323,55 @@ namespace TimeTwoFix.Web.Controllers
                     return View(createGeneralManagerViewModel);
                 }
             }
+        }
+        [AllowAnonymous]
+        [HttpGet]
+
+        public IActionResult Login()
+        {
+
+            return View();
+
+        }
+        [AllowAnonymous]
+        [HttpPost]
+        public async Task<IActionResult> Login(string email, string password)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            var result = await _userService.SignInAsync(email, password, true);
+
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError("", "Invalid login attempt.");
+                return View();
+            }
+
+            // Handle missing users without crashing
+            ReadUserDto user = null;
+            try
+            {
+                user = await _userService.GetUserByEmailAsync(email);
+            }
+            catch (KeyNotFoundException)
+            {
+                ModelState.AddModelError("", "User not found after login.");
+                return View();
+            }
+
+            if (user == null)
+            {
+                ModelState.AddModelError("", "Unexpected error: User retrieval failed.");
+                return View();
+            }
+
+            HttpContext.Session.SetString("UserEmail", user.Email ?? "Unknown");
+            HttpContext.Session.SetString("UserName", user.LastName ?? "Unknown");
+
+            return RedirectToAction("Index");
         }
     }
 }

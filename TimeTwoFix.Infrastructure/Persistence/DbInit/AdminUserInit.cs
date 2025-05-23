@@ -1,0 +1,40 @@
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using TimeTwoFix.Core.Entities.UserManagement;
+
+namespace TimeTwoFix.Infrastructure.Persistence.DbInit
+{
+    public static class AdminUserInit
+    {
+
+        public static void SeedUser(this ModelBuilder modelBuilder)
+        {
+
+            var adminUser = new GeneralManager
+            {
+                Id = 1,
+                UserName = "admin",
+                NormalizedUserName = "ADMIN",
+                Email = "admin@admin.com",
+                Address = "admin",
+                City = "admin",
+                FirstName = "admin",
+                LastName = "admin",
+                ImageUrl = "admin",
+                LastEmployer = "admin",
+                Status = "Active",
+                SecurityStamp = new Guid().ToString(),
+
+
+                CreatedAt = DateTime.UtcNow
+            };
+
+            // Hash the password
+            var passwordHasher = new PasswordHasher<GeneralManager>();
+            adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "Admin@123");
+
+            modelBuilder.Entity<GeneralManager>().HasData(adminUser);
+
+        }
+    }
+}
