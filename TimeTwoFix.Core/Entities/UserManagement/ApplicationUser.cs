@@ -42,10 +42,11 @@ namespace TimeTwoFix.Core.Entities.UserManagement
         [MaxLength(50)]
 
         public string Status { get; set; }
+        public string UserType { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
         [NotMapped]
-        public override string? NormalizedEmail { get; set ; }
+        public override string? NormalizedEmail { get; set; }
     }
 }

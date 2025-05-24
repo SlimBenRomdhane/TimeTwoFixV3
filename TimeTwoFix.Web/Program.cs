@@ -31,7 +31,7 @@ namespace TimeTwoFix.Web
             builder.Services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/User/Login";
-                options.AccessDeniedPath = "/User/Login";
+                options.AccessDeniedPath = "/Shared/AccessDenied";
             });
 
 

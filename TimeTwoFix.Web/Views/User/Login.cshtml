@@ -1,43 +1,42 @@
 ﻿@model TimeTwoFix.Web.Models.UserModels.LoginViewModel
-
 @{
     ViewData["Title"] = "Login";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-header text-center">
-                    <h3>Login</h3>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Login">
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-
-                        <div class="mb-3">
-                            <input asp-for="Email" class="form-control" placeholder="Email Address" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <input asp-for="Password" class="form-control" placeholder="Password" type="password" />
-                            <span asp-validation-for="Password" class="text-danger"></span>
-                        </div>
-
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Login</button>
-                        </div>
-                    </form>
-                </div>
-                
+<div class="container" style="max-width: 400px; margin-top: 80px;">
+    <div class="card border-0" style="background: var(--glass-bg); backdrop-filter: blur(10px); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); border-radius: 12px;">
+        <div class="card-header bg-white border-0 text-center pt-4" style="background: transparent;">
+            <!-- Logo Section -->
+            <div class="d-flex justify-content-center align-items-center mb-3">
+                <img src="~/images/logo_app.jpg" alt="TimeTwoFix Logo" style="height: 50px; width: 50px; object-fit: contain; margin-right: 10px;">
+                <h4 style="color: var(--primary-color); font-weight: 700; margin: 0;">TIMETWOFIX</h4>
             </div>
+            <p class="small" style="color: var(--accent-color);">Authorized Personnel Only</p>
+        </div>
+
+        <div class="card-body px-4 pb-4 pt-0">
+            <form asp-action="Login">
+                <div asp-validation-summary="ModelOnly" class="small mb-3" style="color: var(--highlight-color);"></div>
+
+                <div class="mb-3">
+                    <input asp-for="Email" class="form-control" placeholder="Email"
+                           style="background: var(--glass-bg); border: 1px solid var(--shadow-color); padding: 10px; border-radius: 8px;">
+                </div>
+
+                <div class="mb-4">
+                    <input asp-for="Password" class="form-control" placeholder="Password" type="password"
+                           style="background: var(--glass-bg); border: 1px solid var(--shadow-color); padding: 10px; border-radius: 8px;">
+                </div>
+
+                <button type="submit" class="btn w-100 py-2 fw-bold"
+                        style="background: var(--gradient-primary); color: var(--text-light); border-radius: 8px; border: none;">
+                    SIGN IN
+                </button>
+            </form>
         </div>
     </div>
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
 }

@@ -9,7 +9,7 @@ using TimeTwoFix.Web.Models.ClientModels;
 
 namespace TimeTwoFix.Web.Controllers
 {
-    [Authorize(Roles = "FrontDeskAssistant")]
+    [Authorize(Roles = "FrontDeskAssistant,GeneralManager")]
     public class ClientController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

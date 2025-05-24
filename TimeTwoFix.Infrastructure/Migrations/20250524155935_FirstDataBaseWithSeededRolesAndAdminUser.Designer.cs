@@ -12,8 +12,8 @@ using TimeTwoFix.Infrastructure.Persistence;
 namespace TimeTwoFix.Infrastructure.Migrations
 {
     [DbContext(typeof(TimeTwoFixDbContext))]
-    [Migration("20250523200206_InitDataBase")]
-    partial class InitDataBase
+    [Migration("20250524155935_FirstDataBaseWithSeededRolesAndAdminUser")]
+    partial class FirstDataBaseWithSeededRolesAndAdminUser
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -107,6 +107,13 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("UserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            RoleId = 5
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
@@ -744,7 +751,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 5, 23, 20, 2, 4, 985, DateTimeKind.Utc).AddTicks(5662),
+                            CreatedAt = new DateTime(2025, 5, 24, 15, 59, 34, 53, DateTimeKind.Utc).AddTicks(6865),
                             Description = "Mechanic role with access to work orders and interventions.",
                             IsActive = true,
                             Name = "Mechanic",
@@ -754,7 +761,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 5, 23, 20, 2, 4, 985, DateTimeKind.Utc).AddTicks(5668),
+                            CreatedAt = new DateTime(2025, 5, 24, 15, 59, 34, 53, DateTimeKind.Utc).AddTicks(6875),
                             Description = "Front Desk Assistant role with access to client management and appointments.",
                             IsActive = true,
                             Name = "FrontDeskAssistant",
@@ -764,7 +771,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2025, 5, 23, 20, 2, 4, 985, DateTimeKind.Utc).AddTicks(5669),
+                            CreatedAt = new DateTime(2025, 5, 24, 15, 59, 34, 53, DateTimeKind.Utc).AddTicks(6877),
                             Description = "Warehouse Manager role with access to spare parts and inventory management.",
                             IsActive = true,
                             Name = "WareHouseManager",
@@ -774,7 +781,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2025, 5, 23, 20, 2, 4, 985, DateTimeKind.Utc).AddTicks(5670),
+                            CreatedAt = new DateTime(2025, 5, 24, 15, 59, 34, 53, DateTimeKind.Utc).AddTicks(6878),
                             Description = "Workshop Manager role with access to workshop operations and team management.",
                             IsActive = true,
                             Name = "WorkshopManager",
@@ -784,7 +791,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2025, 5, 23, 20, 2, 4, 985, DateTimeKind.Utc).AddTicks(5671),
+                            CreatedAt = new DateTime(2025, 5, 24, 15, 59, 34, 53, DateTimeKind.Utc).AddTicks(6879),
                             Description = "General Manager role with access to all operations and management.",
                             IsActive = true,
                             Name = "GeneralManager",
@@ -882,6 +889,10 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("UserType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("YearsOfExperience")
                         .HasColumnType("int");
@@ -1163,6 +1174,35 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasDiscriminator().HasValue("GeneralManager");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Address = "admin",
+                            City = "admin",
+                            ConcurrencyStamp = "6d8e10d3-8a3c-4290-96db-2f9b151d6956",
+                            CreatedAt = new DateTime(2025, 5, 24, 15, 59, 34, 53, DateTimeKind.Utc).AddTicks(7209),
+                            Email = "admin@admin.com",
+                            EmailConfirmed = false,
+                            FirstName = "admin",
+                            HireDate = new DateOnly(1, 1, 1),
+                            HourlyWage = 0m,
+                            ImageUrl = "admin",
+                            LastEmployer = "admin",
+                            LastName = "admin",
+                            NormalizedEmail = "ADMIN@ADMIN.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBDZCOSPS4dGyZejOT0k+PLomVvXEpeTvQm9uw07I0Wme/ZheTls9LLGxua1ioIoYg==",
+                            SecurityStamp = "00000000-0000-0000-0000-000000000000",
+                            Status = "Active",
+                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UserName = "admin",
+                            UserType = "GeneralManager",
+                            YearsOfExperience = 0,
+                            ZipCode = 0,
+                            YearsInManagement = 0
+                        });
                 });
 
             modelBuilder.Entity("TimeTwoFix.Core.Entities.UserManagement.Mechanic", b =>

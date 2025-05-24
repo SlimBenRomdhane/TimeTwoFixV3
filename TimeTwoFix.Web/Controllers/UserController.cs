@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using TimeTwoFix.Application.UserServices.Dtos.Roles;
 using TimeTwoFix.Application.UserServices.Dtos.Users;
 using TimeTwoFix.Application.UserServices.Interfaces;
@@ -13,7 +12,7 @@ using TimeTwoFix.Web.Models.UserModels;
 
 namespace TimeTwoFix.Web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "GeneralManager")]
     public class UserController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -373,5 +372,41 @@ namespace TimeTwoFix.Web.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [AllowAnonymous]
+        public async Task<IActionResult> Logout()
+        {
+            await _userService.SignOutAsync();
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<UserProfileViewModel> Profile(string email)
+        {
+            //var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userService.GetUserByEmailAsync(email);
+            if (user == null) return null;
+
+            return new UserProfileViewModel
+            {
+                //UserId = user.
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Address = user.Address,
+                City = user.City,
+                ZipCode = user.ZipCode,
+                PhoneNumber = user.PhoneNumber,
+                Status = user.Status,
+                HireDate = user.HireDate,
+                YearsOfExperience = user.YearsOfExperience,
+                LastEmployer = user.LastEmployer,
+                UserType = user.UserType,
+
+                // Assign role-specific properties
+
+            };
+        }
+
     }
 }

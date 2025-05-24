@@ -1,0 +1,54 @@
+﻿@model UserProfileViewModel
+
+<div class="container mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4>User Profile - @Model.Role</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Name:</strong> @Model.FirstName @Model.LastName</p>
+            <p><strong>Email:</strong> @Model.Email</p>
+            <p><strong>Address:</strong> @Model.Address, @Model.City</p>
+            <p><strong>Status:</strong> @Model.Status</p>
+
+            @if (Model.UserType == "GeneralManager")
+            {
+                <p><strong>Office Number:</strong> @Model.OfficeNumber</p>
+                <p><strong>Years in Management:</strong> @Model.YearsInManagement</p>
+            }
+
+            @if (Model.UserType == "FrontDeskAssistant")
+            {
+                <p><strong>Workstation Number:</strong> @Model.WorkStationNumber</p>
+                <p><strong>Phone Extension:</strong> @Model.PhoneExtension</p>
+                <p><strong>Spoken Language:</strong> @Model.SpokenLanguage</p>
+                <p><strong>Business Knowledge:</strong> @(Model.BusinessKnowledge == true ? "Yes" : "No")</p>
+            }
+
+            @if (Model.UserType == "Mechanic")
+            {
+                <p><strong>Specialization:</strong> @Model.Specialization</p>
+                <p><strong>ToolBox Number:</strong> @Model.ToolBoxNumber</p>
+                <p><strong>Able to Shift:</strong> @(Model.AbleToShift == true ? "Yes" : "No")</p>
+            }
+
+            @if (Model.UserType == "WareHouseManager")
+            {
+                <p><strong>Warehouse Name:</strong> @Model.WarehouseName</p>
+                <p><strong>Warehouse Location:</strong> @Model.WarehouseLocation</p>
+                <p><strong>Able to Shift Warehouse:</strong> @(Model.AbleToShiftWareHouse == true ? "Yes" : "No")</p>
+            }
+
+            @if (Model.Role == "WorkShopManager")
+            {
+                <p><strong>Team Size:</strong> @Model.TeamSize</p>
+            }
+
+            <img src="@Model.ImageURL" alt="Profile Picture" class="img-thumbnail" width="100" />
+
+            <form asp-controller="User" asp-action="UpdateProfile" method="post">
+                <button type="submit" class="btn btn-success">Update Profile</button>
+            </form>
+        </div>
+    </div>
+</div>

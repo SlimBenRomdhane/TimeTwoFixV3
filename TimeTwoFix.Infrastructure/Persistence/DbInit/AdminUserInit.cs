@@ -16,12 +16,14 @@ namespace TimeTwoFix.Infrastructure.Persistence.DbInit
                 UserName = "admin",
                 NormalizedUserName = "ADMIN",
                 Email = "admin@admin.com",
+                NormalizedEmail = "ADMIN@ADMIN.COM",
                 Address = "admin",
                 City = "admin",
                 FirstName = "admin",
                 LastName = "admin",
                 ImageUrl = "admin",
                 LastEmployer = "admin",
+                UserType = "GeneralManager",
                 Status = "Active",
                 SecurityStamp = new Guid().ToString(),
 
@@ -34,6 +36,12 @@ namespace TimeTwoFix.Infrastructure.Persistence.DbInit
             adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "Admin@123");
 
             modelBuilder.Entity<GeneralManager>().HasData(adminUser);
+
+            modelBuilder.Entity<IdentityUserRole<int>>().HasData(new IdentityUserRole<int>
+            {
+                UserId = 1,
+                RoleId = 5 // Assuming the role ID for Admin is 1
+            });
 
         }
     }
