@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Security.Claims;
 using TimeTwoFix.Web.Models;
 
 namespace TimeTwoFix.Web.Controllers
@@ -17,6 +18,9 @@ namespace TimeTwoFix.Web.Controllers
 
         public IActionResult Index()
         {
+            var roleClaims = User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => $"{c.Type}: {c.Value}");
+            Console.WriteLine($"Role Claims: {string.Join(", ", roleClaims)}");
+
             return View();
         }
 

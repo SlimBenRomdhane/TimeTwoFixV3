@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Runtime.ConstrainedExecution;
 using TimeTwoFix.Application.UserServices.Dtos.Roles;
 using TimeTwoFix.Application.UserServices.Dtos.Users;
 using TimeTwoFix.Application.UserServices.Interfaces;
@@ -127,7 +126,8 @@ namespace TimeTwoFix.Application.UserServices.Services
             {
                 throw new Exception("User type not found");
             }
-
+            user.CreatedAt = DateTime.UtcNow;
+            user.UpdatedAt = DateTime.UtcNow;
             var res = await _userManager.CreateAsync(user, createUserDto.Password);
             return res;
         }
@@ -194,7 +194,7 @@ namespace TimeTwoFix.Application.UserServices.Services
                 {
                     warehouseManager.WarehouseName = updateUserDto.WarehouseName;
                     warehouseManager.WarehouseLocation = updateUserDto.WarehouseLocation;
-                    warehouseManager.AbleToShift = updateUserDto.AbleToShiftWareHouse;
+                    warehouseManager.AbleToShiftWareHouse = updateUserDto.AbleToShiftWareHouse;
                 }
                 else if (user is WorkshopManager workshopManager)
                 {

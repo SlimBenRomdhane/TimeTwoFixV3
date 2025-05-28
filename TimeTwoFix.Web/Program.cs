@@ -1,6 +1,5 @@
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using TimeTwoFix.Application.Extension;
-using TimeTwoFix.Core.Entities.UserManagement;
 using TimeTwoFix.Infrastructure.Extension;
 
 namespace TimeTwoFix.Web
@@ -34,7 +33,12 @@ namespace TimeTwoFix.Web
                 options.AccessDeniedPath = "/Shared/AccessDenied";
             });
 
-
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/User/Login";
+                    options.AccessDeniedPath = "/Shared/AccessDenied";
+                });
 
 
             var app = builder.Build();

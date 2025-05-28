@@ -45,7 +45,7 @@
                                     <i class="bi bi-person-circle"></i> @User.Identity.Name <i class="fas fa-caret-down"></i>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end">
-                                    <li><a class="dropdown-item" asp-controller="User" asp-action="Profile"><i class="fas fa-user"></i> Profile</a></li>
+                                    <li><a class="dropdown-item" asp-controller="User" asp-action="Profile" asp-route-email="@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value"><i class="fas fa-user"></i> Profile</a></li>
                                     <li><a class="dropdown-item" asp-controller="User" asp-action="Settings"><i class="fas fa-cog"></i> Settings</a></li>
                                     <li><a class="dropdown-item" asp-controller="User" asp-action="Activity"><i class="fas fa-clock"></i> Activity</a></li>
                                     <li><hr class="dropdown-divider"></li>

@@ -1,24 +1,37 @@
 ﻿@model UserProfileViewModel
 
 <div class="container mt-4">
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h4>User Profile - @Model.Role</h4>
+    <div class="card shadow-lg rounded">
+        <div class="card-header bg-gradient text-white text-center">
+            <h4 class="mb-0">
+                <i class="fas fa-user-circle me-2"></i> User Profile - @Model.Role
+            </h4>
         </div>
         <div class="card-body">
-            <p><strong>Name:</strong> @Model.FirstName @Model.LastName</p>
-            <p><strong>Email:</strong> @Model.Email</p>
-            <p><strong>Address:</strong> @Model.Address, @Model.City</p>
-            <p><strong>Status:</strong> @Model.Status</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Name:</strong> @Model.FirstName @Model.LastName</p>
+                    <p><strong>Email:</strong> <i class="fas fa-envelope"></i> @Model.Email</p>
+                    <p><strong>Address:</strong> <i class="fas fa-map-marker-alt"></i> @Model.Address, @Model.City</p>
+                    <p><strong>Status:</strong> <span class="badge bg-info">@Model.Status</span></p>
+                </div>
+                <div class="col-md-6 text-center">
+                    <img src="@Model.ImageURL" alt="Profile Picture" class="rounded-circle img-thumbnail" width="120" />
+                </div>
+            </div>
+
+            <hr>
 
             @if (Model.UserType == "GeneralManager")
             {
+                <h5 class="text-primary">Managerial Details</h5>
                 <p><strong>Office Number:</strong> @Model.OfficeNumber</p>
                 <p><strong>Years in Management:</strong> @Model.YearsInManagement</p>
             }
 
             @if (Model.UserType == "FrontDeskAssistant")
             {
+                <h5 class="text-success">Front Desk Information</h5>
                 <p><strong>Workstation Number:</strong> @Model.WorkStationNumber</p>
                 <p><strong>Phone Extension:</strong> @Model.PhoneExtension</p>
                 <p><strong>Spoken Language:</strong> @Model.SpokenLanguage</p>
@@ -27,6 +40,7 @@
 
             @if (Model.UserType == "Mechanic")
             {
+                <h5 class="text-danger">Mechanic Details</h5>
                 <p><strong>Specialization:</strong> @Model.Specialization</p>
                 <p><strong>ToolBox Number:</strong> @Model.ToolBoxNumber</p>
                 <p><strong>Able to Shift:</strong> @(Model.AbleToShift == true ? "Yes" : "No")</p>
@@ -34,21 +48,25 @@
 
             @if (Model.UserType == "WareHouseManager")
             {
+                <h5 class="text-warning">Warehouse Details</h5>
                 <p><strong>Warehouse Name:</strong> @Model.WarehouseName</p>
                 <p><strong>Warehouse Location:</strong> @Model.WarehouseLocation</p>
                 <p><strong>Able to Shift Warehouse:</strong> @(Model.AbleToShiftWareHouse == true ? "Yes" : "No")</p>
             }
 
-            @if (Model.Role == "WorkShopManager")
+            @if (Model.Role == "WorkshopManager")
             {
+                <h5 class="text-secondary">Workshop Management</h5>
                 <p><strong>Team Size:</strong> @Model.TeamSize</p>
             }
 
-            <img src="@Model.ImageURL" alt="Profile Picture" class="img-thumbnail" width="100" />
-
-            <form asp-controller="User" asp-action="UpdateProfile" method="post">
-                <button type="submit" class="btn btn-success">Update Profile</button>
-            </form>
+            <div class="text-center mt-3">
+                <form asp-controller="Home" asp-action="Index" method="post">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-edit"></i> back to Home
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

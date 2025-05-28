@@ -26,14 +26,16 @@ namespace TimeTwoFix.Infrastructure.Persistence.DbInit
                 UserType = "GeneralManager",
                 Status = "Active",
                 SecurityStamp = new Guid().ToString(),
-
-
-                CreatedAt = DateTime.UtcNow
+                OfficeNumber= "manager",
+                YearsInManagement=99,
+                PhoneNumber="99999999",
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             };
 
             // Hash the password
             var passwordHasher = new PasswordHasher<GeneralManager>();
-            adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "Admin@123");
+            adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "Capgemini_2025");
 
             modelBuilder.Entity<GeneralManager>().HasData(adminUser);
 

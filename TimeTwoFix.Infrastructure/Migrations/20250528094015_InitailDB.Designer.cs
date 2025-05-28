@@ -12,8 +12,8 @@ using TimeTwoFix.Infrastructure.Persistence;
 namespace TimeTwoFix.Infrastructure.Migrations
 {
     [DbContext(typeof(TimeTwoFixDbContext))]
-    [Migration("20250524155935_FirstDataBaseWithSeededRolesAndAdminUser")]
-    partial class FirstDataBaseWithSeededRolesAndAdminUser
+    [Migration("20250528094015_InitailDB")]
+    partial class InitailDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -751,7 +751,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 5, 24, 15, 59, 34, 53, DateTimeKind.Utc).AddTicks(6865),
+                            CreatedAt = new DateTime(2025, 5, 28, 9, 40, 14, 875, DateTimeKind.Utc).AddTicks(8197),
                             Description = "Mechanic role with access to work orders and interventions.",
                             IsActive = true,
                             Name = "Mechanic",
@@ -761,7 +761,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 5, 24, 15, 59, 34, 53, DateTimeKind.Utc).AddTicks(6875),
+                            CreatedAt = new DateTime(2025, 5, 28, 9, 40, 14, 875, DateTimeKind.Utc).AddTicks(8203),
                             Description = "Front Desk Assistant role with access to client management and appointments.",
                             IsActive = true,
                             Name = "FrontDeskAssistant",
@@ -771,7 +771,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2025, 5, 24, 15, 59, 34, 53, DateTimeKind.Utc).AddTicks(6877),
+                            CreatedAt = new DateTime(2025, 5, 28, 9, 40, 14, 875, DateTimeKind.Utc).AddTicks(8204),
                             Description = "Warehouse Manager role with access to spare parts and inventory management.",
                             IsActive = true,
                             Name = "WareHouseManager",
@@ -781,7 +781,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2025, 5, 24, 15, 59, 34, 53, DateTimeKind.Utc).AddTicks(6878),
+                            CreatedAt = new DateTime(2025, 5, 28, 9, 40, 14, 875, DateTimeKind.Utc).AddTicks(8206),
                             Description = "Workshop Manager role with access to workshop operations and team management.",
                             IsActive = true,
                             Name = "WorkshopManager",
@@ -791,7 +791,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2025, 5, 24, 15, 59, 34, 53, DateTimeKind.Utc).AddTicks(6879),
+                            CreatedAt = new DateTime(2025, 5, 28, 9, 40, 14, 875, DateTimeKind.Utc).AddTicks(8207),
                             Description = "General Manager role with access to all operations and management.",
                             IsActive = true,
                             Name = "GeneralManager",
@@ -1181,8 +1181,8 @@ namespace TimeTwoFix.Infrastructure.Migrations
                             Id = 1,
                             Address = "admin",
                             City = "admin",
-                            ConcurrencyStamp = "6d8e10d3-8a3c-4290-96db-2f9b151d6956",
-                            CreatedAt = new DateTime(2025, 5, 24, 15, 59, 34, 53, DateTimeKind.Utc).AddTicks(7209),
+                            ConcurrencyStamp = "cdce97a4-56ef-494e-8912-1b2f19dacabe",
+                            CreatedAt = new DateTime(2025, 5, 28, 9, 40, 14, 875, DateTimeKind.Utc).AddTicks(8441),
                             Email = "admin@admin.com",
                             EmailConfirmed = false,
                             FirstName = "admin",
@@ -1193,15 +1193,17 @@ namespace TimeTwoFix.Infrastructure.Migrations
                             LastName = "admin",
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBDZCOSPS4dGyZejOT0k+PLomVvXEpeTvQm9uw07I0Wme/ZheTls9LLGxua1ioIoYg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEC/V/FDk4+lnJJnFbnG0fvZ/a0aA/zwcOy1Og8+qfGJCxgHbcn2kAyj15ab53RofVg==",
+                            PhoneNumber = "99999999",
                             SecurityStamp = "00000000-0000-0000-0000-000000000000",
                             Status = "Active",
-                            UpdatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            UpdatedAt = new DateTime(2025, 5, 28, 9, 40, 14, 875, DateTimeKind.Utc).AddTicks(8441),
                             UserName = "admin",
                             UserType = "GeneralManager",
                             YearsOfExperience = 0,
                             ZipCode = 0,
-                            YearsInManagement = 0
+                            OfficeNumber = "manager",
+                            YearsInManagement = 99
                         });
                 });
 
@@ -1228,7 +1230,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                 {
                     b.HasBaseType("TimeTwoFix.Core.Entities.UserManagement.ApplicationUser");
 
-                    b.Property<bool>("AbleToShift")
+                    b.Property<bool>("AbleToShiftWareHouse")
                         .HasColumnType("bit");
 
                     b.Property<string>("WarehouseLocation")
@@ -1238,12 +1240,6 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     b.Property<string>("WarehouseName")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.ToTable("Employees", t =>
-                        {
-                            t.Property("AbleToShift")
-                                .HasColumnName("WareHouseManager_AbleToShift");
-                        });
 
                     b.HasDiscriminator().HasValue("WareHouseManager");
                 });

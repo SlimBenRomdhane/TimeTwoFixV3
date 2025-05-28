@@ -10,6 +10,6 @@ namespace TimeTwoFix.Core.Entities.UserManagement
         [MaxLength(50)]
         public string? WarehouseLocation { get; set; }
 
-        public bool AbleToShift { get; set; }
+        public bool AbleToShiftWareHouse { get; set; }
     }
 }
