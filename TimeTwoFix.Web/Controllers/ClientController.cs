@@ -18,7 +18,7 @@ namespace TimeTwoFix.Web.Controllers
 
         public ClientController(IUnitOfWork unitOfWork, IMapper mapper, IClientServices clientServices)
         {
-            _unitOfWork = unitOfWork;
+            //_unitOfWork = unitOfWork;
             _mapper = mapper;
             _clientServices = clientServices;
         }
@@ -63,7 +63,7 @@ namespace TimeTwoFix.Web.Controllers
                 {
                     return NotFound();
                 }
-                var vehicleList = await _unitOfWork.Vehicles.GetVehiclesByClientIdAsync(client.Id);
+                //var vehicleList = await _unitOfWork.Vehicles.GetVehiclesByClientIdAsync(client.Id);
 
                 var clientDto = _mapper.Map<ReadClientDto>(client);
                 var clientViewModel = _mapper.Map<ReadClientViewModel>(clientDto);
@@ -102,8 +102,10 @@ namespace TimeTwoFix.Web.Controllers
                 }
                 var clientDto = _mapper.Map<CreateClientDto>(createClientViewModel);
                 var client = _mapper.Map<Client>(clientDto);
+                client.CreatedBy = User.Identity.Name;
                 var addedElement = await _clientServices.AddAsyncServiceGeneric(client);
-                await _unitOfWork.SaveChangesAsync();
+                //await _unitOfWork.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -137,9 +139,10 @@ namespace TimeTwoFix.Web.Controllers
                 var clientDto = _mapper.Map<UpdateClientDto>(updateClientViewModel);
 
                 var updatedClient = _mapper.Map(clientDto, client);
-                //updatedClient.UpdatedAt = DateTime.UtcNow;
+                updatedClient.UpdatedAt = DateTime.UtcNow;
+                updatedClient.UpdatedBy = User.Identity?.Name;
                 await _clientServices.UpdateAsyncServiceGeneric(updatedClient);
-                await _unitOfWork.SaveChangesAsync();
+                //await _unitOfWork.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -174,7 +177,10 @@ namespace TimeTwoFix.Web.Controllers
             }
             clientToDetete.IsDeleted = true;
             clientToDetete.DeletedAt = DateTime.UtcNow;
-            await _unitOfWork.SaveChangesAsync();
+            clientToDetete.DeletedBy = User.Identity?.Name;
+
+            //await _unitOfWork.SaveChangesAsync();
+            await _clientServices.SaveChangesServiceGeneric();
             try
             {
                 return RedirectToAction(nameof(Index));
@@ -204,10 +210,11 @@ namespace TimeTwoFix.Web.Controllers
                 client.IsDeleted = false;
                 client.DeletedAt = null;
                 await _clientServices.AttachAsyncServiceGeneric(client);
-                await _unitOfWork.Clients.UpdateAsyncGeneric(client);
+                //await _unitOfWork.Clients.UpdateAsyncGeneric(client);
+                await _clientServices.UpdateAsyncServiceGeneric(client);
 
-                var nb = await _unitOfWork.SaveChangesAsync();
-                Console.WriteLine($"Number of changes saved: {nb}");
+                //var nb = await _unitOfWork.SaveChangesAsync();
+                //Console.WriteLine($"Number of changes saved: {nb}");
                 return RedirectToAction(nameof(LoadDeleted));
             }
             catch (Exception ex)
@@ -236,10 +243,11 @@ namespace TimeTwoFix.Web.Controllers
                 var client = _mapper.Map<Client>(clientToDelete);
 
                 await _clientServices.AttachAsyncServiceGeneric(client);
-                await _unitOfWork.Clients.DeleteAsyncGeneric(client);
+                //await _unitOfWork.Clients.DeleteAsyncGeneric(client);
+                await _clientServices.DeleteAsyncServiceGeneric(client.Id);
 
-                var nb = await _unitOfWork.SaveChangesAsync();
-                Console.WriteLine($"Number of changes saved: {nb}");
+                //var nb = await _unitOfWork.SaveChangesAsync();
+                //Console.WriteLine($"Number of changes saved: {nb}");
                 return RedirectToAction(nameof(LoadDeleted));
             }
             catch (Exception ex)

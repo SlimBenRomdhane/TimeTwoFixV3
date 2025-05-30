@@ -1,13 +1,14 @@
-﻿using TimeTwoFix.Application.VehicleServices.Dtos;
+﻿using TimeTwoFix.Application.Base;
+using TimeTwoFix.Application.VehicleServices.Dtos;
+using TimeTwoFix.Core.Entities.VehicleManagement;
 
 namespace TimeTwoFix.Application.VehicleServices.Interfaces
 {
-    public interface IVehicleService
+    public interface IVehicleService : IBaseService<Vehicle>
     {
-        Task<IEnumerable<ReadVehicleDto>> GetVehiclesByMultipleParam(string searchName, string searchPhone, string searchEmail);
+        Task<IEnumerable<ReadVehicleDto>> GetVehiclesByMultipleParam(string brand, string model,
+            string fuelType, string transmissionType);
 
         Task<ReadVehicleDto> GetVehicleByVin(string vin);
-
-        Task<IEnumerable<ReadVehicleDto>> GetAllDeletedVehicles();
     }
 }

@@ -1,10 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using TimeTwoFix.Core.Entities.AppointmentManagement;
-using TimeTwoFix.Core.Entities.ClientManagement;
-using TimeTwoFix.Core.Entities.WorkOrderManagement;
-
-namespace TimeTwoFix.Application.VehicleServices.Dtos
+﻿namespace TimeTwoFix.Application.VehicleServices.Dtos
 {
     public class CreateVehicleDto
     {

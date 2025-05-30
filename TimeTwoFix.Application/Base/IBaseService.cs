@@ -15,5 +15,6 @@
         Task AttachAsyncServiceGeneric(T entity);
 
         Task DetachAsyncServiceGeneric(T entity);
+        Task SaveChangesServiceGeneric();
     }
 }

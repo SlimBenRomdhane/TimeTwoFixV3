@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 
 namespace TimeTwoFix.Application.ClientServices.Dtos
 {
@@ -35,6 +36,7 @@ namespace TimeTwoFix.Application.ClientServices.Dtos
         public CreateClientDto()
         {
             CreatedAt = DateTime.UtcNow;
+
         }
     }
 }

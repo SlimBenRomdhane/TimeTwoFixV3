@@ -128,6 +128,8 @@ namespace TimeTwoFix.Application.UserServices.Services
             }
             user.CreatedAt = DateTime.UtcNow;
             user.UpdatedAt = DateTime.UtcNow;
+
+
             var res = await _userManager.CreateAsync(user, createUserDto.Password);
             return res;
         }
@@ -161,6 +163,8 @@ namespace TimeTwoFix.Application.UserServices.Services
                 user.PhoneNumber = updateUserDto.PhoneNumber;
                 user.Email = updateUserDto.Email;
                 user.Status = updateUserDto.Status;
+
+
                 if (!string.IsNullOrEmpty(updateUserDto.Password))
                 {
                     user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, updateUserDto.Password);

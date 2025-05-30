@@ -1,7 +1,8 @@
-﻿namespace TimeTwoFix.Application.VehicleServices.Dtos
+﻿namespace TimeTwoFix.Web.Models.VehicleModels
 {
-    public class DeleteVehicleDto
+    public class ReadVehicleViewModel
     {
+        public int ClientId { get; set; }
         public string Vin { get; set; }
         public string Brand { get; set; }
         public string Model { get; set; }

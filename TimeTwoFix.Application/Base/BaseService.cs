@@ -20,7 +20,11 @@ namespace TimeTwoFix.Application.Base
         public async Task<T> AddAsyncServiceGeneric(T entity)
         {
             var res = await _baseRepository.AddAsyncGeneric(entity);
-
+            if (res == null)
+            {
+                throw new Exception("Entity could not be added");
+            }
+            await _unitOfWork.SaveChangesAsync();
             return res;
         }
 
@@ -37,6 +41,8 @@ namespace TimeTwoFix.Application.Base
                 throw new Exception("Entity not found");
             }
             await _baseRepository.DeleteAsyncGeneric(enityToDelete);
+            await _unitOfWork.SaveChangesAsync();
+
         }
 
         public async Task DetachAsyncServiceGeneric(T entity)
@@ -60,9 +66,20 @@ namespace TimeTwoFix.Application.Base
             return res;
         }
 
+        public async Task SaveChangesServiceGeneric()
+        {
+            await _unitOfWork.SaveChangesAsync();
+        }
+
         public async Task UpdateAsyncServiceGeneric(T entity)
         {
             await _baseRepository.UpdateAsyncGeneric(entity);
+            if (entity == null)
+            {
+                throw new Exception("Entity could not be updated");
+            }
+            await _unitOfWork.SaveChangesAsync();
+
         }
     }
 }

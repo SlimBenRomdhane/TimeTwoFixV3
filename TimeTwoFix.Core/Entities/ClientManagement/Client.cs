@@ -19,14 +19,14 @@ namespace TimeTwoFix.Core.Entities.ClientManagement
         public string PhoneNumber { get; set; }
 
         [MaxLength(100)]
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
         [MaxLength(50)]
         public string City { get; set; }
 
         [MaxLength(50)]
         [EmailAddress]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         public ICollection<Vehicle> Vehicles { get; set; }
     }

@@ -46,6 +46,7 @@ namespace TimeTwoFix.Core.Entities.UserManagement
         [MaxLength(50)]
         public string UserType { get; set; }
         public DateTime CreatedAt { get; set; }
+
         public DateTime UpdatedAt { get; set; }
 
         [NotMapped]

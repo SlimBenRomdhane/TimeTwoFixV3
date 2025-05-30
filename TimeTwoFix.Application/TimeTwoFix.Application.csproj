@@ -14,8 +14,4 @@
     <ProjectReference Include="..\TimeTwoFix.Infrastructure\TimeTwoFix.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="VehicleServices\Services\" />
-  </ItemGroup>
-
 </Project>
