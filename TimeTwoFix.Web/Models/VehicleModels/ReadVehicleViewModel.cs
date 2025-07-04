@@ -1,8 +1,13 @@
-﻿namespace TimeTwoFix.Web.Models.VehicleModels
+﻿using TimeTwoFix.Application.ClientServices.Dtos;
+using TimeTwoFix.Web.Models.ClientModels;
+
+namespace TimeTwoFix.Web.Models.VehicleModels
 {
     public class ReadVehicleViewModel
     {
+        public int Id { get; set; }
         public int ClientId { get; set; }
+        public ReadClientViewModel ReadClientViewModel { get; set; }
         public string Vin { get; set; }
         public string Brand { get; set; }
         public string Model { get; set; }

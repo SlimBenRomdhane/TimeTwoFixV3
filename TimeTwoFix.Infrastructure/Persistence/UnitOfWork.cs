@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using TimeTwoFix.Core.Entities.UserManagement;
 using TimeTwoFix.Core.Interfaces;
@@ -81,6 +82,12 @@ namespace TimeTwoFix.Infrastructure.Persistence
 
         public async Task<int> SaveChangesAsync()
         {
+            var modifiedEntries = _context.ChangeTracker.Entries()
+                .Where(e => e.State == EntityState.Modified || e.State == EntityState.Added || e.State == EntityState.Deleted).ToList();
+            if (!modifiedEntries.Any())
+            {
+                return 0;
+            }
             return await _context.SaveChangesAsync();
         }
     }

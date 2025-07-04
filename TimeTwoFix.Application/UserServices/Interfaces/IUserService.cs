@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using TimeTwoFix.Application.Base;
 using TimeTwoFix.Application.UserServices.Dtos.Roles;
 using TimeTwoFix.Application.UserServices.Dtos.Users;
-using TimeTwoFix.Core.Entities.UserManagement;
 
 namespace TimeTwoFix.Application.UserServices.Interfaces
 {
@@ -19,8 +17,6 @@ namespace TimeTwoFix.Application.UserServices.Interfaces
         Task<IdentityResult> AddOrUpdateUserToRoleAsync(ReadUserDto readUserDto, ReadRoleDto readRoleDto);
         Task<SignInResult> SignInAsync(string email, string password, bool isPersistent);
         Task SignOutAsync();
-
-
         Task<IEnumerable<ReadUserDto>> GetUsersByMultipleParam(UserFilterDto userFilterDto);
     }
 }

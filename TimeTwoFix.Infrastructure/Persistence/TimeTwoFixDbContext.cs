@@ -75,7 +75,7 @@ namespace TimeTwoFix.Infrastructure.Persistence
             modelBuilder.Entity<Vehicle>(x => x.HasIndex(v => v.Vin).IsUnique());
             modelBuilder.Entity<SparePart>(x => x.HasIndex(sp => sp.PartCode).IsUnique());
             modelBuilder.Entity<InterventionSparePart>(x => x.HasIndex(isp => isp.DeliveryNote).IsUnique());
-            modelBuilder.Entity<Client>().HasQueryFilter(c => !c.IsDeleted);
+            //modelBuilder.Entity<Client>().HasQueryFilter(c => !c.IsDeleted);
             modelBuilder.SeedRoles();
             modelBuilder.SeedUser();
         }

@@ -1,4 +1,4 @@
-﻿using TimeTwoFix.Core.Entities.VehicleManagement;
+﻿using TimeTwoFix.Web.Models.VehicleModels;
 
 namespace TimeTwoFix.Web.Models.ClientModels
 {
@@ -12,7 +12,7 @@ namespace TimeTwoFix.Web.Models.ClientModels
         public string City { get; set; }
         public string Email { get; set; }
         public string? Notes { get; set; }
-        public List<Vehicle> Vehicles { get; set; }
+        public List<ReadVehicleViewModel> Vehicles { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }

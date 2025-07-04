@@ -1,0 +1,87 @@
+﻿@model IEnumerable<TimeTwoFix.Web.Models.VehicleModels.ReadVehicleViewModel>
+
+@{
+    ViewData["Title"] = "Vehicle List";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="text-primary"><i class="fas fa-car me-2"></i> Vehicle Inventory</h2>
+        <a asp-action="Create" class="btn btn-success">
+            <i class="fas fa-plus-circle me-2"></i> Add New Vehicle
+        </a>
+        
+        Total vehicle equals to @ViewBag.CountVehicle
+    </div>
+    <div class="card shadow-lg rounded">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        
+                        <th>@Html.DisplayNameFor(model => model.ClientId)</th>
+                        <th>@Html.DisplayNameFor(model => model.Vin)</th>
+                        <th>@Html.DisplayNameFor(model => model.Brand)</th>
+                        <th>@Html.DisplayNameFor(model => model.Model)</th>
+                        <th>@Html.DisplayNameFor(model => model.LicensePlate)</th>
+                        <th>@Html.DisplayNameFor(model => model.FuelType)</th>
+                        <th>@Html.DisplayNameFor(model => model.TransmissionType)</th>
+                        <th>@Html.DisplayNameFor(model => model.Year)</th>
+                        <th>@Html.DisplayNameFor(model => model.Mileage)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+
+                        <tr>
+                            
+                            <td>@Html.DisplayFor(modelItem => item.ClientId)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Vin)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Brand)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Model)</td>
+                            <td>@Html.DisplayFor(modelItem => item.LicensePlate)</td>
+                            <td>@Html.DisplayFor(modelItem => item.FuelType)</td>
+                            <td>@Html.DisplayFor(modelItem => item.TransmissionType)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Year)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Mileage)</td>
+                            
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">
+                                        <i class="fas fa-eye"></i> Details
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                    }
+                </tbody>
+            </table>
+            <div class="text-center">
+                @if (ViewBag.CurrentPage > 1)
+                {
+                    <a asp-action="Index" asp-route-pageNumber="@(ViewBag.CurrentPage - 1)" class="btn btn-primary">
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </a>
+                }
+
+                <span>Page @ViewBag.CurrentPage of @ViewBag.TotalPages</span>
+
+                @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                {
+                    <a asp-action="Index" asp-route-pageNumber="@(ViewBag.CurrentPage + 1)" class="btn btn-primary">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>

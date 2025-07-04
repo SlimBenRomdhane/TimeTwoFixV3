@@ -2,6 +2,8 @@
 using TimeTwoFix.Application.ClientServices.Interfaces;
 using TimeTwoFix.Application.UserServices.Interfaces;
 using TimeTwoFix.Application.UserServices.Services;
+using TimeTwoFix.Application.VehicleServices.Interfaces;
+using TimeTwoFix.Application.VehicleServices.Services;
 
 namespace TimeTwoFix.Application.Extension
 {
@@ -12,6 +14,8 @@ namespace TimeTwoFix.Application.Extension
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IClientServices, TimeTwoFix.Application.ClientServices.Services.ClientService>();
+            services.AddScoped<IVehicleService, VehicleService>();
+
             return services;
         }
     }

@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using TimeTwoFix.Core.Interfaces;
 using TimeTwoFix.Core.Interfaces.Repositories.Base;
 
@@ -28,9 +30,16 @@ namespace TimeTwoFix.Application.Base
             return res;
         }
 
-        public async Task AttachAsyncServiceGeneric(T entity)
+        public async Task AttachAsyncServiceGeneric(T entity, EntityState entityState)
         {
-            await _baseRepository.AttachAsyncGeneric(entity);
+            await _baseRepository.AttachAsyncGeneric(entity, entityState);
+
+        }
+
+        public int CountAsyncServiceGeneric()
+        {
+            var count = _baseRepository.GetAllAsyncGeneric().Result.Count();
+            return count;
         }
 
         public async Task DeleteAsyncServiceGeneric(int id)
@@ -56,19 +65,31 @@ namespace TimeTwoFix.Application.Base
             return res;
         }
 
-        public async Task<T?> GetByIdAsyncServiceGeneric(int id)
+        public async Task<IEnumerable<T>> GetAllWithIncludesAsyncServiceGeneric(params Expression<Func<T, object>>[] includeProperties)
         {
-            var res = await _baseRepository.GetByIdAsyncGeneric(id);
+            var res = await _baseRepository.GetAllWithIncludesAsyncGeneric(includeProperties);
             if (res == null)
             {
-                throw new Exception("Entity not found");
+                throw new Exception("Entities not found");
             }
             return res;
         }
 
-        public async Task SaveChangesServiceGeneric()
+        public async Task<T?> GetByIdAsyncServiceGeneric(int id, params Expression<Func<T, object>>[] includeProperties)
         {
-            await _unitOfWork.SaveChangesAsync();
+            var res = await _baseRepository.GetByIdAsyncGeneric(id, includeProperties);
+            if (res == null)
+            {
+                throw new KeyNotFoundException($"Entity of type {typeof(T).Name} with ID {id} not found.");
+
+            }
+            return res;
+        }
+
+        public async Task<int> SaveChangesServiceGeneric()
+        {
+            var res = await _unitOfWork.SaveChangesAsync();
+            return res;
         }
 
         public async Task UpdateAsyncServiceGeneric(T entity)

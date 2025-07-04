@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using TimeTwoFix.Application.ClientServices.Dtos;
 using TimeTwoFix.Application.ClientServices.Interfaces;
 using TimeTwoFix.Core.Entities.ClientManagement;
@@ -12,22 +13,25 @@ namespace TimeTwoFix.Web.Controllers
     [Authorize(Roles = "FrontDeskAssistant,GeneralManager")]
     public class ClientController : Controller
     {
-        private readonly IUnitOfWork _unitOfWork;
+        //private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IClientServices _clientServices;
+        private readonly ILogger<ClientController> _logger;
 
-        public ClientController(IUnitOfWork unitOfWork, IMapper mapper, IClientServices clientServices)
+
+        public ClientController(IUnitOfWork unitOfWork, IMapper mapper, IClientServices clientServices, ILogger<ClientController> logger)
         {
             //_unitOfWork = unitOfWork;
             _mapper = mapper;
             _clientServices = clientServices;
+            _logger = logger;
         }
 
         // GET: ClientController
         public async Task<IActionResult> Index(int pageNumber, int pageSize)
         {
-            var clients = await _clientServices.GetAllAsyncServiceGeneric();
-
+            //var clients = await _clientServices.GetAllAsyncServiceGeneric();
+            var clients = await _clientServices.GetAllActiveClientsAsync();
             var clientsDto = _mapper.Map<IEnumerable<ReadClientDto>>(clients);
             var clientsViewModel = _mapper.Map<IEnumerable<ReadClientViewModel>>(clientsDto);
 
@@ -37,7 +41,6 @@ namespace TimeTwoFix.Web.Controllers
         public async Task<IActionResult> LoadDeleted()
         {
             var clients = await _clientServices.GetAllDeletedClients();
-
             var clientsDto = _mapper.Map<IEnumerable<ReadClientDto>>(clients);
             var clientsViewModel = _mapper.Map<IEnumerable<ReadClientViewModel>>(clientsDto);
 
@@ -47,7 +50,9 @@ namespace TimeTwoFix.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(string searchName, string searchPhone, string searchEmail)
         {
+
             var clients = await _clientServices.GetClientByMultipleParam(searchName, searchPhone, searchEmail);
+
             var clientsDto = _mapper.Map<IEnumerable<ReadClientDto>>(clients);
             var clientsViewModel = _mapper.Map<IEnumerable<ReadClientViewModel>>(clientsDto);
             return View(clientsViewModel);
@@ -58,7 +63,7 @@ namespace TimeTwoFix.Web.Controllers
         {
             try
             {
-                var client = await _clientServices.GetByIdAsyncServiceGeneric(id);
+                var client = await _clientServices.GetByIdAsyncServiceGeneric(id, c => c.Vehicles);
                 if (client == null)
                 {
                     return NotFound();
@@ -102,7 +107,7 @@ namespace TimeTwoFix.Web.Controllers
                 }
                 var clientDto = _mapper.Map<CreateClientDto>(createClientViewModel);
                 var client = _mapper.Map<Client>(clientDto);
-                client.CreatedBy = User.Identity.Name;
+                client.CreatedBy = User.Identity?.Name;
                 var addedElement = await _clientServices.AddAsyncServiceGeneric(client);
                 //await _unitOfWork.SaveChangesAsync();
 
@@ -180,6 +185,9 @@ namespace TimeTwoFix.Web.Controllers
             clientToDetete.DeletedBy = User.Identity?.Name;
 
             //await _unitOfWork.SaveChangesAsync();
+            await _clientServices.AttachAsyncServiceGeneric(clientToDetete, EntityState.Modified);
+            //var a = await _clientServices.SaveChangesServiceGeneric();
+            //await _clientServices.UpdateAsyncServiceGeneric(clientToDetete);
             await _clientServices.SaveChangesServiceGeneric();
             try
             {
@@ -195,66 +203,44 @@ namespace TimeTwoFix.Web.Controllers
         {
             try
             {
-                var deletedClients = await _clientServices.GetAllDeletedClients();
-                var clientToRestore = deletedClients.Where(c => c.Id == id).FirstOrDefault();
-                if (clientToRestore == null)
-                {
+                var deletedClientDto = await _clientServices.GetDeletedClientByIdAsync(id);
+                if (deletedClientDto == null)
                     return NotFound();
-                }
-                var existingClient = await _clientServices.GetByIdAsyncServiceGeneric(id);
-                if (existingClient != null)
-                {
-                    await _clientServices.DetachAsyncServiceGeneric(existingClient);
-                }
-                var client = _mapper.Map<Client>(clientToRestore);
+                var client = _mapper.Map<Client>(deletedClientDto);
+                await _clientServices.DeleteAsyncServiceGeneric(deletedClientDto.Id);
+
                 client.IsDeleted = false;
                 client.DeletedAt = null;
-                await _clientServices.AttachAsyncServiceGeneric(client);
-                //await _unitOfWork.Clients.UpdateAsyncGeneric(client);
+
                 await _clientServices.UpdateAsyncServiceGeneric(client);
 
-                //var nb = await _unitOfWork.SaveChangesAsync();
-                //Console.WriteLine($"Number of changes saved: {nb}");
-                return RedirectToAction(nameof(LoadDeleted));
+                return RedirectToAction(nameof(LoadDeleted)); // Or return Ok();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error restoring client: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                return BadRequest(ex.Message);
+                _logger.LogError(ex, "Failed to restore client ID {ClientId}. Error: {ErrorMessage}", id, ex.Message);
+                return BadRequest("An error occurred while restoring the client.");
             }
         }
+
 
         public async Task<IActionResult> DeletePermanently(int id)
         {
             try
             {
-                var deletedClients = await _clientServices.GetAllDeletedClients();
-                var clientToDelete = deletedClients.Where(c => c.Id == id).FirstOrDefault();
-                if (clientToDelete == null)
-                {
-                    return NotFound();
-                }
-                var existingClient = await _clientServices.GetByIdAsyncServiceGeneric(id);
-                if (existingClient != null)
-                {
-                    await _clientServices.DetachAsyncServiceGeneric(existingClient);
-                }
-                var client = _mapper.Map<Client>(clientToDelete);
 
-                await _clientServices.AttachAsyncServiceGeneric(client);
-                //await _unitOfWork.Clients.DeleteAsyncGeneric(client);
-                await _clientServices.DeleteAsyncServiceGeneric(client.Id);
+                var x = await _clientServices.GetByIdAsyncServiceGeneric(id);
+                //await _clientServices.AttachAsyncServiceGeneric(x, EntityState.Deleted);
+                await _clientServices.DetachAsyncServiceGeneric(x);
+                await _clientServices.DeleteAsyncServiceGeneric(x.Id);
+                await _clientServices.SaveChangesServiceGeneric();
 
-                //var nb = await _unitOfWork.SaveChangesAsync();
-                //Console.WriteLine($"Number of changes saved: {nb}");
                 return RedirectToAction(nameof(LoadDeleted));
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error restoring client: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                return BadRequest(ex.Message);
+                _logger.LogError(ex, "Failed to permanently delete client ID {ClientId}. Error: {ErrorMessage}", id, ex.Message);
+                return BadRequest("An error occurred while restoring the client.");
             }
         }
     }

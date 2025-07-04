@@ -13,7 +13,7 @@ namespace TimeTwoFix.Core.Entities.VehicleManagement
         public int ClientId { get; set; }
 
         [Required]
-        [MaxLength(17)]
+        [MaxLength(20)]
         public string Vin { get; set; }
 
         [MaxLength(50)]

@@ -11,10 +11,23 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.ClientManagement
         {
         }
 
+        public async Task<IEnumerable<Client>> GetActiveClientsAsync()
+        {
+            var activeClient = await _context.Clients
+                .Where(c => !c.IsDeleted)
+                .ToListAsync();
+            return activeClient;
+        }
+
         public async Task<IEnumerable<Client>> GetAllDeletedClients()
         {
+            //var deletedClients = await _context.Clients
+            //    .IgnoreQueryFilters()
+            //    .Where(c => c.IsDeleted)
+            //    .ToListAsync();
+            //return deletedClients;
             var deletedClients = await _context.Clients
-                .IgnoreQueryFilters()
+                //.IgnoreQueryFilters()
                 .Where(c => c.IsDeleted)
                 .ToListAsync();
             return deletedClients;
@@ -43,6 +56,14 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.ClientManagement
             }
 
             return await query.AsQueryable().ToListAsync();
+        }
+
+        public async Task<Client?> GetDeletedClientByIdAsync(int id)
+        {
+            var deletedClient = await _context.Clients
+                .Where(c => c.IsDeleted && c.Id == id)
+                .FirstOrDefaultAsync();
+            return deletedClient;
         }
     }
 }
