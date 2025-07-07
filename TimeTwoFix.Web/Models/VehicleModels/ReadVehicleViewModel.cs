@@ -16,5 +16,6 @@ namespace TimeTwoFix.Web.Models.VehicleModels
         public string TransmissionType { get; set; }
         public int Year { get; set; }
         public int Mileage { get; set; }
+        public string Notes { get; set; }
     }
 }

@@ -30,12 +30,15 @@ namespace TimeTwoFix.Web.Controllers
         {
             var totalVahicle = _vehicleService.CountAsyncServiceGeneric();
             var vehicles = await _vehicleService.GetAllAsyncServiceGeneric();
-            var paginatedVahicles = vehicles.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+            var activeVehicles = vehicles.Where(v => !v.IsDeleted).ToList();
+
+            var paginatedVahicles = activeVehicles.Skip((pageNumber - 1) * pageSize).Take(pageSize);
             var vehicleDtos = _mapper.Map<IEnumerable<ReadVehicleDto>>(paginatedVahicles);
             var vehicleViewModels = _mapper.Map<IEnumerable<ReadVehicleViewModel>>(vehicleDtos);
             ViewBag.TotalPages = (int)Math.Ceiling((double)totalVahicle / pageSize);
             ViewBag.CurrentPage = pageNumber;
             ViewBag.CountVehicle = totalVahicle;
+            ViewBag.ActiveVehicle = activeVehicles.Count;
 
             return View(vehicleViewModels);
         }
@@ -66,18 +69,17 @@ namespace TimeTwoFix.Web.Controllers
             }), "Id", "FullName");
             ViewBag.FuelTypes = new SelectList(new[]
             {
-                new { Value = "Gasoline", Text = "Essence Sans Plomb" },
-                new { Value = "Diesel", Text = "Gasoil" },
-                new { Value = "Diesel50", Text = "Gasoil 50" },
-                new { Value = "GPL", Text = "Gaz de Pétrole Liquéfié (GPL)" }
+                new { Value = "Gasoline", Text = "Gasoline" },
+                new { Value = "Diesel", Text = "Diesel" },
+                new { Value = "Diesel50", Text = "Diesel 50" },
+
             }, "Value", "Text");
 
             ViewBag.TransmissionTypes = new SelectList(new[]
             {
-                new { Value = "Manual", Text = "Manuelle" },
-                new { Value = "Automatic", Text = "Automatique" },
-                new { Value = "CVT", Text = "Transmission à variation continue (CVT)" },
-                new { Value = "AMT", Text = "Transmission manuelle automatisée (AMT)" }
+                new { Value = "Manual", Text = "Manual" },
+                new { Value = "Automatic", Text = "Automatic" },
+
             }, "Value", "Text");
             return View();
         }
@@ -118,6 +120,27 @@ namespace TimeTwoFix.Web.Controllers
             {
                 return NotFound();
             }
+            var clients = await _clientServices.GetAllAsyncServiceGeneric();
+            var res = clients.Where(c => c.IsDeleted == false);
+            ViewBag.Clients = new SelectList(res.Select(c => new
+            {
+                c.Id,
+                FullName = c.FirstName + " " + c.LastName + " | " + c.Email
+            }), "Id", "FullName");
+            ViewBag.FuelTypes = new SelectList(new[]
+             {
+                new { Value = "Gasoline", Text = "Gasoline" },
+                new { Value = "Diesel", Text = "Diesel" },
+                new { Value = "Diesel50", Text = "Diesel 50" },
+
+            }, "Value", "Text");
+
+            ViewBag.TransmissionTypes = new SelectList(new[]
+            {
+                new { Value = "Manual", Text = "Manual" },
+                new { Value = "Automatic", Text = "Automatic" },
+
+            }, "Value", "Text");
             var vehicleDto = _mapper.Map<UpdateVehicleDto>(vehicle);
             var vehicleViewModel = _mapper.Map<UpdateVehicleViewModel>(vehicleDto);
 
@@ -128,10 +151,24 @@ namespace TimeTwoFix.Web.Controllers
         // POST: VehicleController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Edit(UpdateVehicleViewModel updateVehicleViewModel)
         {
+
             try
             {
+                var vehicle = await _vehicleService.GetByIdAsyncServiceGeneric(updateVehicleViewModel.Id);
+                if (vehicle == null)
+                {
+                    return NotFound();
+                }
+                var vehicleDto = _mapper.Map<UpdateVehicleDto>(updateVehicleViewModel);
+
+                var updatedClient = _mapper.Map(vehicleDto, vehicle);
+                updatedClient.UpdatedAt = DateTime.UtcNow;
+                updatedClient.UpdatedBy = User.Identity?.Name;
+                await _vehicleService.UpdateAsyncServiceGeneric(updatedClient);
+                //await _unitOfWork.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -141,18 +178,38 @@ namespace TimeTwoFix.Web.Controllers
         }
 
         // GET: VehicleController/Delete/5
-        public ActionResult Delete(int id)
+        [Authorize(Roles = "GeneralManager")]
+        public async Task<ActionResult> Delete(int id)
         {
-            return View();
+            var vehicle = await _vehicleService.GetByIdAsyncServiceGeneric(id);
+            if (vehicle == null)
+            {
+                return NotFound();
+            }
+            var vehicleDto = _mapper.Map<DeleteVehicleDto>(vehicle);
+            var vehicleViewModel = _mapper.Map<DeleteVehicleViewModel>(vehicleDto);
+
+            return View(vehicleViewModel);
         }
 
         // POST: VehicleController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        [Authorize(Roles = "GeneralManager")]
+        public async Task<ActionResult> Delete(DeleteVehicleViewModel deleteVehicleViewModel)
         {
             try
             {
+                var vehicle = await _vehicleService.GetByIdAsyncServiceGeneric(deleteVehicleViewModel.Id);
+                if (vehicle == null)
+                {
+                    return NotFound();
+                }
+                vehicle.IsDeleted = true;
+                vehicle.DeletedAt = DateTime.UtcNow;
+                vehicle.DeletedBy = User.Identity?.Name;
+                await _vehicleService.UpdateAsyncServiceGeneric(vehicle);
+                //_vehicleService.SaveChangesServiceGeneric();
                 return RedirectToAction(nameof(Index));
             }
             catch

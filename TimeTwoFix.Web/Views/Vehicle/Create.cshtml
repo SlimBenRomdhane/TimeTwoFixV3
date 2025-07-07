@@ -46,7 +46,8 @@
             <!-- License Plate -->
             <div class="mb-3">
                 <label asp-for="LicensePlate" class="form-label">License Plate</label>
-                <input asp-for="LicensePlate" class="form-control" />
+                <input asp-for="LicensePlate" class="form-control"
+                       placeholder="e.g. 123 Tunis 4567, CD 12345, NT 123456" />
                 <span asp-validation-for="LicensePlate" class="text-danger"></span>
             </div>
 
@@ -79,6 +80,12 @@
             <div class="mb-3">
                 <label asp-for="Mileage" class="form-label">Mileage (km)</label>
                 <input asp-for="Mileage" class="form-control" />
+                <span asp-validation-for="Mileage" class="text-danger"></span>
+            </div>
+            <!-- Notes -->
+            <div class="mb-3">
+                <label asp-for="Notes" class="form-label">Notes</label>
+                <textarea asp-for="Notes" class="form-control" rows="4" placeholder="Add any relevant notes..."></textarea>
                 <span asp-validation-for="Mileage" class="text-danger"></span>
             </div>
 
