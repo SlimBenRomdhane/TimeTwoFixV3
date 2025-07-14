@@ -14,11 +14,4 @@
 		<ProjectReference Include="..\TimeTwoFix.Infrastructure\TimeTwoFix.Infrastructure.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Folder Include="AppointementServices\Dtos\" />
-		<Folder Include="AppointementServices\Interfaces\" />
-		<Folder Include="AppointementServices\Mapping\" />
-		<Folder Include="AppointementServices\Services\" />
-	</ItemGroup>
-
 </Project>

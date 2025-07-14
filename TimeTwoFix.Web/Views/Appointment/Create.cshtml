@@ -1,0 +1,120 @@
+﻿@model TimeTwoFix.Web.Models.AppointmentModels.CreateAppointmentViewModel
+
+@{
+    ViewData["Title"] = "Create Appointment";
+}
+
+<div class="container mt-5">
+    <h2 class="text-primary mb-3"><i class="bi bi-calendar-plus me-2"></i> Create Appointment</h2>
+    <p class="text-muted mb-4">Please fill out the appointment form carefully. Fields marked with <span class="text-danger">*</span> are required.</p>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <form asp-action="Create" class="needs-validation" novalidate>
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <!-- Vehicle Information -->
+                <fieldset class="mb-4">
+                    <legend class="h5 text-secondary mb-3"><i class="bi bi-car-front-fill me-1"></i> Vehicle Information</legend>
+
+                    <!-- Client -->
+                    <div class="mb-3">
+                        <label asp-for="VehicleId" class="form-label">Client</label>
+                        <select asp-for="VehicleId" class="form-select" asp-items="ViewBag.Vehicles">
+                            <option value="">-- Select Vehicle --</option>
+                        </select>
+                        <span asp-validation-for="VehicleId" class="text-danger"></span>
+                    </div>
+                </fieldset>
+
+                <!-- Appointment Details -->
+                <fieldset class="mb-4">
+                    <legend class="h5 text-secondary mb-3"><i class="bi bi-calendar-event-fill me-1"></i> Appointment Details</legend>
+
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label">Title <span class="text-danger">*</span></label>
+                        <input asp-for="Title" class="form-control" placeholder="e.g. Annual inspection, Repair follow-up" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Description</label>
+                        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Add any notes or details (optional)"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="AppointmentDate" class="form-label">Date <span class="text-danger">*</span></label>
+                            <input asp-for="AppointmentDate" class="form-control" type="date" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                            <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="AppointmentTime" class="form-label">Time <span class="text-danger">*</span></label>
+                            <input asp-for="AppointmentTime" class="form-control" type="time"/>
+                            <span asp-validation-for="AppointmentTime" class="text-danger"></span>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Contact Details -->
+                <fieldset class="mb-4">
+                    <legend class="h5 text-secondary mb-3"><i class="bi bi-person-fill-check me-1"></i> Contact Details</legend>
+
+                    <div class="mb-3">
+                        <label asp-for="ContactName" class="form-label">Contact Name <span class="text-danger">*</span></label>
+                        <input asp-for="ContactName" class="form-control" />
+                        <span asp-validation-for="ContactName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ContactPhone" class="form-label">Contact Phone <span class="text-danger">*</span></label>
+                        <input asp-for="ContactPhone" class="form-control" />
+                        <span asp-validation-for="ContactPhone" class="text-danger"></span>
+                    </div>
+                </fieldset>
+
+                <!-- Status & Urgency -->
+                <fieldset class="mb-4">
+                    <legend class="h5 text-secondary mb-3"><i class="bi bi-exclamation-diamond me-1"></i> Status & Urgency</legend>
+
+                    <div class="mb-3">
+                        <label asp-for="Urgency" class="form-label">Urgency <span class="text-danger">*</span></label>
+                        <select asp-for="Urgency" asp-items="ViewBag.UrgencyLevels" class="form-select">
+                            <option value="">-- Select Urgency --</option>
+                        </select>
+                        <span asp-validation-for="Urgency" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Status" class="form-label">Status <span class="text-danger">*</span></label>
+                        <select asp-for="Status" asp-items="ViewBag.StatusList" class="form-select">
+                            <option value="">-- Select Status --</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+                </fieldset>
+
+                <!-- Submit -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="bi bi-check-circle me-1"></i> Submit Appointment
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Back Link -->
+    <div class="mt-4 text-center">
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Back to Appointment List
+        </a>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

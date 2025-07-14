@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using TimeTwoFix.Application.AppointmentServices.Interfaces;
+using TimeTwoFix.Application.AppointmentServices.Services;
 using TimeTwoFix.Application.ClientServices.Interfaces;
 using TimeTwoFix.Application.UserServices.Interfaces;
 using TimeTwoFix.Application.UserServices.Services;
@@ -15,6 +17,7 @@ namespace TimeTwoFix.Application.Extension
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IClientServices, TimeTwoFix.Application.ClientServices.Services.ClientService>();
             services.AddScoped<IVehicleService, VehicleService>();
+            services.AddScoped<IAppointmentService, AppointmentService>();
 
             return services;
         }
