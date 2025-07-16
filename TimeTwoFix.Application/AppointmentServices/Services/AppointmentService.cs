@@ -17,11 +17,12 @@ namespace TimeTwoFix.Application.AppointmentServices.Services
         {
 
             var appointments = await _unitOfWork.Appointments.GetAppointmentsByDateAsync(date);
+
             if (appointments == null || !appointments.Any())
             {
                 throw new Exception("No appointments found for the specified date.");
             }
-            var readAppointmentDtos = _mapper.Map<IEnumerable<ReadAppointmentDto>>(appointments);
+            var readAppointmentDtos = _mapper.Map<IEnumerable<ReadAppointmentDto>>(appointments.Where(x => !x.IsDeleted));
             return readAppointmentDtos;
         }
 
@@ -32,7 +33,7 @@ namespace TimeTwoFix.Application.AppointmentServices.Services
             {
                 throw new Exception("No appointments found for the specified date range.");
             }
-            var readAppointmentDtos = _mapper.Map<IEnumerable<ReadAppointmentDto>>(appointments);
+            var readAppointmentDtos = _mapper.Map<IEnumerable<ReadAppointmentDto>>(appointments.Where(x => !x.IsDeleted));
             return readAppointmentDtos;
 
         }

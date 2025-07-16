@@ -46,6 +46,7 @@
                     @TempData["AppointmentError"]
                 </div>
             }
+            
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>
@@ -61,6 +62,7 @@
                     </tr>
                 </thead>
                 <tbody>
+                    
                     @foreach (var item in Model)
                     {
                         <tr>
@@ -85,7 +87,11 @@
                                 <div class="btn-group btn-group-sm">
                                     @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-warning" })
                                     @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-outline-info" })
-                                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger" })
+                                    @if (User.IsInRole("GeneralManager"))
+                                    {
+                                        @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger" })
+                                    }
+                                    
                                 </div>
                             </td>
                         </tr>

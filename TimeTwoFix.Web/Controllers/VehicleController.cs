@@ -206,7 +206,7 @@ namespace TimeTwoFix.Web.Controllers
                     return NotFound();
                 }
                 vehicle.IsDeleted = true;
-                vehicle.DeletedAt = DateTime.UtcNow;
+                vehicle.DeletedAt = DateTime.Now;
                 vehicle.DeletedBy = User.Identity?.Name;
                 await _vehicleService.UpdateAsyncServiceGeneric(vehicle);
                 //_vehicleService.SaveChangesServiceGeneric();

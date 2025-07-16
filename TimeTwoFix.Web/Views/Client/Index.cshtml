@@ -26,9 +26,13 @@
                 <a asp-action="Index" class="btn btn-secondary">
                     <i class="bi bi-x-circle"></i> Reset
                 </a>
-                <a asp-action="LoadDeleted" class="btn btn-danger">
-                    <i class="bi bi-trash"></i> Show Deleted
-                </a>
+                @if (User.IsInRole("GeneralManager"))
+                {
+                    <a asp-action="LoadDeleted" class="btn btn-danger">
+                        <i class="bi bi-trash"></i> Show Deleted
+                    </a>
+                }
+                
             </div>
         </div>
     </form>
@@ -63,9 +67,13 @@
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">
                                     <i class="bi bi-pencil-square"></i> Edit
                                 </a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">
-                                    <i class="bi bi-trash"></i> Delete
-                                </a>
+                                @if (User.IsInRole("GeneralManager"))
+                                {
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                }
+                                
                             </div>
                         </div>
                     </div>

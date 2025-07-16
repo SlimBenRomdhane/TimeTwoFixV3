@@ -54,7 +54,7 @@
                 <p><strong>Able to Shift Warehouse:</strong> @(Model.AbleToShiftWareHouse == true ? "Yes" : "No")</p>
             }
 
-            @if (Model.Role == "WorkshopManager")
+            @if (Model.UserType == "WorkShopManager")
             {
                 <h5 class="text-secondary">Workshop Management</h5>
                 <p><strong>Team Size:</strong> @Model.TeamSize</p>

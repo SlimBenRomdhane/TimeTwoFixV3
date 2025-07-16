@@ -16,6 +16,7 @@ namespace TimeTwoFix.Application.AppointmentServices.Mapping
             CreateMap<Appointment, ReadAppointmentDto>()
                 .ForMember(dest => dest.ReadVehicleDto, opt => opt.MapFrom(src => src.Vehicle))
                 .ReverseMap();
+            CreateMap<Appointment, DeleteAppointmentDto>().ReverseMap();
 
         }
     }

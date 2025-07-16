@@ -38,6 +38,7 @@ namespace TimeTwoFix.Web.Controllers
             return View(clientsViewModel);
         }
 
+        [Authorize(Roles = "GeneralManager")]
         public async Task<IActionResult> LoadDeleted()
         {
             var clients = await _clientServices.GetAllDeletedClients();
@@ -158,6 +159,7 @@ namespace TimeTwoFix.Web.Controllers
         }
 
         // GET: ClientController/Delete/5
+        [Authorize(Roles = "GeneralManager")]
         public async Task<ActionResult> Delete(int id)
         {
             var client = await _clientServices.GetByIdAsyncServiceGeneric(id);
@@ -173,6 +175,7 @@ namespace TimeTwoFix.Web.Controllers
         // POST: ClientController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "GeneralManager")]
         public async Task<ActionResult> Delete(DeleteClientViewModel deleteClientViewModel)
         {
             var clientToDetete = await _clientServices.GetByIdAsyncServiceGeneric(deleteClientViewModel.Id);
@@ -199,6 +202,7 @@ namespace TimeTwoFix.Web.Controllers
             }
         }
 
+        [Authorize(Roles = "GeneralManager")]
         public async Task<IActionResult> Restore(int id)
         {
             try
@@ -224,6 +228,7 @@ namespace TimeTwoFix.Web.Controllers
         }
 
 
+        [Authorize(Roles = "GeneralManager")]
         public async Task<IActionResult> DeletePermanently(int id)
         {
             try

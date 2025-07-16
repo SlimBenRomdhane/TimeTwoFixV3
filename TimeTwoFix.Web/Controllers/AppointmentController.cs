@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
 using TimeTwoFix.Application.AppointmentServices.Dtos;
 using TimeTwoFix.Application.AppointmentServices.Interfaces;
 using TimeTwoFix.Application.VehicleServices.Interfaces;
@@ -34,13 +33,13 @@ namespace TimeTwoFix.Web.Controllers
         {
             try
             {
-                //var allAppointments = await _appointmentService.GetAllAsyncServiceGeneric();
                 var appointments = await _appointmentService.GetAppointmentsByDateAsync(DateOnly.FromDateTime(DateTime.Today));
                 if (appointments == null || !appointments.Any())
                 {
                     // Handle the case where no appointments are found
                     return View(Enumerable.Empty<ReadAppointmentViewModel>());
                 }
+
                 var appointmentsDto = _mapper.Map<IEnumerable<ReadAppointmentDto>>(appointments);
                 var appointmentsViewModel = _mapper.Map<IEnumerable<ReadAppointmentViewModel>>(appointmentsDto);
 
@@ -49,7 +48,7 @@ namespace TimeTwoFix.Web.Controllers
             catch (Exception ex)
             {
 
-                TempData["AppointmentError"] = ex.Message;
+                TempData["AppointmentError"] = "No appointments found for today";
                 return View(Enumerable.Empty<ReadAppointmentViewModel>());
             }
 
@@ -57,13 +56,20 @@ namespace TimeTwoFix.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(DateOnly startDate, DateOnly endDate)
         {
+            if (endDate < startDate)
+            {
+                TempData["AppointmentError"] = "End Date must be equal to or later than Start Date.";
+                return View(Enumerable.Empty<ReadAppointmentViewModel>());
+            }
+
             try
             {
                 var appointments = await _appointmentService.GetAppointmentsByDateRangeAsync(startDate, endDate);
                 if (appointments == null || !appointments.Any())
                 {
                     // Handle the case where no appointments are found
-                    return View();
+                    TempData["AppointmentError"] = "No appointments found for this date range";
+                    return View(Enumerable.Empty<ReadAppointmentViewModel>());
                 }
                 var appointmentsDto = _mapper.Map<IEnumerable<ReadAppointmentDto>>(appointments);
                 var appointmentsViewModel = _mapper.Map<IEnumerable<ReadAppointmentViewModel>>(appointmentsDto);
@@ -204,10 +210,6 @@ namespace TimeTwoFix.Web.Controllers
             };
             var appointmentDto = _mapper.Map<UpdateAppointmentDto>(appointment);
             var appointmentViewModel = _mapper.Map<UpdateAppointmentViewModel>(appointmentDto);
-
-
-
-
             return View(appointmentViewModel);
         }
 
@@ -240,18 +242,36 @@ namespace TimeTwoFix.Web.Controllers
         }
 
         // GET: AppointmentController/Delete/5
-        public ActionResult Delete(int id)
+        [Authorize(Roles = "GeneralManager")]
+        public async Task<ActionResult> Delete(int id)
         {
-            return View();
+            var appointment = await _appointmentService.GetByIdAsyncServiceGeneric(id);
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+            var appointmentDto = _mapper.Map<DeleteAppointmentDto>(appointment);
+            var appointmentViewModel = _mapper.Map<DeleteAppointmentViewModel>(appointmentDto);
+            return View(appointmentViewModel);
         }
 
         // POST: AppointmentController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        [Authorize(Roles = "GeneralManager")]
+        public async Task<ActionResult> Delete(DeleteAppointmentViewModel deleteAppointmentViewModel)
         {
             try
             {
+                var appointment = await _appointmentService.GetByIdAsyncServiceGeneric(deleteAppointmentViewModel.Id);
+                if (appointment == null)
+                {
+                    return NotFound();
+                }
+                appointment.IsDeleted = true;
+                appointment.DeletedBy = User.Identity?.Name;
+                appointment.DeletedAt = DateTime.Now;
+                await _appointmentService.UpdateAsyncServiceGeneric(appointment);
                 return RedirectToAction(nameof(Index));
             }
             catch

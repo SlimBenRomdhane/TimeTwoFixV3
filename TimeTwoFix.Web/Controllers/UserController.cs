@@ -370,7 +370,7 @@ namespace TimeTwoFix.Web.Controllers
             HttpContext.Session.SetString("UserEmail", user.Email ?? "Unknown");
             HttpContext.Session.SetString("UserName", user.LastName ?? "Unknown");
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Home");
         }
 
         [AllowAnonymous]

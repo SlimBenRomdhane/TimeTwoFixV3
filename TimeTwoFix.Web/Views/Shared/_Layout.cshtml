@@ -29,9 +29,13 @@
                             <li class="nav-item">
                                 <a class="nav-link nav-privacy" asp-controller="Home" asp-action="Privacy"><i class="bi bi-shield-lock"></i> Privacy</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link nav-user" asp-controller="User" asp-action="Index"><i class="bi bi-person"></i> User Management</a>
-                            </li>
+                            @if (User.IsInRole("GeneralManager"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link nav-user" asp-controller="User" asp-action="Index"><i class="bi bi-person"></i> User Management</a>
+                                </li>
+                            }
+                            
                             <li class="nav-item">
                                 <a class="nav-link nav-client" asp-controller="Client" asp-action="Index"><i class="bi bi-people"></i> Client Management</a>
                             </li>
