@@ -1,5 +1,4 @@
-﻿using TimeTwoFix.Application.ClientServices.Dtos;
-using TimeTwoFix.Web.Models.ClientModels;
+﻿using TimeTwoFix.Web.Models.ClientModels;
 
 namespace TimeTwoFix.Web.Models.VehicleModels
 {

@@ -33,7 +33,6 @@ namespace TimeTwoFix.Application.Base
         public async Task AttachAsyncServiceGeneric(T entity, EntityState entityState)
         {
             await _baseRepository.AttachAsyncGeneric(entity, entityState);
-
         }
 
         public int CountAsyncServiceGeneric()
@@ -51,7 +50,6 @@ namespace TimeTwoFix.Application.Base
             }
             await _baseRepository.DeleteAsyncGeneric(enityToDelete);
             await _unitOfWork.SaveChangesAsync();
-
         }
 
         public async Task DetachAsyncServiceGeneric(T entity)
@@ -81,7 +79,6 @@ namespace TimeTwoFix.Application.Base
             if (res == null)
             {
                 throw new KeyNotFoundException($"Entity of type {typeof(T).Name} with ID {id} not found.");
-
             }
             return res;
         }
@@ -100,7 +97,6 @@ namespace TimeTwoFix.Application.Base
                 throw new Exception("Entity could not be updated");
             }
             await _unitOfWork.SaveChangesAsync();
-
         }
     }
 }

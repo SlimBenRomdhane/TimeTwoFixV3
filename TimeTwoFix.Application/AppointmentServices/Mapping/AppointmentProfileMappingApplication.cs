@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using TimeTwoFix.Application.AppointmentServices.Dtos;
-using TimeTwoFix.Application.VehicleServices.Dtos;
 using TimeTwoFix.Core.Entities.AppointmentManagement;
-using TimeTwoFix.Core.Entities.VehicleManagement;
 
 namespace TimeTwoFix.Application.AppointmentServices.Mapping
 {
@@ -17,8 +15,6 @@ namespace TimeTwoFix.Application.AppointmentServices.Mapping
                 .ForMember(dest => dest.ReadVehicleDto, opt => opt.MapFrom(src => src.Vehicle))
                 .ReverseMap();
             CreateMap<Appointment, DeleteAppointmentDto>().ReverseMap();
-
         }
     }
-
 }

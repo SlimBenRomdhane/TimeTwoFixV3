@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Threading.Tasks;
 using TimeTwoFix.Application.ClientServices.Interfaces;
 using TimeTwoFix.Application.VehicleServices.Dtos;
 using TimeTwoFix.Application.VehicleServices.Interfaces;
@@ -72,14 +71,12 @@ namespace TimeTwoFix.Web.Controllers
                 new { Value = "Gasoline", Text = "Gasoline" },
                 new { Value = "Diesel", Text = "Diesel" },
                 new { Value = "Diesel50", Text = "Diesel 50" },
-
             }, "Value", "Text");
 
             ViewBag.TransmissionTypes = new SelectList(new[]
             {
                 new { Value = "Manual", Text = "Manual" },
                 new { Value = "Automatic", Text = "Automatic" },
-
             }, "Value", "Text");
             return View();
         }
@@ -91,7 +88,7 @@ namespace TimeTwoFix.Web.Controllers
         {
             var vehicleDto = _mapper.Map<CreateVehicleDto>(createVehicleViewModel);
             var vehicle = _mapper.Map<Vehicle>(vehicleDto);
-            vehicle.CreatedAt = DateTime.UtcNow;
+            vehicle.CreatedAt = DateTime.Now;
             vehicle.CreatedBy = User.Identity?.Name;
             if (ModelState.IsValid)
             {
@@ -105,9 +102,7 @@ namespace TimeTwoFix.Web.Controllers
                 {
                     ModelState.AddModelError("", "An error occurred while creating the vehicle.");
                     // If an error occurs, re-populate the dropdown lists
-
                 }
-
             }
             return RedirectToAction(nameof(Index));
         }
@@ -132,18 +127,15 @@ namespace TimeTwoFix.Web.Controllers
                 new { Value = "Gasoline", Text = "Gasoline" },
                 new { Value = "Diesel", Text = "Diesel" },
                 new { Value = "Diesel50", Text = "Diesel 50" },
-
             }, "Value", "Text");
 
             ViewBag.TransmissionTypes = new SelectList(new[]
             {
                 new { Value = "Manual", Text = "Manual" },
                 new { Value = "Automatic", Text = "Automatic" },
-
             }, "Value", "Text");
             var vehicleDto = _mapper.Map<UpdateVehicleDto>(vehicle);
             var vehicleViewModel = _mapper.Map<UpdateVehicleViewModel>(vehicleDto);
-
 
             return View(vehicleViewModel);
         }
@@ -153,7 +145,6 @@ namespace TimeTwoFix.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(UpdateVehicleViewModel updateVehicleViewModel)
         {
-
             try
             {
                 var vehicle = await _vehicleService.GetByIdAsyncServiceGeneric(updateVehicleViewModel.Id);

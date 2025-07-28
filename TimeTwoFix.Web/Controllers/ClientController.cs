@@ -15,9 +15,9 @@ namespace TimeTwoFix.Web.Controllers
     {
         //private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+
         private readonly IClientServices _clientServices;
         private readonly ILogger<ClientController> _logger;
-
 
         public ClientController(IUnitOfWork unitOfWork, IMapper mapper, IClientServices clientServices, ILogger<ClientController> logger)
         {
@@ -51,7 +51,6 @@ namespace TimeTwoFix.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(string searchName, string searchPhone, string searchEmail)
         {
-
             var clients = await _clientServices.GetClientByMultipleParam(searchName, searchPhone, searchEmail);
 
             var clientsDto = _mapper.Map<IEnumerable<ReadClientDto>>(clients);
@@ -98,19 +97,21 @@ namespace TimeTwoFix.Web.Controllers
                 {
                     return View(createClientViewModel);
                 }
+
+
+
                 // Check if the email already exists
                 var existingClient = await _clientServices.GetClientByEmail(createClientViewModel.Email);
                 if (existingClient != null)
                 {
                     ModelState.AddModelError("Email", "Email already exists.");
-
                     return View(createClientViewModel);
                 }
+
                 var clientDto = _mapper.Map<CreateClientDto>(createClientViewModel);
                 var client = _mapper.Map<Client>(clientDto);
                 client.CreatedBy = User.Identity?.Name;
                 var addedElement = await _clientServices.AddAsyncServiceGeneric(client);
-                //await _unitOfWork.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -227,13 +228,11 @@ namespace TimeTwoFix.Web.Controllers
             }
         }
 
-
         [Authorize(Roles = "GeneralManager")]
         public async Task<IActionResult> DeletePermanently(int id)
         {
             try
             {
-
                 var x = await _clientServices.GetByIdAsyncServiceGeneric(id);
                 //await _clientServices.AttachAsyncServiceGeneric(x, EntityState.Deleted);
                 await _clientServices.DetachAsyncServiceGeneric(x);

@@ -11,6 +11,5 @@
         public string ContactPhone { get; set; }
         public string Urgency { get; set; }
         public string Status { get; set; }
-
     }
 }

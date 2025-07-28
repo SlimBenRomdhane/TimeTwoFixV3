@@ -25,7 +25,6 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.Base
         {
             _context.Attach(entity);
             _context.Entry(entity).State = entityState;
-
         }
 
         public async Task DeleteAsyncGeneric(T entity)

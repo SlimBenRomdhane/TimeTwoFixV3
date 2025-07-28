@@ -4,6 +4,7 @@
     {
         //Common properties
         public int UserId { get; set; }
+
         public string UserName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -22,21 +23,25 @@
 
         //Assistant properties
         public string? WorkStationNumber { get; set; }
+
         public string? PhoneExtension { get; set; }
         public string? SpokenLanguage { get; set; }
         public bool BusinessKnowledge { get; set; }
 
         //General Manager properties
         public string? OfficeNumber { get; set; }
+
         public int YearsInManagement { get; set; }
 
         //Mechanic properties
         public string? Specialization { get; set; }
+
         public string ToolBoxNumber { get; set; }
         public bool AbleToShift { get; set; }
 
         //Warehouse Manager properties
         public string? WarehouseName { get; set; }
+
         public string? WarehouseLocation { get; set; }
         public bool AbleToShiftWareHouse { get; set; }
 

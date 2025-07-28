@@ -15,6 +15,7 @@ namespace TimeTwoFix.Application.UserServices.Services
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IMapper _mapper;
         private readonly IRoleService _roleService;
+
         public UserService(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager,
             SignInManager<ApplicationUser> signInManager, IMapper mapper, IRoleService roleService)
         {
@@ -93,7 +94,6 @@ namespace TimeTwoFix.Application.UserServices.Services
 
         public async Task<IdentityResult> CreateUserAsync(CreateUserDto createUserDto)
         {
-
             // Check if the user already exists
             var existingUser = await _userManager.FindByEmailAsync(createUserDto.Email);
             if (existingUser != null)
@@ -129,7 +129,6 @@ namespace TimeTwoFix.Application.UserServices.Services
             user.CreatedAt = DateTime.UtcNow;
             user.UpdatedAt = DateTime.UtcNow;
 
-
             var res = await _userManager.CreateAsync(user, createUserDto.Password);
             return res;
         }
@@ -146,7 +145,6 @@ namespace TimeTwoFix.Application.UserServices.Services
             {
                 throw new KeyNotFoundException($"No user with {email} address exists.");
             }
-
         }
 
         public async Task<IdentityResult> UpdateUserAsync(UpdateUserDto updateUserDto)
@@ -164,7 +162,6 @@ namespace TimeTwoFix.Application.UserServices.Services
                 user.Email = updateUserDto.Email;
                 user.Status = updateUserDto.Status;
 
-
                 if (!string.IsNullOrEmpty(updateUserDto.Password))
                 {
                     user.PasswordHash = _userManager.PasswordHasher.HashPassword(user, updateUserDto.Password);
@@ -180,7 +177,6 @@ namespace TimeTwoFix.Application.UserServices.Services
                     mechanic.ToolBoxNumber = updateUserDto.ToolBoxNumber;
                     mechanic.AbleToShift = updateUserDto.AbleToShift;
                     mechanic.Specialization = updateUserDto.Specialization;
-
                 }
                 else if (user is FrontDeskAssistant assistant)
                 {
@@ -212,13 +208,11 @@ namespace TimeTwoFix.Application.UserServices.Services
             else
             {
                 throw new KeyNotFoundException($"No user with {updateUserDto.Email} address exists.");
-
             }
-
         }
+
         public async Task<IdentityResult> DeleteUserAsync(int userId)
         {
-
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user != null)
             {
@@ -230,9 +224,9 @@ namespace TimeTwoFix.Application.UserServices.Services
                 throw new KeyNotFoundException($"No user with {userId} address exists.");
             }
         }
+
         public async Task<bool> CheckPasswordAsync(ReadUserDto readUserDto, string password)
         {
-
             var actualUser = await _userManager.FindByEmailAsync(readUserDto.Email);
             if (actualUser != null)
             {
@@ -243,7 +237,6 @@ namespace TimeTwoFix.Application.UserServices.Services
             {
                 throw new KeyNotFoundException($"No user with {readUserDto.Email} address exists.");
             }
-
         }
 
         public async Task<IList<string>> GetUserRolesAsync(ReadUserDto readUserDto)
@@ -260,6 +253,7 @@ namespace TimeTwoFix.Application.UserServices.Services
                 throw new KeyNotFoundException($"No user with {readUserDto.Email} address exists.");
             }
         }
+
         public async Task<IdentityResult> AddOrUpdateUserToRoleAsync(ReadUserDto readUserDto, ReadRoleDto readRoleDto)
         {
             var user = await _userManager.FindByEmailAsync(readUserDto.Email);
@@ -276,12 +270,10 @@ namespace TimeTwoFix.Application.UserServices.Services
             }
             var result = await _userManager.AddToRoleAsync(user, readRoleDto.Name);
             return result;
-
-
         }
+
         public Task<SignInResult> SignInAsync(string email, string password, bool isPersistent)
         {
-
             var user = _userManager.Users.SingleOrDefault(u => u.Email == email);
             if (user != null)
             {
@@ -292,11 +284,10 @@ namespace TimeTwoFix.Application.UserServices.Services
                 throw new KeyNotFoundException($"No user with {email} address exists.");
             }
         }
+
         public Task SignOutAsync()
         {
             return _signInManager.SignOutAsync();
         }
-
-
     }
 }

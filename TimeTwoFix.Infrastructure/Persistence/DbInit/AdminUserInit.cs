@@ -6,10 +6,8 @@ namespace TimeTwoFix.Infrastructure.Persistence.DbInit
 {
     public static class AdminUserInit
     {
-
         public static void SeedUser(this ModelBuilder modelBuilder)
         {
-
             var adminUser = new GeneralManager
             {
                 Id = 1,
@@ -26,9 +24,9 @@ namespace TimeTwoFix.Infrastructure.Persistence.DbInit
                 UserType = "GeneralManager",
                 Status = "Active",
                 SecurityStamp = new Guid().ToString(),
-                OfficeNumber= "manager",
-                YearsInManagement=99,
-                PhoneNumber="99999999",
+                OfficeNumber = "manager",
+                YearsInManagement = 99,
+                PhoneNumber = "99999999",
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -44,7 +42,6 @@ namespace TimeTwoFix.Infrastructure.Persistence.DbInit
                 UserId = 1,
                 RoleId = 5 // Assuming the role ID for Admin is 1
             });
-
         }
     }
 }

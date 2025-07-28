@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TimeTwoFix.Application.UserServices.Dtos.Users
+﻿namespace TimeTwoFix.Application.UserServices.Dtos.Users
 {
     public class DeleteUserDto
     {
-
-
         //Common properties
         public int UserId { get; set; }
+
         public string UserName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -25,7 +18,5 @@ namespace TimeTwoFix.Application.UserServices.Dtos.Users
         public int YearsOfExperience { get; set; }
         public string LastEmployer { get; set; }
         public string Status { get; set; }
-
-
     }
 }

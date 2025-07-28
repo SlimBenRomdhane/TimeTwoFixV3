@@ -10,18 +10,21 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.VehicleManagement
         public VehicleRepository(TimeTwoFixDbContext context) : base(context)
         {
         }
+
         public async Task<Vehicle?> GetVehiculeByVinAsync(string vin)
         {
             var vehicle = await _context.Vehicles
                 .FirstOrDefaultAsync(v => v.Vin == vin);
             return vehicle;
         }
+
         public async Task<Vehicle?> GetVehicleByLicensePlateAsync(string licensePlate)
         {
             var vehicle = await _context.Vehicles
                 .FirstOrDefaultAsync(v => v.LicensePlate == licensePlate);
             return vehicle;
         }
+
         public async Task<IEnumerable<Vehicle>> GetVehiclesByYearsRangeAsync(int startYear, int endYear)
         {
             var vehicles = await _context.Vehicles
@@ -29,6 +32,7 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.VehicleManagement
                 .ToListAsync();
             return vehicles;
         }
+
         public async Task<IEnumerable<Vehicle>> GetVehiclesByClientIdAsync(int clientId)
         {
             var vehicles = await _context.Vehicles
@@ -36,6 +40,7 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.VehicleManagement
                 .ToListAsync();
             return vehicles;
         }
+
         public async Task<IEnumerable<Vehicle>> GetVehiclesByMultipleParamAsync(string brand, string model,
             string fuelType, string transmissionType)
         {

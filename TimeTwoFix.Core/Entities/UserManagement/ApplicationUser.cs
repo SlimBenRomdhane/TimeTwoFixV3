@@ -23,6 +23,7 @@ namespace TimeTwoFix.Core.Entities.UserManagement
 
         [Range(1, 99999)]
         public int ZipCode { get; set; }
+
         public string? ImageUrl { get; set; }
 
         [Required]
@@ -40,11 +41,12 @@ namespace TimeTwoFix.Core.Entities.UserManagement
         //Indicates if the user is currently employed, on leave, or terminated...
         [Required]
         [MaxLength(50)]
-
         public string Status { get; set; }
+
         [Required]
         [MaxLength(50)]
         public string UserType { get; set; }
+
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }

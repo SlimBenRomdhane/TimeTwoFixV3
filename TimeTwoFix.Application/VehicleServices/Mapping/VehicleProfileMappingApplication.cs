@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Routing.Constraints;
 using TimeTwoFix.Application.VehicleServices.Dtos;
 using TimeTwoFix.Core.Entities.VehicleManagement;
 
@@ -11,11 +10,10 @@ namespace TimeTwoFix.Application.VehicleServices.Mapping
         {
             CreateMap<Vehicle, CreateVehicleDto>().ReverseMap();
             CreateMap<Vehicle, ReadVehicleDto>()
-                .ForMember(dest => dest.ReadClientDto, opt =>opt.MapFrom(src => src.Client))
+                .ForMember(dest => dest.ReadClientDto, opt => opt.MapFrom(src => src.Client))
                 .ReverseMap();
             CreateMap<Vehicle, UpdateVehicleDto>().ReverseMap();
             CreateMap<Vehicle, DeleteVehicleDto>().ReverseMap();
         }
     }
-
 }

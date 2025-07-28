@@ -9,9 +9,9 @@ namespace TimeTwoFix.Application.UserServices.Services
 {
     public class RoleService : IRoleService
     {
-
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IMapper _mapper;
+
         public RoleService(RoleManager<ApplicationRole> roleManage, IMapper mapper)
         {
             _roleManager = roleManage;
@@ -23,6 +23,7 @@ namespace TimeTwoFix.Application.UserServices.Services
             var exists = await _roleManager.RoleExistsAsync(roleName);
             return exists;
         }
+
         public async Task<ReadRoleDto?> GetRoleByNameAsync(string roleName)
         {
             var role = await _roleManager.Roles.FirstOrDefaultAsync(r => r.Name == roleName);
@@ -33,13 +34,13 @@ namespace TimeTwoFix.Application.UserServices.Services
             var roleDto = _mapper.Map<ReadRoleDto>(role);
             return roleDto;
         }
+
         public async Task<IdentityResult> CreateRoleAsync(CreateRoleDto createRoleDto)
         {
             if (createRoleDto == null)
             {
                 throw new ArgumentNullException(nameof(createRoleDto));
             }
-
 
             // Check if the role already exists
             if (await RoleExistsAsync(createRoleDto.RoleName))
@@ -60,7 +61,6 @@ namespace TimeTwoFix.Application.UserServices.Services
 
         public async Task<IdentityResult> DeleteRoleAsync(string roleName)
         {
-
             var roleDto = await GetRoleByNameAsync(roleName);
             if (roleDto == null)
                 return IdentityResult.Failed(new IdentityError { Description = "Role not found" });
@@ -103,7 +103,6 @@ namespace TimeTwoFix.Application.UserServices.Services
             actualRole.IsActive = updateRoleDto.IsActive;
             var result = await _roleManager.UpdateAsync(actualRole);
             return result;
-
         }
     }
 }

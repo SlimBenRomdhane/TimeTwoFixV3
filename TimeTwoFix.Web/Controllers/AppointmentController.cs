@@ -18,16 +18,14 @@ namespace TimeTwoFix.Web.Controllers
         private readonly IAppointmentService _appointmentService;
         private readonly IVehicleService _vehicleService;
 
-
-
         public AppointmentController(IUnitOfWork unitOfWork, IMapper mapper, IAppointmentService appointmentServices, IVehicleService vehicleService)
         {
             //_unitOfWork = unitOfWork;
             _mapper = mapper;
             _appointmentService = appointmentServices;
             _vehicleService = vehicleService;
-
         }
+
         // GET: AppointmentController
         public async Task<ActionResult> Index()
         {
@@ -47,12 +45,11 @@ namespace TimeTwoFix.Web.Controllers
             }
             catch (Exception ex)
             {
-
                 TempData["AppointmentError"] = "No appointments found for today";
                 return View(Enumerable.Empty<ReadAppointmentViewModel>());
             }
-
         }
+
         [HttpPost]
         public async Task<IActionResult> Index(DateOnly startDate, DateOnly endDate)
         {
@@ -77,11 +74,9 @@ namespace TimeTwoFix.Web.Controllers
             }
             catch (Exception ex)
             {
-
                 TempData["AppointmentError"] = ex.Message;
                 return View(Enumerable.Empty<ReadAppointmentViewModel>());
             }
-
         }
 
         // GET: AppointmentController/Details/5
@@ -95,7 +90,6 @@ namespace TimeTwoFix.Web.Controllers
             var appointmentDto = _mapper.Map<ReadAppointmentDto>(appointment);
             var appointmentViewModel = _mapper.Map<ReadAppointmentViewModel>(appointmentDto);
             return View(appointmentViewModel);
-
         }
 
         // GET: AppointmentController/Create
@@ -119,8 +113,6 @@ namespace TimeTwoFix.Web.Controllers
                 new SelectListItem { Text = "High", Value = "High" },
                 new SelectListItem { Text = "Critical", Value = "Critical" }
             };
-
-
 
             return View();
         }
@@ -178,8 +170,6 @@ namespace TimeTwoFix.Web.Controllers
                 // If the appointment is not available, return the view with the current model to show the error
                 return View(createAppointmentViewModel);
             }
-
-
         }
 
         // GET: AppointmentController/Edit/5

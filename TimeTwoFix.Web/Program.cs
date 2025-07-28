@@ -25,7 +25,6 @@ namespace TimeTwoFix.Web
                 options.IdleTimeout = TimeSpan.FromMinutes(30);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
-
             });
             builder.Services.ConfigureApplicationCookie(options =>
             {
@@ -39,7 +38,6 @@ namespace TimeTwoFix.Web
                     options.LoginPath = "/User/Login";
                     options.AccessDeniedPath = "/Shared/AccessDenied";
                 });
-
 
             var app = builder.Build();
 

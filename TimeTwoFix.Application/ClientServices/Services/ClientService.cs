@@ -39,7 +39,6 @@ namespace TimeTwoFix.Application.ClientServices.Services
 
         public async Task<IEnumerable<ReadClientDto>> GetClientByMultipleParam(string searchName, string searchPhone, string searchEmail)
         {
-
             var res = await _unitOfWork.Clients.GetClientsByMultipleParam(searchName, searchPhone, searchEmail);
             var clientsDto = _mapper.Map<IEnumerable<ReadClientDto>>(res);
             return clientsDto;

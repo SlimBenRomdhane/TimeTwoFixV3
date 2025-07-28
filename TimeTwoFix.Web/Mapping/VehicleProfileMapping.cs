@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using TimeTwoFix.Application.VehicleServices.Dtos;
 using TimeTwoFix.Web.Models.VehicleModels;
+
 namespace TimeTwoFix.Web.Mapping
 
 {
@@ -13,8 +14,6 @@ namespace TimeTwoFix.Web.Mapping
             CreateMap<CreateVehicleViewModel, CreateVehicleDto>().ReverseMap();
             CreateMap<UpdateVehicleViewModel, UpdateVehicleDto>().ReverseMap();
             CreateMap<DeleteVehicleViewModel, DeleteVehicleDto>().ReverseMap();
-
-
         }
     }
 }

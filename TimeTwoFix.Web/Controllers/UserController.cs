@@ -11,7 +11,6 @@ using TimeTwoFix.Web.Models.UserModels;
 
 namespace TimeTwoFix.Web.Controllers
 {
-
     public class UserController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -32,6 +31,7 @@ namespace TimeTwoFix.Web.Controllers
         {
             return View();
         }
+
         [Authorize(Roles = "GeneralManager")]
         [HttpPost]
         public async Task<IActionResult> CreateRole(CreateRoleViewModel createRoleViewModel)
@@ -62,6 +62,7 @@ namespace TimeTwoFix.Web.Controllers
             }
             return View();
         }
+
         [Authorize(Roles = "GeneralManager")]
         public async Task<IActionResult> Index()
         {
@@ -80,11 +81,13 @@ namespace TimeTwoFix.Web.Controllers
             var viewModel = new Tuple<List<ReadUserViewModel>, List<ReadRoleViewModel>>(userViewModel, roleViewModel);
             return View(viewModel);
         }
+
         [Authorize(Roles = "GeneralManager")]
         public IActionResult CreateMechanic()
         {
             return View();
         }
+
         [Authorize(Roles = "GeneralManager")]
         [HttpPost]
         public async Task<IActionResult> CreateMechanic(CreateMechanicViewModel createMechanicViewModel)
@@ -131,11 +134,13 @@ namespace TimeTwoFix.Web.Controllers
                 }
             }
         }
+
         [Authorize(Roles = "GeneralManager")]
         public IActionResult CreateAssistant()
         {
             return View();
         }
+
         [Authorize(Roles = "GeneralManager")]
         [HttpPost]
         public async Task<IActionResult> CreateAssistant(CreateFrontDeskAssistantViewModel createFrontDeskAssistantViewModel)
@@ -179,11 +184,13 @@ namespace TimeTwoFix.Web.Controllers
                 }
             }
         }
+
         [Authorize(Roles = "GeneralManager")]
         public IActionResult CreateWareHouseManager()
         {
             return View();
         }
+
         [Authorize(Roles = "GeneralManager")]
         [HttpPost]
         public async Task<IActionResult> CreateWareHouseManager(CreateWareHouseManagerViewModel createWareHouseManagerViewModel)
@@ -227,11 +234,13 @@ namespace TimeTwoFix.Web.Controllers
                 }
             }
         }
+
         [Authorize(Roles = "GeneralManager")]
         public IActionResult CreateWorkshopManager()
         {
             return View();
         }
+
         [Authorize(Roles = "GeneralManager")]
         [HttpPost]
         public async Task<IActionResult> CreateWorkshopManager(CreateWorkshopManagerViewModel createWorkshopManagerViewModel)
@@ -275,11 +284,13 @@ namespace TimeTwoFix.Web.Controllers
                 }
             }
         }
+
         [Authorize(Roles = "GeneralManager")]
         public IActionResult CreateGeneralManager()
         {
             return View();
         }
+
         [Authorize(Roles = "GeneralManager")]
         [HttpPost]
         public async Task<IActionResult> CreateGeneralManager(CreateGeneralManagerViewModel createGeneralManagerViewModel)
@@ -323,15 +334,14 @@ namespace TimeTwoFix.Web.Controllers
                 }
             }
         }
+
         [AllowAnonymous]
         [HttpGet]
-
         public IActionResult Login()
         {
-
             return View();
-
         }
+
         [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(string email, string password)
@@ -381,19 +391,13 @@ namespace TimeTwoFix.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-
-
         [HttpGet]
         [Authorize(Roles = "Mechanic, FrontDeskAssistant, WareHouseManager, WorkshopManager,GeneralManager")]
-
         public async Task<IActionResult> Profile(string email)
         {
-
             //var user = await _userManager.FindByEmailAsync(email);
             var user = await _userService.GetUserByEmailAsync(email);
             if (user == null) return null;
-
-
 
             var profile = new UserProfileViewModel
             {
@@ -427,8 +431,6 @@ namespace TimeTwoFix.Web.Controllers
                 AbleToShiftWareHouse = user.AbleToShiftWareHouse,
                 TeamSize = user.TeamSize,
                 ImageURL = user.ImageURL,
-
-
             };
             //if (!User.IsInRole("Mechanic"))
             //{
@@ -437,7 +439,5 @@ namespace TimeTwoFix.Web.Controllers
 
             return View(profile);
         }
-
-
     }
 }

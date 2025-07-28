@@ -7,7 +7,8 @@ namespace TimeTwoFix.Core.Entities.UserManagement
     {
         [MaxLength(100)]
         [Required]
-        public required string Description { get; set; }
+        public string Description { get; set; }
+
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
@@ -15,8 +16,8 @@ namespace TimeTwoFix.Core.Entities.UserManagement
         public ApplicationRole()
         {
             CreatedAt = DateTime.UtcNow;
-
         }
+
         //public ApplicationRole(string roleName) : base(roleName)
         //{
         //}

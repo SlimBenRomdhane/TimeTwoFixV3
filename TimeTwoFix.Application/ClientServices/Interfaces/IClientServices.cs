@@ -7,10 +7,13 @@ namespace TimeTwoFix.Application.ClientServices.Interfaces
     public interface IClientServices : IBaseService<Client>
     {
         Task<IEnumerable<ReadClientDto>> GetClientByMultipleParam(string searchName, string searchPhone, string searchEmail);
-        Task<ReadClientDto?> GetClientByEmail(string email);
-        Task<IEnumerable<ReadClientDto>> GetAllDeletedClients();
-        Task<ReadClientDto?> GetDeletedClientByIdAsync(int id);
-        Task<IEnumerable<ReadClientDto>> GetAllActiveClientsAsync();
 
+        Task<ReadClientDto?> GetClientByEmail(string email);
+
+        Task<IEnumerable<ReadClientDto>> GetAllDeletedClients();
+
+        Task<ReadClientDto?> GetDeletedClientByIdAsync(int id);
+
+        Task<IEnumerable<ReadClientDto>> GetAllActiveClientsAsync();
     }
 }

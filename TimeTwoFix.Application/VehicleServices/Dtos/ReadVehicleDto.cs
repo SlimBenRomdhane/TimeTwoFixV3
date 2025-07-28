@@ -15,6 +15,5 @@ namespace TimeTwoFix.Application.VehicleServices.Dtos
         public string TransmissionType { get; set; }
         public int Year { get; set; }
         public int Mileage { get; set; }
-
     }
 }

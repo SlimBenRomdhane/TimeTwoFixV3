@@ -15,7 +15,6 @@ namespace TimeTwoFix.Application.AppointmentServices.Services
 
         public async Task<IEnumerable<ReadAppointmentDto>> GetAppointmentsByDateAsync(DateOnly date)
         {
-
             var appointments = await _unitOfWork.Appointments.GetAppointmentsByDateAsync(date);
 
             if (appointments == null || !appointments.Any())
@@ -35,7 +34,6 @@ namespace TimeTwoFix.Application.AppointmentServices.Services
             }
             var readAppointmentDtos = _mapper.Map<IEnumerable<ReadAppointmentDto>>(appointments.Where(x => !x.IsDeleted));
             return readAppointmentDtos;
-
         }
 
         public async Task<IEnumerable<ReadAppointmentDto>> GetAppointmentsByStatusAsync(string status)
@@ -47,7 +45,6 @@ namespace TimeTwoFix.Application.AppointmentServices.Services
             }
             var readAppointmentDtos = _mapper.Map<IEnumerable<ReadAppointmentDto>>(appointments);
             return readAppointmentDtos;
-
         }
 
         public async Task<IEnumerable<ReadAppointmentDto>> GetAppointmentsByVehicleIdAsync(int vehicleId)

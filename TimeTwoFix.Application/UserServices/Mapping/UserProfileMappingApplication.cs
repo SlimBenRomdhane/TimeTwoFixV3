@@ -1,9 +1,4 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TimeTwoFix.Application.UserServices.Dtos.Roles;
 using TimeTwoFix.Application.UserServices.Dtos.Users;
 using TimeTwoFix.Core.Entities.UserManagement;
@@ -46,9 +41,6 @@ namespace TimeTwoFix.Application.UserServices.Mapping
             CreateMap<CreateRoleDto, ApplicationRole>();
             CreateMap<UpdateRoleDto, ApplicationRole>();
             CreateMap<DeleteRoleDto, ApplicationRole>();
-
-
-
         }
     }
 }

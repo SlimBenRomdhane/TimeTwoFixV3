@@ -22,7 +22,6 @@ namespace TimeTwoFix.Application.VehicleServices.Services
             }
             var readVehicleDto = _mapper.Map<ReadVehicleDto>(vehicle);
             return readVehicleDto;
-
         }
 
         public async Task<IEnumerable<ReadVehicleDto>> GetVehiclesByMultipleParam(string brand, string model, string fuelType, string transmissionType)
@@ -34,7 +33,6 @@ namespace TimeTwoFix.Application.VehicleServices.Services
             }
             var readVehicleDtos = _mapper.Map<IEnumerable<ReadVehicleDto>>(vehicles);
             return readVehicleDtos;
-
         }
     }
 }

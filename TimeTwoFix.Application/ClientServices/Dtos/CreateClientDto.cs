@@ -6,15 +6,15 @@ namespace TimeTwoFix.Application.ClientServices.Dtos
     {
         [Required]
         [MaxLength(50)]
-        public required string FirstName { get; set; }
+        public string FirstName { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public required string LastName { get; set; }
+        public string LastName { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public required string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
 
         [MaxLength(100)]
         public string? Address { get; set; }
@@ -35,7 +35,6 @@ namespace TimeTwoFix.Application.ClientServices.Dtos
         public CreateClientDto()
         {
             CreatedAt = DateTime.UtcNow;
-
         }
     }
 }
