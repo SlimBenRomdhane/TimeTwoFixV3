@@ -33,7 +33,7 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
 
         public Mechanic Mechanic { get; set; }
         public WorkOrder WorkOrder { get; set; }
-        public Service Service { get; set; }
+        public ProvidedService Service { get; set; }
         public LiftingBridge LiftingBridge { get; set; }
         public ICollection<InterventionSparePart> InterventionSpareParts { get; set; }
     }

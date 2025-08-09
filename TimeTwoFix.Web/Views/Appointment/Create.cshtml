@@ -1,23 +1,31 @@
 ﻿@model TimeTwoFix.Web.Models.AppointmentModels.CreateAppointmentViewModel
-
 @{
     ViewData["Title"] = "Create Appointment";
 }
 
-<div class="container mt-5">
-    <h2 class="text-primary mb-3"><i class="bi bi-calendar-plus me-2"></i> Create Appointment</h2>
-    <p class="text-muted mb-4">Please fill out the appointment form carefully. Fields marked with <span class="text-danger">*</span> are required.</p>
+<div class="container my-5">
 
-    <div class="card shadow">
+    <!-- Header -->
+    <h2 class="section-title text-primary fw-bold mb-2">
+        <i class="bi bi-calendar-plus me-2"></i> Create Appointment
+    </h2>
+    <p class="text-muted mb-4">
+        Please fill out the appointment form carefully. Fields marked with <span class="text-danger">*</span> are required.
+    </p>
+
+    <!-- Form Card -->
+    <div class="card shadow-sm border-0">
         <div class="card-body">
             <form asp-action="Create" class="needs-validation" novalidate>
+
+                <!-- Validation Summary -->
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-                <!-- Vehicle Information -->
-                <fieldset class="mb-4">
-                    <legend class="h5 text-secondary mb-3"><i class="bi bi-car-front-fill me-1"></i> Vehicle Information</legend>
-
-                    <!-- Client -->
+                <!-- Section: Vehicle Info -->
+                <div class="form-section mb-5">
+                    <h5 class="form-section-header text-secondary mb-3">
+                        <i class="bi bi-car-front-fill me-2"></i> Vehicle Information
+                    </h5>
                     <div class="mb-3">
                         <label asp-for="VehicleId" class="form-label">Client</label>
                         <select asp-for="VehicleId" class="form-select" asp-items="ViewBag.Vehicles">
@@ -25,11 +33,13 @@
                         </select>
                         <span asp-validation-for="VehicleId" class="text-danger"></span>
                     </div>
-                </fieldset>
+                </div>
 
-                <!-- Appointment Details -->
-                <fieldset class="mb-4">
-                    <legend class="h5 text-secondary mb-3"><i class="bi bi-calendar-event-fill me-1"></i> Appointment Details</legend>
+                <!-- Section: Appointment Details -->
+                <div class="form-section mb-5">
+                    <h5 class="form-section-header text-secondary mb-3">
+                        <i class="bi bi-calendar-event-fill me-2"></i> Appointment Details
+                    </h5>
 
                     <div class="mb-3">
                         <label asp-for="Title" class="form-label">Title <span class="text-danger">*</span></label>
@@ -38,8 +48,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label asp-for="Description" class="form-label">Description</label>
-                        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Add any notes or details (optional)"></textarea>
+                        <label asp-for="Description" class="form-label">Description <span class="text-danger">*</span></label>
+                        <textarea asp-for="Description" class="form-control" rows="4" placeholder="Add any notes or details"></textarea>
                         <span asp-validation-for="Description" class="text-danger"></span>
                     </div>
 
@@ -51,16 +61,17 @@
                         </div>
                         <div class="col-md-6">
                             <label asp-for="AppointmentTime" class="form-label">Time <span class="text-danger">*</span></label>
-                            <input asp-for="AppointmentTime" class="form-control" type="time"/>
+                            <input asp-for="AppointmentTime" class="form-control" type="time" />
                             <span asp-validation-for="AppointmentTime" class="text-danger"></span>
                         </div>
                     </div>
-                </fieldset>
+                </div>
 
-                <!-- Contact Details -->
-                <fieldset class="mb-4">
-                    <legend class="h5 text-secondary mb-3"><i class="bi bi-person-fill-check me-1"></i> Contact Details</legend>
-
+                <!-- Section: Contact Info -->
+                <div class="form-section mb-5">
+                    <h5 class="form-section-header text-secondary mb-3">
+                        <i class="bi bi-person-fill-check me-2"></i> Contact Details
+                    </h5>
                     <div class="mb-3">
                         <label asp-for="ContactName" class="form-label">Contact Name <span class="text-danger">*</span></label>
                         <input asp-for="ContactName" class="form-control" />
@@ -72,12 +83,13 @@
                         <input asp-for="ContactPhone" class="form-control" />
                         <span asp-validation-for="ContactPhone" class="text-danger"></span>
                     </div>
-                </fieldset>
+                </div>
 
-                <!-- Status & Urgency -->
-                <fieldset class="mb-4">
-                    <legend class="h5 text-secondary mb-3"><i class="bi bi-exclamation-diamond me-1"></i> Status & Urgency</legend>
-
+                <!-- Section: Status & Urgency -->
+                <div class="form-section mb-4">
+                    <h5 class="form-section-header text-secondary mb-3">
+                        <i class="bi bi-exclamation-diamond me-2"></i> Status & Urgency
+                    </h5>
                     <div class="mb-3">
                         <label asp-for="Urgency" class="form-label">Urgency <span class="text-danger">*</span></label>
                         <select asp-for="Urgency" asp-items="ViewBag.UrgencyLevels" class="form-select">
@@ -93,9 +105,9 @@
                         </select>
                         <span asp-validation-for="Status" class="text-danger"></span>
                     </div>
-                </fieldset>
+                </div>
 
-                <!-- Submit -->
+                <!-- Submit Button -->
                 <div class="d-grid">
                     <button type="submit" class="btn btn-success btn-lg">
                         <i class="bi bi-check-circle me-1"></i> Submit Appointment

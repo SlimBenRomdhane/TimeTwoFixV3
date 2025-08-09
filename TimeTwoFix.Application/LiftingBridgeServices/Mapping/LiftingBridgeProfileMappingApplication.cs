@@ -9,6 +9,9 @@ namespace TimeTwoFix.Application.LiftingBridgeServices.Mapping
         public LiftingBridgeProfileMappingApplication()
         {
             CreateMap<LiftingBridge, ReadLiftingBridgeDto>().ReverseMap();
+            CreateMap<LiftingBridge, DeleteLiftingBridgeDto>().ReverseMap();
+            CreateMap<LiftingBridge, UpdateLiftingBridgeDto>().ReverseMap();
+
             CreateMap<CreateLiftingBridgeDto, LiftingBridge>();
             CreateMap<UpdateLiftingBridgeDto, LiftingBridge>().ReverseMap();
         }

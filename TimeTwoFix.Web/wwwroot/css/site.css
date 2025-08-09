@@ -1,22 +1,124 @@
-html {
-    font-size: 14px;
+:root {
+    --ttf-sand-tan: #e1b382;
+    --ttf-sand-shadow: #c89666;
+    --ttf-night-blue: #2d545e;
+    --ttf-night-shadow: #12343b;
+    --ttf-text-light: #f5f5f5;
 }
 
-@media (min-width: 768px) {
-    html {
-        font-size: 16px;
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.main-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex-grow: 1;
+    padding: 1rem 2rem;
+}
+
+.site-footer {
+    margin-top: auto;
+    width: 100%;
+    background-color: #f8f9fa;
+    color: #6c757d;
+    padding: 1rem 2rem;
+}
+
+.footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.navbar {
+    background-color: var(--ttf-night-shadow);
+}
+
+.navbar-brand,
+.nav-link {
+    color: var(--ttf-sand-tan);
+}
+
+    .nav-link:hover {
+        color: var(--ttf-sand-shadow);
     }
+
+.btn-primary {
+    background-color: var(--ttf-sand-tan);
+    border-color: var(--ttf-sand-shadow);
+    color: var(--ttf-night-shadow);
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-    position: relative;
-    min-height: 100%;
-}
+    .btn-primary:hover {
+        background-color: var(--ttf-night-blue);
+        border-color: var(--ttf-night-blue);
+        color: var(--ttf-text-light);
+    }
 
 body {
-    margin-bottom: 60px;
+    background-color: var(--ttf-night-blue);
+    color: var(--ttf-text-light);
+}
+
+.card {
+    background-color: var(--ttf-night-shadow);
+    border: none;
+    color: var(--ttf-sand-tan);
+}
+
+.card-header {
+    background-color: var(--ttf-sand-shadow);
+    color: var(--ttf-night-shadow);
+}
+
+table.table {
+    color: #2d2d2d; /* grounded, readable */
+    background-color: var(--ttf-panel-bg, #fdfdfd); /* or a soft tone that fits */
+}
+
+.panel table.table {
+    color: #2d2d2d;
+}
+
+.table-workshop {
+    width: 100%;
+    background-color: var(--ttf-night-shadow);
+    color: var(--ttf-text-light);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+    .table-workshop th {
+        background-color: var(--ttf-sand-shadow);
+        color: var(--ttf-night-shadow);
+        padding: 12px;
+        text-align: left;
+    }
+
+    .table-workshop td {
+        padding: 12px;
+        border-bottom: 1px solid var(--ttf-sand-tan);
+    }
+
+    .table-workshop tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table-workshop a.btn {
+        margin-right: 6px;
+    }
+
+.alert-warning {
+    background-color: var(--ttf-sand-shadow);
+    border-left: 4px solid var(--ttf-bright-orange);
+    color: var(--ttf-night-shadow);
+    padding: 10px 12px;
+    border-radius: 6px;
 }

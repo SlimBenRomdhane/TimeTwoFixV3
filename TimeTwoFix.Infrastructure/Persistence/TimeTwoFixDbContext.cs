@@ -26,7 +26,7 @@ namespace TimeTwoFix.Infrastructure.Persistence
         public DbSet<Intervention> Interventions { get; set; }
         public DbSet<InterventionSparePart> InterventionSpareParts { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<Service> Services { get; set; }
+        public DbSet<ProvidedService> ProvidedServices { get; set; }
         public DbSet<LiftingBridge> LiftingBridges { get; set; }
         public DbSet<Skill> Skills { get; set; }
         public DbSet<MechanicSkill> MechanicSkills { get; set; }

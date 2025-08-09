@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Threading.Tasks;
 using TimeTwoFix.Application.LiftingBridgeServices.Dtos;
 using TimeTwoFix.Application.LiftingBridgeServices.Interfaces;
 using TimeTwoFix.Core.Entities.BridgeManagement;
-using TimeTwoFix.Core.Entities.VehicleManagement;
 using TimeTwoFix.Web.Models.LiftingBridgeModels;
 
 namespace TimeTwoFix.Web.Controllers
@@ -25,11 +24,12 @@ namespace TimeTwoFix.Web.Controllers
         {
 
             var liftingBridges = await _liftingBridgeServices.GetAllAsyncServiceGeneric();
-            if (liftingBridges == null || !liftingBridges.Any())
+            var notDeleted = liftingBridges.Where(b => !b.IsDeleted);
+            if (notDeleted == null || !notDeleted.Any())
             {
                 return View(new List<ReadLiftingBridgeViewModel>());
             }
-            var liftingBridgeDtos = _mapper.Map<IEnumerable<ReadLiftingBridgeDto>>(liftingBridges);
+            var liftingBridgeDtos = _mapper.Map<IEnumerable<ReadLiftingBridgeDto>>(notDeleted);
 
             var liftingBridgeViewModels = _mapper.Map<IEnumerable<ReadLiftingBridgeViewModel>>(liftingBridgeDtos);
             return View(liftingBridgeViewModels);
@@ -109,31 +109,67 @@ namespace TimeTwoFix.Web.Controllers
         // POST: LiftingBridgeController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<ActionResult> Edit(UpdateLiftingBridgeViewModel updateLiftingBridgeViewModel)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    var bridge = await _liftingBridgeServices.GetByIdAsyncServiceGeneric(updateLiftingBridgeViewModel.Id);
+                    if (bridge == null)
+                    {
+                        return NotFound();
+                    }
+                    var updateLiftingBridgeDto = _mapper.Map<UpdateLiftingBridgeDto>(updateLiftingBridgeViewModel);
+                    var bridgeToUpdate = _mapper.Map(updateLiftingBridgeDto, bridge);
+                    bridgeToUpdate.UpdatedAt = DateTime.Now;
+                    bridgeToUpdate.UpdatedBy = User.Identity?.Name;
+                    await _liftingBridgeServices.UpdateAsyncServiceGeneric(bridgeToUpdate);
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(updateLiftingBridgeViewModel);
             }
             catch
             {
-                return View();
+                return View(updateLiftingBridgeViewModel);
             }
         }
 
         // GET: LiftingBridgeController/Delete/5
-        public ActionResult Delete(int id)
+        [Authorize(Roles = "GeneralManager")]
+        public async Task<ActionResult> Delete(int id)
         {
-            return View();
+            var liftingBridge = await _liftingBridgeServices.GetByIdAsyncServiceGeneric(id);
+            if (liftingBridge == null)
+            {
+                return NotFound();
+            }
+            var liftingBridgeDto = _mapper.Map<DeleteLiftingBridgeDto>(liftingBridge);
+            var liftingBridgeViewModel = _mapper.Map<DeleteLiftingBridgeViewModel>(liftingBridgeDto);
+
+            return View(liftingBridgeViewModel);
         }
 
         // POST: LiftingBridgeController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        [Authorize(Roles = "GeneralManager")]
+        public async Task<ActionResult> Delete(DeleteLiftingBridgeViewModel deleteLiftingBridgeViewModel)
         {
             try
             {
+
+                var existingBridge = await _liftingBridgeServices.GetByIdAsyncServiceGeneric(deleteLiftingBridgeViewModel.Id);
+                if (existingBridge == null)
+                {
+                    return NotFound();
+                }
+                existingBridge.IsDeleted = true;
+                existingBridge.DeletedAt = DateTime.Now;
+                existingBridge.DeletedBy = User.Identity?.Name;
+                await _liftingBridgeServices.UpdateAsyncServiceGeneric(existingBridge);
+
+
                 return RedirectToAction(nameof(Index));
             }
             catch

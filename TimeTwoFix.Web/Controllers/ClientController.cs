@@ -30,12 +30,28 @@ namespace TimeTwoFix.Web.Controllers
         // GET: ClientController
         public async Task<IActionResult> Index(int pageNumber, int pageSize)
         {
-            //var clients = await _clientServices.GetAllAsyncServiceGeneric();
-            var clients = await _clientServices.GetAllActiveClientsAsync();
-            var clientsDto = _mapper.Map<IEnumerable<ReadClientDto>>(clients);
-            var clientsViewModel = _mapper.Map<IEnumerable<ReadClientViewModel>>(clientsDto);
+            try
+            {//var clients = await _clientServices.GetAllAsyncServiceGeneric();
+                var clients = await _clientServices.GetAllActiveClientsAsync();
+                var clientsDto = _mapper.Map<IEnumerable<ReadClientDto>>(clients);
+                var clientsViewModel = _mapper.Map<IEnumerable<ReadClientViewModel>>(clientsDto);
+                if (clientsViewModel == null || !clientsViewModel.Any())
+                {
+                    TempData["ClientError"] = "No records found ";
+                    return View(Enumerable.Empty<ReadClientViewModel>());
+                }
 
-            return View(clientsViewModel);
+                return View(clientsViewModel);
+
+            }
+            catch (Exception)
+            {
+
+
+                TempData["ClientError"] = "An Error occured while loading clients";
+                return View(Enumerable.Empty<ReadClientViewModel>());
+            }
+
         }
 
         [Authorize(Roles = "GeneralManager")]

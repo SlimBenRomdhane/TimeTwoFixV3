@@ -20,7 +20,7 @@ namespace TimeTwoFix.Core.Interfaces
         IInterventionRepository Interventions { get; }
         IInterventionSparePartRepository InterventionSpareParts { get; }
         ICategoryRepository Categories { get; }
-        IServiceRepository Services { get; }
+        IProvidedServiceRepository ProvidedServices { get; }
         ILiftingBridgeRepository LiftingBridges { get; }
         ISkillRepository Skills { get; }
         IMechanicSkillRepository MechanicSkills { get; }

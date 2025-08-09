@@ -11,7 +11,7 @@ namespace TimeTwoFix.Web.Mapping
             CreateMap<CreateLiftingBridgeViewModel, CreateLiftingBridgeDto>().ReverseMap();
             CreateMap<ReadLiftingBridgeViewModel, ReadLiftingBridgeDto>().ReverseMap();
             CreateMap<UpdateLiftingBridgeDto, UpdateLiftingBridgeViewModel>().ReverseMap();
-            CreateMap<DeleteLiftingBridgeViewModel, DeleteLiftingBridgeDto>();
+            CreateMap<DeleteLiftingBridgeViewModel, DeleteLiftingBridgeDto>().ReverseMap();
         }
     }
 

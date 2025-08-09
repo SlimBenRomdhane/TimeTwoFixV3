@@ -12,6 +12,6 @@ namespace TimeTwoFix.Core.Entities.ServiceManagement
         [MaxLength(100)]
         public string Description { get; set; }
 
-        public ICollection<Service> Services { get; set; }
+        public ICollection<ProvidedService> Services { get; set; }
     }
 }

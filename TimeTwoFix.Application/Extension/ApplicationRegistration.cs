@@ -1,10 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TimeTwoFix.Application.AppointmentServices.Interfaces;
 using TimeTwoFix.Application.AppointmentServices.Services;
+using TimeTwoFix.Application.CategoryService.Interfaces;
 using TimeTwoFix.Application.ClientServices.Interfaces;
 using TimeTwoFix.Application.ClientServices.Services;
 using TimeTwoFix.Application.LiftingBridgeServices.Interfaces;
 using TimeTwoFix.Application.LiftingBridgeServices.Services;
+using TimeTwoFix.Application.ProvidedServicesService.Interfaces;
+using TimeTwoFix.Application.ProvidedServicesService.Services;
 using TimeTwoFix.Application.UserServices.Interfaces;
 using TimeTwoFix.Application.UserServices.Services;
 using TimeTwoFix.Application.VehicleServices.Interfaces;
@@ -22,6 +25,8 @@ namespace TimeTwoFix.Application.Extension
             services.AddScoped<IVehicleService, VehicleService>();
             services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<ILiftingBridgeServices, LifitingBridgeServices>();
+            services.AddScoped<ICategoryService, CategoryService.Services.CategoryService>();
+            services.AddScoped<IProvidedServiceService, ProvidedServiceService>();
 
 
             return services;

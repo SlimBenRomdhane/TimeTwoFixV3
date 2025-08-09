@@ -1,0 +1,58 @@
+﻿@model IEnumerable<TimeTwoFix.Web.Models.ProvidedServiceModels.ReadProvidedServiceViewModel>
+
+@{
+    ViewData["Title"] = "Provided Services";
+}
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-dark">
+            <i class="bi bi-tools me-2"></i> Provided Services
+        </h2>
+        <a asp-action="Create" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i> Create New
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle table-light mb-0">
+                    <thead class="table-secondary">
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.CategoryId)</th>
+                            @* <th>@Html.DisplayNameFor(model => model.Id)</th> *@
+                            <th>@Html.DisplayNameFor(model => model.Name)</th>
+                            <th>@Html.DisplayNameFor(model => model.Description)</th>
+                            <th>@Html.DisplayNameFor(model => model.EstimatedTime)</th>
+                            <th>@Html.DisplayNameFor(model => model.PricePerHour)</th>
+                            <th>@Html.DisplayNameFor(model => model.Notes)</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.ReadCategoryViewModel.Name)</td>
+                                @* <td>@Html.DisplayFor(modelItem => item.Id)</td> *@
+                                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                                <td>@Html.DisplayFor(modelItem => item.EstimatedTime)</td>
+                                <td>@Html.DisplayFor(modelItem => item.PricePerHour)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Notes)</td>
+                                <td class="text-end">
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary">Edit</a>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-secondary">Details</a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

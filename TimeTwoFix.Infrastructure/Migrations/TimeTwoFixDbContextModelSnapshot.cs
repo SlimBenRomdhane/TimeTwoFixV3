@@ -405,7 +405,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("TimeTwoFix.Core.Entities.ServiceManagement.Service", b =>
+            modelBuilder.Entity("TimeTwoFix.Core.Entities.ServiceManagement.ProvidedService", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -464,7 +464,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Services");
+                    b.ToTable("ProvidedServices");
                 });
 
             modelBuilder.Entity("TimeTwoFix.Core.Entities.SkillManagement.MechanicSkill", b =>
@@ -747,7 +747,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 7, 23, 6, 23, 19, 839, DateTimeKind.Utc).AddTicks(9450),
+                            CreatedAt = new DateTime(2025, 8, 5, 6, 18, 18, 155, DateTimeKind.Utc).AddTicks(540),
                             Description = "Mechanic role with access to work orders and interventions.",
                             IsActive = true,
                             Name = "Mechanic",
@@ -757,7 +757,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 7, 23, 6, 23, 19, 839, DateTimeKind.Utc).AddTicks(9458),
+                            CreatedAt = new DateTime(2025, 8, 5, 6, 18, 18, 155, DateTimeKind.Utc).AddTicks(545),
                             Description = "Front Desk Assistant role with access to client management and appointments.",
                             IsActive = true,
                             Name = "FrontDeskAssistant",
@@ -767,7 +767,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2025, 7, 23, 6, 23, 19, 839, DateTimeKind.Utc).AddTicks(9459),
+                            CreatedAt = new DateTime(2025, 8, 5, 6, 18, 18, 155, DateTimeKind.Utc).AddTicks(547),
                             Description = "Warehouse Manager role with access to spare parts and inventory management.",
                             IsActive = true,
                             Name = "WareHouseManager",
@@ -777,7 +777,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2025, 7, 23, 6, 23, 19, 839, DateTimeKind.Utc).AddTicks(9460),
+                            CreatedAt = new DateTime(2025, 8, 5, 6, 18, 18, 155, DateTimeKind.Utc).AddTicks(548),
                             Description = "Workshop Manager role with access to workshop operations and team management.",
                             IsActive = true,
                             Name = "WorkshopManager",
@@ -787,7 +787,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2025, 7, 23, 6, 23, 19, 839, DateTimeKind.Utc).AddTicks(9461),
+                            CreatedAt = new DateTime(2025, 8, 5, 6, 18, 18, 155, DateTimeKind.Utc).AddTicks(549),
                             Description = "General Manager role with access to all operations and management.",
                             IsActive = true,
                             Name = "GeneralManager",
@@ -1178,8 +1178,8 @@ namespace TimeTwoFix.Infrastructure.Migrations
                             Id = 1,
                             Address = "admin",
                             City = "admin",
-                            ConcurrencyStamp = "7fc9ec02-03c1-46fe-ae75-19be8f4aa887",
-                            CreatedAt = new DateTime(2025, 7, 23, 6, 23, 19, 839, DateTimeKind.Utc).AddTicks(9754),
+                            ConcurrencyStamp = "a76b54c3-580c-437e-8ecf-1ab1a0f33c14",
+                            CreatedAt = new DateTime(2025, 8, 5, 6, 18, 18, 155, DateTimeKind.Utc).AddTicks(831),
                             Email = "admin@admin.com",
                             EmailConfirmed = false,
                             FirstName = "admin",
@@ -1190,11 +1190,11 @@ namespace TimeTwoFix.Infrastructure.Migrations
                             LastName = "admin",
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKc3z4CgAwxt3JiPtsBi4MG7MDsW1GG4vZzQczFiCRbMMxmddbP5B6HiwvFN731Qsw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEbO3YngLYZISDs2z61TloXHNimi6vkE7fBlqL1KqUpPdkTfULftAsR2p+A2KRG4bA==",
                             PhoneNumber = "99999999",
                             SecurityStamp = "00000000-0000-0000-0000-000000000000",
                             Status = "Active",
-                            UpdatedAt = new DateTime(2025, 7, 23, 6, 23, 19, 839, DateTimeKind.Utc).AddTicks(9755),
+                            UpdatedAt = new DateTime(2025, 8, 5, 6, 18, 18, 155, DateTimeKind.Utc).AddTicks(831),
                             UserName = "admin",
                             UserType = "GeneralManager",
                             YearsOfExperience = 0,
@@ -1313,7 +1313,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     b.Navigation("Vehicle");
                 });
 
-            modelBuilder.Entity("TimeTwoFix.Core.Entities.ServiceManagement.Service", b =>
+            modelBuilder.Entity("TimeTwoFix.Core.Entities.ServiceManagement.ProvidedService", b =>
                 {
                     b.HasOne("TimeTwoFix.Core.Entities.ServiceManagement.Category", "Category")
                         .WithMany("Services")
@@ -1387,7 +1387,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TimeTwoFix.Core.Entities.ServiceManagement.Service", "Service")
+                    b.HasOne("TimeTwoFix.Core.Entities.ServiceManagement.ProvidedService", "Service")
                         .WithMany()
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)

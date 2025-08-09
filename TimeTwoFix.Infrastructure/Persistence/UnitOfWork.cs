@@ -38,7 +38,7 @@ namespace TimeTwoFix.Infrastructure.Persistence
             _context = context;
             Clients = new ClientRepository(_context);
             Categories = new CategoryRepository(_context);
-            Services = new ServiceRepository(_context);
+            ProvidedServices = new ProvidedServiceRepository(_context);
             LiftingBridges = new LiftingBridgeRepository(_context);
             Skills = new SkillRepository(_context);
             Appointments = new AppointmentRepository(_context);
@@ -53,7 +53,7 @@ namespace TimeTwoFix.Infrastructure.Persistence
 
         public IClientRepository Clients { get; private set; }
         public ICategoryRepository Categories { get; private set; }
-        public IServiceRepository Services { get; private set; }
+        public IProvidedServiceRepository ProvidedServices { get; private set; }
         public ILiftingBridgeRepository LiftingBridges { get; private set; }
         public ISkillRepository Skills { get; private set; }
         public IAppointmentRepository Appointments { get; private set; }

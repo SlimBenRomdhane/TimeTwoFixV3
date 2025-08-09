@@ -4,7 +4,7 @@ using TimeTwoFix.Core.Common;
 
 namespace TimeTwoFix.Core.Entities.ServiceManagement
 {
-    public class Service : BaseEntity
+    public class ProvidedService : BaseEntity
     {
         [Required]
         [MaxLength(50)]

@@ -1,0 +1,62 @@
+﻿@model IEnumerable<TimeTwoFix.Web.Models.CategoryModels.ReadCategoryViewModel>
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<div class="container my-5">
+
+    <!-- Section Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="section-title text-primary fw-bold">
+            <i class="bi bi-tags me-2"></i> All Categories
+        </h2>
+        <a asp-action="Create" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i> Create New
+        </a>
+    </div>
+    <!-- Category Search Accordion -->
+    
+    <!-- Validation Message -->
+    @if (TempData["CategoryError"] != null)
+    {
+        <div class="alert alert-warning d-flex align-items-center mb-4">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <span>@TempData["CategoryError"]</span>
+        </div>
+    }
+    
+    <!-- Categories Table -->
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        @* <th>Id</th> *@
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Notes</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            @* <td>@item.Id</td> *@
+                            <td>@item.Name</td>
+                            <td>@item.Description</td>
+                            <td>@item.Notes</td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm">
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-warning" })
+                                    @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-outline-info" })
+                                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger" })
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

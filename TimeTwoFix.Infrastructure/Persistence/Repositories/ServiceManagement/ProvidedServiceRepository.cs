@@ -5,22 +5,22 @@ using TimeTwoFix.Infrastructure.Persistence.Repositories.Base;
 
 namespace TimeTwoFix.Infrastructure.Persistence.Repositories.ServiceManagement
 {
-    public class ServiceRepository : BaseRepository<Service>, IServiceRepository
+    public class ProvidedServiceRepository : BaseRepository<ProvidedService>, IProvidedServiceRepository
     {
-        public ServiceRepository(TimeTwoFixDbContext context) : base(context)
+        public ProvidedServiceRepository(TimeTwoFixDbContext context) : base(context)
         {
         }
 
-        public async Task<IEnumerable<Service>> GetServicesByNameAsync(string name)
+        public async Task<IEnumerable<ProvidedService>> GetServicesByNameAsync(string name)
         {
-            return await _context.Services
+            return await _context.ProvidedServices
                 .Where(s => s.Name.Contains(name))
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Service>> GetServicesByCategoryIdAsync(int categoryId)
+        public async Task<IEnumerable<ProvidedService>> GetServicesByCategoryIdAsync(int categoryId)
         {
-            return await _context.Services
+            return await _context.ProvidedServices
                 .Where(s => s.CategoryId == categoryId)
                 .ToListAsync();
         }

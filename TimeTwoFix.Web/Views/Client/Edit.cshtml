@@ -2,68 +2,110 @@
 
 @{
     ViewData["Title"] = "Edit Client";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-4">
-    <h1 class="text-center text-primary">Edit Client Information</h1>
-    <p class="text-center text-muted">Modify the details below and save your changes.</p>
+<div class="container-fluid px-4 py-4 bg-body-tertiary">
+    <div class="container bg-white rounded shadow-sm p-4">
 
-    <div class="card shadow-sm bg-light p-4">
+        <!-- ✏️ Header -->
+        <h2 class="text-primary fw-semibold mb-2">
+            <i class="bi bi-pencil-square me-2"></i> @ViewData["Title"]
+        </h2>
+        <p class="text-muted mb-4">Update client details and save your changes below.</p>
+
+        <!-- 🧾 Form -->
         <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-4"></div>
 
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label asp-for="Id" class="form-label text-muted">Client ID</label>
-                    <input asp-for="Id" class="form-control" disabled />
+            <!-- 🆔 Client ID -->
+            <div class="mb-4">
+                <h5 class="text-secondary fw-semibold border-bottom pb-2 mb-3">
+                    <i class="bi bi-fingerprint me-2"></i> Identity
+                </h5>
+                <div class="row gy-3">
+                    <div class="col-md-6">
+                        <label asp-for="Id" class="form-label text-muted">Client ID</label>
+                        <input asp-for="Id" class="form-control" disabled />
+                    </div>
                 </div>
             </div>
 
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label asp-for="FirstName" class="form-label text-dark">First Name</label>
-                    <input asp-for="FirstName" class="form-control" placeholder="Enter first name..." />
-                    <span asp-validation-for="FirstName" class="text-danger"></span>
-                </div>
-                <div class="col-md-6">
-                    <label asp-for="LastName" class="form-label text-dark">Last Name</label>
-                    <input asp-for="LastName" class="form-control" placeholder="Enter last name..." />
-                    <span asp-validation-for="LastName" class="text-danger"></span>
-                </div>
-            </div>
-
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label asp-for="Email" class="form-label text-dark">Email</label>
-                    <input asp-for="Email" class="form-control" placeholder="Enter email..." />
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-                <div class="col-md-6">
-                    <label asp-for="PhoneNumber" class="form-label text-dark">Phone Number</label>
-                    <input asp-for="PhoneNumber" class="form-control" placeholder="Enter phone number..." />
-                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            <!-- 🧍 Personal Info -->
+            <div class="mb-4">
+                <h5 class="text-secondary fw-semibold border-bottom pb-2 mb-3">
+                    <i class="bi bi-person-lines-fill me-2"></i> Personal Information
+                </h5>
+                <div class="row gy-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.FirstName, new { @class = "form-label fw-semibold" })
+                        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", placeholder = "Enter first name..." })
+                        @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger small" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.LastName, new { @class = "form-label fw-semibold" })
+                        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", placeholder = "Enter last name..." })
+                        @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger small" })
+                    </div>
                 </div>
             </div>
 
-            <div class="row g-3">
-                <div class="col-md-12">
-                    <label asp-for="Address" class="form-label text-dark">Address</label>
-                    <input asp-for="Address" class="form-control" placeholder="Enter address..." />
-                    <span asp-validation-for="Address" class="text-danger"></span>
-                </div>
-                <div class="col-md-6">
-                    <label asp-for="City" class="form-label text-dark">City</label>
-                    <input asp-for="City" class="form-control" placeholder="Enter city..." />
-                    <span asp-validation-for="City" class="text-danger"></span>
+            <!-- 📞 Contact Info -->
+            <div class="mb-4">
+                <h5 class="text-secondary fw-semibold border-bottom pb-2 mb-3">
+                    <i class="bi bi-geo-alt me-2"></i> Contact Information
+                </h5>
+                <div class="row gy-3">
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.Email, new { @class = "form-label fw-semibold" })
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Enter email..." })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.PhoneNumber, new { @class = "form-label fw-semibold" })
+                        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", placeholder = "Enter phone number..." })
+                        @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger small" })
+                    </div>
                 </div>
             </div>
 
-            <div class="d-flex justify-content-center mt-4 gap-3">
+            <!-- 🏠 Location Info -->
+            <div class="mb-4">
+                <h5 class="text-secondary fw-semibold border-bottom pb-2 mb-3">
+                    <i class="bi bi-house-door me-2"></i> Location
+                </h5>
+                <div class="row gy-3">
+                    <div class="col-md-12">
+                        @Html.LabelFor(m => m.Address, new { @class = "form-label fw-semibold" })
+                        @Html.TextBoxFor(m => m.Address, new { @class = "form-control", placeholder = "Enter address..." })
+                        @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger small" })
+                    </div>
+                    <div class="col-md-6">
+                        @Html.LabelFor(m => m.City, new { @class = "form-label fw-semibold" })
+                        @Html.TextBoxFor(m => m.City, new { @class = "form-control", placeholder = "Enter city..." })
+                        @Html.ValidationMessageFor(m => m.City, "", new { @class = "text-danger small" })
+                    </div>
+                </div>
+            </div>
+            <!-- 📝 Notes -->
+            <div class="mb-4">
+                <h5 class="text-secondary fw-semibold border-bottom pb-2 mb-3">
+                    <i class="bi bi-journal-text me-2"></i> Additional Notes
+                </h5>
+                <div>
+                    @Html.LabelFor(m => m.Notes, new { @class = "form-label fw-semibold" })
+                    @Html.TextAreaFor(m => m.Notes, 4, 50, new { @class = "form-control", placeholder = "Any additional info..." })
+                    @Html.ValidationMessageFor(m => m.Notes, "", new { @class = "text-danger small" })
+                </div>
+            </div>
+
+            <!-- 🎯 Actions -->
+            <div class="d-flex justify-content-end gap-3 pt-3 border-top">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-save"></i> Save Changes
+                    <i class="bi bi-save me-1"></i> Save Changes
                 </button>
-                <a asp-action="Index" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Back to List
+                <a asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i> Back to List
                 </a>
             </div>
         </form>
