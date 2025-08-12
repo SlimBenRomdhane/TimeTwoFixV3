@@ -9,6 +9,6 @@ namespace TimeTwoFix.Core.Interfaces.Repositories.WorkOrderManagement
 
         Task<IEnumerable<WorkOrder>> GetWorkOrdersByVehicleIdAsync(int vehicleId);
 
-        Task<IEnumerable<WorkOrder>> GetWorkOrdersByDateRangeAsync(DateTime startDate, DateTime endDate);
+        Task<IEnumerable<WorkOrder>> GetWorkOrdersByDateRangeAsync(DateOnly startDate, DateOnly endDate);
     }
 }

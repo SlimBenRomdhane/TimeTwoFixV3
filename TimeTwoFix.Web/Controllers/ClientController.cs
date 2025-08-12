@@ -162,7 +162,7 @@ namespace TimeTwoFix.Web.Controllers
                 var clientDto = _mapper.Map<UpdateClientDto>(updateClientViewModel);
 
                 var updatedClient = _mapper.Map(clientDto, client);
-                updatedClient.UpdatedAt = DateTime.UtcNow;
+                //updatedClient.UpdatedAt = DateTime.Now;
                 updatedClient.UpdatedBy = User.Identity?.Name;
                 await _clientServices.UpdateAsyncServiceGeneric(updatedClient);
                 //await _unitOfWork.SaveChangesAsync();

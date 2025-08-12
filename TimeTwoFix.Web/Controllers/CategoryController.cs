@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using TimeTwoFix.Application.CategoryService.Dtos;
 using TimeTwoFix.Application.CategoryService.Interfaces;
 using TimeTwoFix.Core.Entities.ServiceManagement;
@@ -181,30 +180,41 @@ namespace TimeTwoFix.Web.Controllers
         }
 
         // GET: CategoryController/Delete/5
+        [Authorize(Roles = "GeneralManager")]
         public async Task<ActionResult> Delete(int id)
         {
-            var category = await _categoryService.GetByIdAsyncServiceGeneric(id);
-            if (category == null)
+            try
             {
-                TempData["CategoryError"] = "Category not found";
-                return NotFound();
+                var category = await _categoryService.GetByIdAsyncServiceGeneric(id);
+                if (category == null || category.IsDeleted == true)
+                {
+                    TempData["CategoryError"] = "Category not found";
+                    return View();
+                }
+                var categoryDto = _mapper.Map<DeleteCategoryDto>(category);
+                var categoryViewModel = _mapper.Map<DeleteCategoryViewModel>(categoryDto);
+                return View(categoryViewModel);
             }
-            var categoryDto = _mapper.Map<DeleteCategoryDto>(category);
-            var categoryViewModel = _mapper.Map<DeleteCategoryViewModel>(categoryDto);
+            catch (Exception ex)
+            {
+                TempData["CategoryError"] = "An error occurred while retrieving the category for deletion " + ex.Message;
 
+                return View();
+            }
 
-            return View(categoryViewModel);
         }
 
         // POST: CategoryController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "GeneralManager")]
         public async Task<ActionResult> Delete(DeleteCategoryViewModel deleteCategoryViewModel)
         {
             try
             {
                 var category = await _categoryService.GetByIdAsyncServiceGeneric(deleteCategoryViewModel.Id);
-                if (category == null)
+
+                if (category == null || category.IsDeleted == true)
                 {
                     TempData["CategoryError"] = "Category not found";
                     return NotFound();
@@ -212,6 +222,7 @@ namespace TimeTwoFix.Web.Controllers
 
                 category.IsDeleted = true; // Mark as deleted
                 category.DeletedBy = User.Identity?.Name;
+                category.DeletedAt = DateTime.Now; // Set deletion timestamp
 
                 await _categoryService.UpdateAsyncServiceGeneric(category);
 

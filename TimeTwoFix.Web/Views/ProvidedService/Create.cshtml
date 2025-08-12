@@ -1,60 +1,93 @@
 ﻿@model TimeTwoFix.Web.Models.ProvidedServiceModels.CreateProvidedServiceViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Provided Service";
 }
 
-<h1>Create</h1>
+<div class="container my-5">
 
-<h4>CreateProvidedServiceViewModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="CategoryId" class="control-label">Category</label>
-                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories">
-                    <option value="">-- Select Category --</option>
-                </select>
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EstimatedTime" class="control-label"></label>
-                <input asp-for="EstimatedTime" class="form-control" />
-                <span asp-validation-for="EstimatedTime" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="PricePerHour" class="control-label"></label>
-                <input asp-for="PricePerHour" class="form-control" />
-                <span asp-validation-for="PricePerHour" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Notes" class="control-label"></label>
-                <input asp-for="Notes" class="form-control" />
-                <span asp-validation-for="Notes" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+    <!-- Header -->
+    <h2 class="section-title text-primary fw-bold mb-2">
+        <i class="bi bi-tools me-2"></i> Create Provided Service
+    </h2>
+    <p class="text-muted mb-4">
+        Please fill in the service details. Fields marked with <span class="text-danger">*</span> are required.
+    </p>
+
+    <!-- Form Card -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form asp-action="Create" class="needs-validation" novalidate>
+
+                <!-- Validation Summary -->
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <!-- Section: Service Info -->
+                <div class="form-section mb-5">
+                    <h5 class="form-section-header text-secondary mb-3">
+                        <i class="bi bi-journals me-2"></i> Service Details
+                    </h5>
+
+                    <div class="mb-3">
+                        <label asp-for="CategoryId" class="form-label">Category <span class="text-danger">*</span></label>
+                        <select asp-for="CategoryId" class="form-select" asp-items="ViewBag.Categories">
+                            <option value="">-- Select Category --</option>
+                        </select>
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Service Name <span class="text-danger">*</span></label>
+                        <input asp-for="Name" class="form-control" placeholder="e.g. Engine Diagnostics" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Description <span class="text-danger">*</span></label>
+                        <textarea asp-for="Description" class="form-control" rows="3" placeholder="Brief description of the service"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="EstimatedTime" class="form-label">Estimated Time (mns) <span class="text-danger">*</span></label>
+                            <input asp-for="EstimatedTime" class="form-control" placeholder="e.g. 2.5" />
+                            <span asp-validation-for="EstimatedTime" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="PricePerHour" class="form-label">Price Per Hour <span class="text-danger">*</span></label>
+                            <input asp-for="PricePerHour" class="form-control" placeholder="e.g. 75.00" />
+                            <span asp-validation-for="PricePerHour" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Notes" class="form-label">Additional Notes</label>
+                        <textarea asp-for="Notes" class="form-control" rows="2" placeholder="Optional notes or instructions"></textarea>
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="bi bi-check-circle me-1"></i> Create Service
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Back Link -->
+    <div class="mt-4 text-center">
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Back to Service List
+        </a>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

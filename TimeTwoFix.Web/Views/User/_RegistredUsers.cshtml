@@ -2,55 +2,72 @@
 
 <div class="row mt-5">
     <div class="col-12">
-        <div class="card shadow-sm">
+        <div class="card shadow-sm border-0">
             <div class="card-body">
-                <h4 class="card-title">Registered Users</h4>
+                <h4 class="card-title text-primary fw-bold mb-3">
+                    <i class="bi bi-person-lines-fill me-2"></i> Registered Users
+                </h4>
+
                 @if (Model.Item1 != null && Model.Item1.Any())
                 {
-                    <table class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>User Type</th>
-                                <th>Name</th>
-                                <th>Address</th>
-                                <th>City</th>
-                                <th>Zip Code</th>
-                                <th>Phone Number</th>
-                                <th>Email</th>
-                                <th>Hire Date</th>
-                                <th>Years of Experience</th>
-                                <th>Last Employer</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var user in Model.Item1)
-                            {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle text-nowrap">
+                            <thead class="table-light">
                                 <tr>
-                                    <td>@user.UserType</td>
-                                    <td>@user.FirstName @user.LastName</td>
-                                    <td>@user.Address</td>
-                                    <td>@user.City</td>
-                                    <td>@user.ZipCode</td>
-                                    <td>@user.PhoneNumber</td>
-                                    <td>@user.Email</td>
-                                    <td>@user.HireDate.ToShortDateString()</td>
-                                    <td>@user.YearsOfExperience</td>
-                                    <td>@user.LastEmployer</td>
-                                    <td>@user.Status</td>
-                                    <td>
-                                        <a asp-controller="User" asp-action="Edit" asp-route-id="@user.Email" class="btn btn-general btn-sm" title="Edit this user"><i class="fas fa-edit"></i> Edit</a>
-                                        <a asp-controller="User" asp-action="Delete" asp-route-id="@user.Email" class="btn btn-warehouse btn-sm" title="Delete this user"><i class="fas fa-trash"></i> Delete</a>
-                                    </td>
+                                    <th>User Type</th>
+                                    <th>Name</th>
+                                    <th>Address</th>
+                                    <th>City</th>
+                                    <th>Zip Code</th>
+                                    <th>Phone Number</th>
+                                    <th>Email</th>
+                                    <th>Hire Date</th>
+                                    <th>Years of Experience</th>
+                                    <th>Last Employer</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in Model.Item1)
+                                {
+                                    <tr>
+                                        <td>@user.UserType</td>
+                                        <td>@user.FirstName @user.LastName</td>
+                                        <td>@user.Address</td>
+                                        <td>@user.City</td>
+                                        <td>@user.ZipCode</td>
+                                        <td>@user.PhoneNumber</td>
+                                        <td>@user.Email</td>
+                                        <td>@user.HireDate.ToShortDateString()</td>
+                                        <td>@user.YearsOfExperience</td>
+                                        <td>@user.LastEmployer</td>
+                                        <td>
+                                            <span class="badge @(user.Status == "Active" ? "bg-success" : "bg-secondary")">
+                                                @user.Status
+                                            </span>
+                                        </td>
+                                        <td class="text-nowrap">
+                                            <a asp-controller="User" asp-action="Edit" asp-route-id="@user.Email"
+                                               class="btn btn-sm btn-general me-2" title="Edit this user">
+                                                <i class="fas fa-edit me-1"></i> Edit
+                                            </a>
+                                            <a asp-controller="User" asp-action="Delete" asp-route-id="@user.Email"
+                                               class="btn btn-sm btn-warehouse" title="Delete this user">
+                                                <i class="fas fa-trash me-1"></i> Delete
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
                 }
                 else
                 {
-                    <p class="text-muted">No users found.</p>
+                    <div class="alert alert-info text-center">
+                        <i class="bi bi-info-circle me-2"></i> No registered users found.
+                    </div>
                 }
             </div>
         </div>

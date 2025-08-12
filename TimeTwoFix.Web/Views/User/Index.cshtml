@@ -1,44 +1,81 @@
-﻿@* @using TimeTwoFix.Web.Models.UserModels
-@model Tuple<List<ReadUserViewModel>, List<ReadRoleViewModel>> *@
+﻿@model Tuple<List<ReadUserViewModel>, List<ReadRoleViewModel>>
 
 @{
     ViewData["Title"] = "User Management";
 }
 
-<div class="container mt-4">
-    <h2 class="text-center">User Management Dashboard</h2>
+<div class="container my-5">
 
-    <!-- User Actions -->
-    <div class="row mt-4">
+    <!-- Header -->
+    <h2 class="text-primary fw-bold mb-3">
+        <i class="bi bi-people-fill me-2"></i> User Management Dashboard
+    </h2>
+    <p class="text-muted mb-4">
+        Manage users and roles across your workshop system. Choose a user type to create or define new roles.
+    </p>
+
+    <!-- Action Cards -->
+    <div class="row g-4 mb-5">
+        <!-- Create User Card -->
         <div class="col-md-6">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm border-0">
                 <div class="card-body">
-                    <h5 class="card-title">Create New User</h5>
+                    <h5 class="card-title text-secondary">
+                        <i class="bi bi-person-plus me-2"></i> Create New User
+                    </h5>
                     <p class="card-text">Select the type of user you want to create.</p>
                     <div class="d-grid gap-2">
-                        <a asp-action="CreateMechanic" class="btn btn-mechanic" title="Create a new mechanic user"><i class="fas fa-wrench"></i> Mechanic</a>
-                        <a asp-action="CreateWorkShopManager" class="btn btn-workshop" title="Create a new workshop manager"><i class="fas fa-tools"></i> Workshop Manager</a>
-                        <a asp-action="CreateGeneralManager" class="btn btn-general" title="Create a new general manager"><i class="fas fa-briefcase"></i> General Manager</a>
-                        <a asp-action="CreateAssistant" class="btn btn-assistant" title="Create a new front desk assistant"><i class="fas fa-headset"></i> Front Desk Assistant</a>
-                        <a asp-action="CreateWareHouseManager" class="btn btn-warehouse" title="Create a new warehouse manager"><i class="fas fa-warehouse"></i> Warehouse Manager</a>
+                        <a asp-action="CreateMechanic" class="btn btn-mechanic">
+                            <i class="fas fa-wrench me-1"></i> Mechanic
+                        </a>
+                        <a asp-action="CreateWorkShopManager" class="btn btn-workshop">
+                            <i class="fas fa-tools me-1"></i> Workshop Manager
+                        </a>
+                        <a asp-action="CreateGeneralManager" class="btn btn-general">
+                            <i class="fas fa-briefcase me-1"></i> General Manager
+                        </a>
+                        <a asp-action="CreateAssistant" class="btn btn-assistant">
+                            <i class="fas fa-headset me-1"></i> Front Desk Assistant
+                        </a>
+                        <a asp-action="CreateWareHouseManager" class="btn btn-warehouse">
+                            <i class="fas fa-warehouse me-1"></i> Warehouse Manager
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Create Role Card -->
         <div class="col-md-6">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm border-0">
                 <div class="card-body">
-                    <h5 class="card-title">Create New Role</h5>
-                    <div class="d-grid gap-2">
-                        <a asp-action="CreateRole" class="btn btn-secondary" title="Create a new role"><i class="fas fa-user-tag"></i> Create New Role</a>
+                    <h5 class="card-title text-secondary">
+                        <i class="bi bi-person-badge me-2"></i> Create New Role
+                    </h5>
+                    <p class="card-text">Define a new role with specific permissions and responsibilities.</p>
+                    <div class="d-grid">
+                        <a asp-action="CreateRole" class="btn btn-secondary">
+                            <i class="fas fa-user-tag me-1"></i> Create Role
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Roles List Section -->
-    <partial name="_AvailableRoles" model="Model" />
-    <!-- Users List Section -->
-    <partial name="_RegistredUsers" model="Model" />
+    <!-- Roles List -->
+    <div class="mb-5">
+        <h5 class="text-secondary mb-3">
+            <i class="bi bi-shield-lock me-2"></i> Available Roles
+        </h5>
+        <partial name="_AvailableRoles" model="Model" />
+    </div>
+
+    <!-- Users List -->
+    <div>
+        <h5 class="text-secondary mb-3">
+            <i class="bi bi-person-lines-fill me-2"></i> Registered Users
+        </h5>
+        <partial name="_RegistredUsers" model="Model" />
+    </div>
 </div>

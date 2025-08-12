@@ -33,7 +33,7 @@ namespace TimeTwoFix.Application.ClientServices.Dtos
 
         public UpdateClientDto()
         {
-            UpdatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.Now;
         }
     }
 }

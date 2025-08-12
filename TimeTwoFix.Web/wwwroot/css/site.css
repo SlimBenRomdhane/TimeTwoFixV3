@@ -122,3 +122,7 @@ table.table {
     padding: 10px 12px;
     border-radius: 6px;
 }
+
+.bg-workshop-card {
+    background-color: #e1b382; /* Soft gray — adjust to match your palette */
+}

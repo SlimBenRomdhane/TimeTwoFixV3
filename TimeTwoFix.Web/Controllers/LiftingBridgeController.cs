@@ -9,6 +9,7 @@ using TimeTwoFix.Web.Models.LiftingBridgeModels;
 
 namespace TimeTwoFix.Web.Controllers
 {
+    [Authorize(Roles = "GeneralManager,WorkshopManager")]
     public class LiftingBridgeController : Controller
     {
         private readonly IMapper _mapper;

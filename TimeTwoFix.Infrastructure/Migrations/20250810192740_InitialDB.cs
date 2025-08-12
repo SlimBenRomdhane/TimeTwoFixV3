@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -7,7 +8,7 @@
 namespace TimeTwoFix.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitailDB : Migration
+    public partial class InitialDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,12 +22,12 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
@@ -43,16 +44,16 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     City = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Notes = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
@@ -77,7 +78,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     YearsOfExperience = table.Column<int>(type: "int", nullable: false),
                     LastEmployer = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    UserType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RoleTypeDiscriminator = table.Column<string>(type: "nvarchar(21)", maxLength: 21, nullable: false),
@@ -117,17 +118,17 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Location = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    InstallationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    InstallationDate = table.Column<DateOnly>(type: "date", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LoadCapacity = table.Column<int>(type: "int", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
@@ -162,12 +163,12 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Notes = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
@@ -188,12 +189,12 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     QuantityInStock = table.Column<int>(type: "int", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
@@ -202,7 +203,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Services",
+                name: "ProvidedServices",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -213,19 +214,19 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     PricePerHour = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Services", x => x.Id);
+                    table.PrimaryKey("PK_ProvidedServices", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Services_Categories_CategoryId",
+                        name: "FK_ProvidedServices_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
@@ -239,7 +240,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ClientId = table.Column<int>(type: "int", nullable: false),
-                    Vin = table.Column<string>(type: "nvarchar(17)", maxLength: 17, nullable: false),
+                    Vin = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     Brand = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Model = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     LicensePlate = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
@@ -248,12 +249,12 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     Year = table.Column<int>(type: "int", nullable: false),
                     Mileage = table.Column<int>(type: "int", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
@@ -384,12 +385,12 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     ProficiencyLevel = table.Column<int>(type: "int", nullable: false),
                     YearsOfExperience = table.Column<int>(type: "int", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
@@ -425,12 +426,12 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     Urgency = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
@@ -452,17 +453,19 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     VehicleId = table.Column<int>(type: "int", nullable: false),
                     Mileage = table.Column<int>(type: "int", nullable: false),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    StartTime = table.Column<TimeOnly>(type: "time", nullable: false),
+                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    EndTime = table.Column<TimeOnly>(type: "time", nullable: false),
                     TolalLaborCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
@@ -492,12 +495,12 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     InterventionPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
@@ -516,9 +519,9 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Interventions_Services_ServiceId",
+                        name: "FK_Interventions_ProvidedServices_ServiceId",
                         column: x => x.ServiceId,
-                        principalTable: "Services",
+                        principalTable: "ProvidedServices",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -540,12 +543,12 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     DeliveryNote = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     CreatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
-                    DeletedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedBy = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
@@ -568,18 +571,18 @@ namespace TimeTwoFix.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "Employees",
                 columns: new[] { "Id", "Address", "City", "ConcurrencyStamp", "CreatedAt", "Email", "EmailConfirmed", "FirstName", "HireDate", "HourlyWage", "ImageUrl", "LastEmployer", "LastName", "NormalizedEmail", "NormalizedUserName", "OfficeNumber", "PasswordHash", "PhoneNumber", "RoleTypeDiscriminator", "SecurityStamp", "Status", "UpdatedAt", "UserName", "UserType", "YearsInManagement", "YearsOfExperience", "ZipCode" },
-                values: new object[] { 1, "admin", "admin", "cdce97a4-56ef-494e-8912-1b2f19dacabe", new DateTime(2025, 5, 28, 9, 40, 14, 875, DateTimeKind.Utc).AddTicks(8441), "admin@admin.com", false, "admin", new DateOnly(1, 1, 1), 0m, "admin", "admin", "admin", "ADMIN@ADMIN.COM", "ADMIN", "manager", "AQAAAAIAAYagAAAAEC/V/FDk4+lnJJnFbnG0fvZ/a0aA/zwcOy1Og8+qfGJCxgHbcn2kAyj15ab53RofVg==", "99999999", "GeneralManager", "00000000-0000-0000-0000-000000000000", "Active", new DateTime(2025, 5, 28, 9, 40, 14, 875, DateTimeKind.Utc).AddTicks(8441), "admin", "GeneralManager", 99, 0, 0 });
+                values: new object[] { 1, "admin", "admin", "7f60afaa-71ba-4121-9dcd-bfdfda02499f", new DateTime(2025, 8, 10, 19, 27, 39, 107, DateTimeKind.Utc).AddTicks(944), "admin@admin.com", false, "admin", new DateOnly(1, 1, 1), 0m, "admin", "admin", "admin", "ADMIN@ADMIN.COM", "ADMIN", "manager", "AQAAAAIAAYagAAAAEOCrWojsZzFm/zlQ/x1/nN8YqKk9SAmRbpUuYfHD9nfFwlumzb3mm2lOwrjZSl5H+A==", "99999999", "GeneralManager", "00000000-0000-0000-0000-000000000000", "Active", new DateTime(2025, 8, 10, 19, 27, 39, 107, DateTimeKind.Utc).AddTicks(944), "admin", "GeneralManager", 99, 0, 0 });
 
             migrationBuilder.InsertData(
                 table: "Roles",
                 columns: new[] { "Id", "CreatedAt", "Description", "IsActive", "Name", "NormalizedName", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 5, 28, 9, 40, 14, 875, DateTimeKind.Utc).AddTicks(8197), "Mechanic role with access to work orders and interventions.", true, "Mechanic", "MECHANIC", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, new DateTime(2025, 5, 28, 9, 40, 14, 875, DateTimeKind.Utc).AddTicks(8203), "Front Desk Assistant role with access to client management and appointments.", true, "FrontDeskAssistant", "FRONTDESKASSISTANT", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 3, new DateTime(2025, 5, 28, 9, 40, 14, 875, DateTimeKind.Utc).AddTicks(8204), "Warehouse Manager role with access to spare parts and inventory management.", true, "WareHouseManager", "WAREHOUSEMANAGER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 4, new DateTime(2025, 5, 28, 9, 40, 14, 875, DateTimeKind.Utc).AddTicks(8206), "Workshop Manager role with access to workshop operations and team management.", true, "WorkshopManager", "WORKSHOPMANAGER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 5, new DateTime(2025, 5, 28, 9, 40, 14, 875, DateTimeKind.Utc).AddTicks(8207), "General Manager role with access to all operations and management.", true, "GeneralManager", "GENERALMANAGER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 1, new DateTime(2025, 8, 10, 19, 27, 39, 107, DateTimeKind.Utc).AddTicks(632), "Mechanic role with access to work orders and interventions.", true, "Mechanic", "MECHANIC", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, new DateTime(2025, 8, 10, 19, 27, 39, 107, DateTimeKind.Utc).AddTicks(635), "Front Desk Assistant role with access to client management and appointments.", true, "FrontDeskAssistant", "FRONTDESKASSISTANT", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, new DateTime(2025, 8, 10, 19, 27, 39, 107, DateTimeKind.Utc).AddTicks(636), "Warehouse Manager role with access to spare parts and inventory management.", true, "WareHouseManager", "WAREHOUSEMANAGER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 4, new DateTime(2025, 8, 10, 19, 27, 39, 107, DateTimeKind.Utc).AddTicks(637), "Workshop Manager role with access to workshop operations and team management.", true, "WorkshopManager", "WORKSHOPMANAGER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 5, new DateTime(2025, 8, 10, 19, 27, 39, 107, DateTimeKind.Utc).AddTicks(638), "General Manager role with access to all operations and management.", true, "GeneralManager", "GENERALMANAGER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(
@@ -611,7 +614,8 @@ namespace TimeTwoFix.Infrastructure.Migrations
                 name: "IX_Clients_Email",
                 table: "Clients",
                 column: "Email",
-                unique: true);
+                unique: true,
+                filter: "[Email] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
@@ -672,16 +676,16 @@ namespace TimeTwoFix.Infrastructure.Migrations
                 column: "SkillId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProvidedServices_CategoryId",
+                table: "ProvidedServices",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 table: "Roles",
                 column: "NormalizedName",
                 unique: true,
                 filter: "[NormalizedName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Services_CategoryId",
-                table: "Services",
-                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SpareParts_PartCode",
@@ -757,7 +761,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                 name: "LiftingBridges");
 
             migrationBuilder.DropTable(
-                name: "Services");
+                name: "ProvidedServices");
 
             migrationBuilder.DropTable(
                 name: "WorkOrders");

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TimeTwoFix.Application.CategoryService.Interfaces;
@@ -9,6 +10,7 @@ using TimeTwoFix.Web.Models.ProvidedServiceModels;
 
 namespace TimeTwoFix.Web.Controllers
 {
+    [Authorize(Roles = "GeneralManager,WorkshopManager")]
     public class ProvidedServiceController : Controller
     {
 
@@ -159,9 +161,10 @@ namespace TimeTwoFix.Web.Controllers
         }
 
         // GET: ProvidedServiceController/Delete/5
+        [Authorize(Roles = "GeneralManager")]
         public async Task<ActionResult> Delete(int id)
         {
-            var service = await _providedServiceService.GetByIdAsyncServiceGeneric(id);
+            var service = await _providedServiceService.GetByIdAsyncServiceGeneric(id, c => c.Category);
             if (service == null)
             {
                 return NotFound($"Provided service with ID {id} not found.");
@@ -175,6 +178,7 @@ namespace TimeTwoFix.Web.Controllers
         // POST: ProvidedServiceController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "GeneralManager")]
         public async Task<ActionResult> Delete(DeleteProvidedServiceViewModel deleteProvidedServiceViewModel)
         {
             try

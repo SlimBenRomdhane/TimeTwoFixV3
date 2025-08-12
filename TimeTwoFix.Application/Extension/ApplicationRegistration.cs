@@ -12,6 +12,7 @@ using TimeTwoFix.Application.UserServices.Interfaces;
 using TimeTwoFix.Application.UserServices.Services;
 using TimeTwoFix.Application.VehicleServices.Interfaces;
 using TimeTwoFix.Application.VehicleServices.Services;
+using TimeTwoFix.Application.WorkOrderService.Interfaces;
 
 namespace TimeTwoFix.Application.Extension
 {
@@ -27,6 +28,7 @@ namespace TimeTwoFix.Application.Extension
             services.AddScoped<ILiftingBridgeServices, LifitingBridgeServices>();
             services.AddScoped<ICategoryService, CategoryService.Services.CategoryService>();
             services.AddScoped<IProvidedServiceService, ProvidedServiceService>();
+            services.AddScoped<IWorkOrderService, WorkOrderService.Services.WorkOrderService>();
 
 
             return services;
