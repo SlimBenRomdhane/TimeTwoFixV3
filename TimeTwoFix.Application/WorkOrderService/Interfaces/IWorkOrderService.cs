@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TimeTwoFix.Application.Base;
 using TimeTwoFix.Application.WorkOrderService.Dtos;
 using TimeTwoFix.Core.Entities.WorkOrderManagement;
 
 namespace TimeTwoFix.Application.WorkOrderService.Interfaces
 {
-    public interface IWorkOrderService
+    public interface IWorkOrderService : IBaseService<WorkOrder>
     {
         Task<IEnumerable<ReadWorkOrderDto>> GetWorkOrdersByStatus(string status);
 

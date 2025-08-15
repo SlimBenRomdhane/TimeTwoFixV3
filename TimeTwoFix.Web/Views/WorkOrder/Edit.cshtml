@@ -1,0 +1,72 @@
+﻿@model TimeTwoFix.Web.Models.WorkOrderModels.UpdateWorkOrderViewModel
+
+@{
+    ViewData["Title"] = "Edit Work Order";
+}
+
+<div class="row mt-5 justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="card-title text-center">
+                    <i class="fas fa-tools me-2"></i> Edit Work Order
+                </h2>
+
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    <input type="hidden" asp-for="Id" />
+                    
+
+                    <div class="mb-3">
+                        <label asp-for="VehicleId" class="form-label"></label>
+                        <select asp-for="VehicleId" class="form-select" asp-items="ViewBag.VehicleList">
+                            <option value="">-- Select Vehicle --</option>
+                        </select>
+                        <span asp-validation-for="VehicleId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Mileage" class="form-label"></label>
+                        <input asp-for="Mileage" class="form-control" />
+                        <span asp-validation-for="Mileage" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="TolalLaborCost" class="form-label"></label>
+                        <input asp-for="TolalLaborCost" class="form-control" type="number" />
+                        <span asp-validation-for="TolalLaborCost" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Status" class="form-label"></label>
+                        <select asp-for="Status" class="form-select" asp-items="ViewBag.WorkOrderStatusList">
+                            <option value="">-- Select Status --</option>
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Notes" class="form-label"></label>
+                        <input asp-for="Notes" class="form-control" />
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-general btn-sm me-2" title="Save changes">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary btn-sm" title="Return to work order list">
+                            <i class="fas fa-arrow-left"></i> Back to List
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

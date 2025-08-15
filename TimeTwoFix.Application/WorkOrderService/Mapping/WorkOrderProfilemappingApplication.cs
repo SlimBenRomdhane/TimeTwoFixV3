@@ -9,14 +9,18 @@ using TimeTwoFix.Core.Entities.WorkOrderManagement;
 
 namespace TimeTwoFix.Application.WorkOrderService.Mapping
 {
-    public class WorkOrderProfilemappingApplication : Profile
+    public class WorkOrderProfileMappingApplication : Profile
     {
-        public WorkOrderProfilemappingApplication()
+        public WorkOrderProfileMappingApplication()
         {
-            CreateMap<WorkOrder, ReadWorkOrderDto>();
+            CreateMap<WorkOrder, ReadWorkOrderDto>()
+                .ForMember(dest => dest.VehicleDto, opt => opt.MapFrom(src => src.Vehicle));
             CreateMap<CreateWorkOrderDto, WorkOrder>();
             CreateMap<UpdateWorkOrderDto, WorkOrder>();
-            CreateMap<DeleteWorkOrderDto, WorkOrder>();
+            CreateMap<DeleteWorkOrderDto, WorkOrder>()
+                .ForMember(dest => dest.Vehicle, opt => opt.MapFrom(src => src.VehicleDto))
+                .ReverseMap();
+            CreateMap<WorkOrder, UpdateWorkOrderDto>();
 
         }
     }

@@ -1,0 +1,84 @@
+﻿@model TimeTwoFix.Web.Models.WorkOrderModels.ReadWorkOrderViewModel
+
+@{
+    ViewData["Title"] = "Work Order Details";
+}
+
+<div class="row mt-5 justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="card-title text-center">
+                    <i class="fas fa-tools me-2"></i> Work Order Summary
+                </h2>
+
+                <!-- Vehicle Info -->
+                <h5 class="text-dark mb-3">
+                    <i class="fas fa-car me-1"></i> Vehicle Info
+                </h5>
+                <div class="row gy-2 mb-4">
+                    <div class="col-md-6">
+                        <label class="text-muted">VIN</label>
+                        <div class="fw-semibold">@Model.VehicleViewModel?.Vin</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted">License Plate</label>
+                        <div class="fw-semibold">@Model.VehicleViewModel?.LicensePlate</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted">Brand</label>
+                        <div>@Model.VehicleViewModel?.Brand</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted">Model</label>
+                        <div>@Model.VehicleViewModel?.Model</div>
+                    </div>
+                </div>
+
+                <hr />
+
+                <!-- Work Order Details -->
+                <h5 class="text-dark mb-3">
+                    <i class="fas fa-clipboard-list me-1"></i> Work Order Details
+                </h5>
+                <div class="row gy-2 mb-4">
+                    <div class="col-md-6">
+                        <label class="text-muted">Mileage</label>
+                        <div>@Model.Mileage</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-muted">Labor Cost</label>
+                        <div>@Model.TolalLaborCost</div>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="text-muted">Notes</label>
+                        <div>@Model.Notes</div>
+                    </div>
+                </div>
+
+                <hr />
+
+                <!-- Status -->
+                <h5 class="text-dark mb-3">
+                    <i class="fas fa-info-circle me-1"></i> Status
+                </h5>
+                <div class="row gy-2">
+                    <div class="col-md-6">
+                        <label class="text-muted">Status</label>
+                        <span class="badge badge-status rounded-pill px-3 py-2" title="Work order status">@Model.Status</span>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="text-center mt-4">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-general btn-sm me-2" title="Edit this work order">
+                        <i class="fas fa-edit"></i> Edit Work Order
+                    </a>
+                    <a asp-action="Index" class="btn btn-secondary btn-sm" title="Return to work order list">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

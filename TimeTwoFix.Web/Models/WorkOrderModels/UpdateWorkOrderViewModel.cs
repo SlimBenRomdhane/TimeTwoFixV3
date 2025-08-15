@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TimeTwoFix.Application.WorkOrderService.Dtos
+﻿namespace TimeTwoFix.Web.Models.WorkOrderModels
 {
-    public class UpdateWorkOrderDto
+    public class UpdateWorkOrderViewModel
     {
         public int Id { get; set; }
         public int VehicleId { get; set; }
@@ -17,8 +11,7 @@ namespace TimeTwoFix.Application.WorkOrderService.Dtos
         public TimeOnly EndTime { get; set; }
         public decimal? TolalLaborCost { get; set; }
         public string Status { get; set; }
-        public string Notes { get; set; }
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
-        public string UpdatedBy { get; set; }
+        public string? Notes { get; set; }
+
     }
 }
