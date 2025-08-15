@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeTwoFix.Application", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeTwoFix.Infrastructure", "TimeTwoFix.Infrastructure\TimeTwoFix.Infrastructure.csproj", "{868DFF18-4B24-40F0-8B39-C654FA5152F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeTwoFix.Test", "TimeTwoFix.Test\TimeTwoFix.Test.csproj", "{ECC0AB1A-B64D-4848-BE2A-E2276001A2FD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeTwoFix.Web", "TimeTwoFix.Web\TimeTwoFix.Web.csproj", "{38669A6C-ED9F-4D34-BC83-0246A13D8958}"
 EndProject
 Global
@@ -31,10 +29,6 @@ Global
 		{868DFF18-4B24-40F0-8B39-C654FA5152F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{868DFF18-4B24-40F0-8B39-C654FA5152F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{868DFF18-4B24-40F0-8B39-C654FA5152F0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ECC0AB1A-B64D-4848-BE2A-E2276001A2FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ECC0AB1A-B64D-4848-BE2A-E2276001A2FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ECC0AB1A-B64D-4848-BE2A-E2276001A2FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ECC0AB1A-B64D-4848-BE2A-E2276001A2FD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{38669A6C-ED9F-4D34-BC83-0246A13D8958}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{38669A6C-ED9F-4D34-BC83-0246A13D8958}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38669A6C-ED9F-4D34-BC83-0246A13D8958}.Release|Any CPU.ActiveCfg = Release|Any CPU
