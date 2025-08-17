@@ -7,9 +7,9 @@ using TimeTwoFix.Core.Interfaces;
 
 namespace TimeTwoFix.Application.LiftingBridgeServices.Services
 {
-    public class LifitingBridgeServices : BaseService<LiftingBridge>, ILiftingBridgeServices
+    public class LiftingBridgeServices : BaseService<LiftingBridge>, ILiftingBridgeServices
     {
-        public LifitingBridgeServices(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public LiftingBridgeServices(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
         }
 
@@ -22,8 +22,6 @@ namespace TimeTwoFix.Application.LiftingBridgeServices.Services
             }
             var liftingBridgeDtos = _mapper.Map<IEnumerable<ReadLiftingBridgeDto>>(liftingBridges);
             return liftingBridgeDtos;
-
-
         }
 
         public async Task<IEnumerable<ReadLiftingBridgeDto>> GetLiftingBridgesByStatusAsync(string status)

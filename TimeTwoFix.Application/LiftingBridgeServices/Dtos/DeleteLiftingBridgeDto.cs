@@ -7,7 +7,7 @@
         public string Location { get; set; }
         public DateOnly InstallationDate { get; set; }
         public string Status { get; set; }
-        public int LoadCapacity { get; set; } // in tons
+        public int LoadCapacity { get; set; } // in Kilograms
         public string Type { get; set; }
         public string Notes { get; set; }
     }

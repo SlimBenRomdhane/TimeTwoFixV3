@@ -15,16 +15,14 @@ namespace TimeTwoFix.Web.Controllers
     {
         //private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-
         private readonly IClientServices _clientServices;
-        private readonly ILogger<ClientController> _logger;
 
-        public ClientController(IUnitOfWork unitOfWork, IMapper mapper, IClientServices clientServices, ILogger<ClientController> logger)
+
+        public ClientController(IUnitOfWork unitOfWork, IMapper mapper, IClientServices clientServices)
         {
             //_unitOfWork = unitOfWork;
             _mapper = mapper;
             _clientServices = clientServices;
-            _logger = logger;
         }
 
         // GET: ClientController

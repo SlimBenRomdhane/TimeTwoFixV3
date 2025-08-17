@@ -17,11 +17,12 @@
     <!-- Category Search Accordion -->
     
     <!-- Validation Message -->
-    @if (TempData["CategoryError"] != null)
+    
+    @if (TempData["ErrorMessage"] != null)
     {
         <div class="alert alert-warning d-flex align-items-center mb-4">
             <i class="bi bi-exclamation-triangle me-2"></i>
-            <span>@TempData["CategoryError"]</span>
+            <span>@TempData["ErrorMessage"]</span>
         </div>
     }
     

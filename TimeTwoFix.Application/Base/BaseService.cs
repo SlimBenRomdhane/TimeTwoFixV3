@@ -19,84 +19,107 @@ namespace TimeTwoFix.Application.Base
             _mapper = mapper;
         }
 
-        public async Task<T> AddAsyncServiceGeneric(T entity)
+        // Adds a new entity to the repository and saves changes
+        public async Task<T?> AddAsyncServiceGeneric(T entity)
         {
-            var res = await _baseRepository.AddAsyncGeneric(entity);
-            if (res == null)
+            if (entity == null)
             {
-                throw new Exception("Entity could not be added");
+                return null;
             }
-            await _unitOfWork.SaveChangesAsync();
-            return res;
+            
+            var addedEntity = await _baseRepository.AddAsyncGeneric(entity);
+            if (addedEntity == null)
+            {
+                return null;
+            }
+            var numberOfChangesSaved = await _unitOfWork.SaveChangesAsync();
+            if (numberOfChangesSaved <= 0)
+            {
+                return null;
+            }
+            return addedEntity;
         }
 
+        // Attaches an entity to the context with the specified state
         public async Task AttachAsyncServiceGeneric(T entity, EntityState entityState)
         {
+            if (entity == null)
+            {
+                return;
+            }
             await _baseRepository.AttachAsyncGeneric(entity, entityState);
         }
 
-        public int CountAsyncServiceGeneric()
+        // Returns the total count of entities in the repository
+        public async Task<int> CountAsyncServiceGeneric()
         {
-            var count = _baseRepository.GetAllAsyncGeneric().Result.Count();
-            return count;
+            var entities = await _baseRepository.GetAllAsyncGeneric();
+            return entities?.Count() ?? 0;
         }
 
+        // Deletes an entity by its identifier and saves changes
         public async Task DeleteAsyncServiceGeneric(int id)
         {
-            var enityToDelete = await _baseRepository.GetByIdAsyncGeneric(id);
-            if (enityToDelete == null)
+            var entityToDelete = await _baseRepository.GetByIdAsyncGeneric(id);
+            if (entityToDelete == null)
             {
-                throw new Exception("Entity not found");
+                return;
             }
-            await _baseRepository.DeleteAsyncGeneric(enityToDelete);
-            await _unitOfWork.SaveChangesAsync();
+            await _baseRepository.DeleteAsyncGeneric(entityToDelete);
+            var numberOfChangesSaved = await _unitOfWork.SaveChangesAsync();
+            if (numberOfChangesSaved <= 0)
+            {
+                return;
+            }
         }
 
+        // Detaches an entity from the context
         public async Task DetachAsyncServiceGeneric(T entity)
         {
+            if (entity == null)
+            {
+                return;
+            }
             await _baseRepository.DetachAsyncGeneric(entity);
         }
 
+        // Retrieves all entities from the repository
         public async Task<IEnumerable<T>> GetAllAsyncServiceGeneric()
         {
-            var res = await _baseRepository.GetAllAsyncGeneric();
-            return res;
+            var entities = await _baseRepository.GetAllAsyncGeneric();
+            return entities ?? Enumerable.Empty<T>();
         }
 
+        // Retrieves all entities with included related properties
         public async Task<IEnumerable<T>> GetAllWithIncludesAsyncServiceGeneric(params Expression<Func<T, object>>[] includeProperties)
         {
-            var res = await _baseRepository.GetAllWithIncludesAsyncGeneric(includeProperties);
-            if (res == null)
-            {
-                throw new Exception("Entities not found");
-            }
-            return res;
+            var entities = await _baseRepository.GetAllWithIncludesAsyncGeneric(includeProperties);
+            return entities ?? Enumerable.Empty<T>();
         }
 
+        // Retrieves an entity by its identifier, including related properties if specified
         public async Task<T?> GetByIdAsyncServiceGeneric(int id, params Expression<Func<T, object>>[] includeProperties)
         {
-            var res = await _baseRepository.GetByIdAsyncGeneric(id, includeProperties);
-            if (res == null)
-            {
-                throw new KeyNotFoundException($"Entity of type {typeof(T).Name} with ID {id} not found.");
-            }
-            return res;
+            return await _baseRepository.GetByIdAsyncGeneric(id, includeProperties);
         }
 
+        // Saves all changes made in the context
         public async Task<int> SaveChangesServiceGeneric()
         {
-            var res = await _unitOfWork.SaveChangesAsync();
-            return res;
+            return await _unitOfWork.SaveChangesAsync();
         }
 
+        // Updates an entity and saves changes
         public async Task UpdateAsyncServiceGeneric(T entity)
         {
-            await _baseRepository.UpdateAsyncGeneric(entity);
             if (entity == null)
             {
-                throw new Exception("Entity could not be updated");
+                return;
             }
-            await _unitOfWork.SaveChangesAsync();
+            
+            await _baseRepository.UpdateAsyncGeneric(entity);
+            var numberOfChangesSaved = await _unitOfWork.SaveChangesAsync();
+            // The caller should handle the case where no changes were saved
         }
     }
 }

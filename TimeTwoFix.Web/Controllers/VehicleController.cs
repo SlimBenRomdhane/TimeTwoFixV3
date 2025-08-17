@@ -27,7 +27,7 @@ namespace TimeTwoFix.Web.Controllers
         // GET: VehicleController
         public async Task<ActionResult> Index(int pageNumber = 1, int pageSize = 10)
         {
-            var totalVahicle = _vehicleService.CountAsyncServiceGeneric();
+            var totalVahicle = await _vehicleService.CountAsyncServiceGeneric();
             var vehicles = await _vehicleService.GetAllAsyncServiceGeneric();
             var activeVehicles = vehicles.Where(v => !v.IsDeleted).ToList();
 
