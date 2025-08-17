@@ -33,7 +33,7 @@ namespace TimeTwoFix.Web.Controllers
                 var activeEntities = entities.Where(e => !(e is BaseEntity be) || !be.IsDeleted);
                 if (entities == null || !activeEntities.Any())
                 {
-                    TempData["ErrorMessage"] = $"No entities of type {EntityName} found";
+                    TempData["ErrorMessage"] = $"No entities found";
                     return View(Enumerable.Empty<TReadViewModel>());
                 }
 

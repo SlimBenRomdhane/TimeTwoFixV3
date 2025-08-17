@@ -13,10 +13,6 @@ namespace TimeTwoFix.Web.Models.VehicleModels
 
         public string Brand { get; set; }
         public string Model { get; set; }
-
-        [RegularExpression(
-    @"^(\d{4}\sTunis\s\d{3})$|^(\d{2}\s-\s\d{6})$|^([A-Z]{2,3}\s\d{4,6})$|^(NT\s\d{4,6})$",
-            ErrorMessage = "Accepted formats: 123 Tunis 4567, 03 - 123456, CD 12345, NT 123456")]
         public string LicensePlate { get; set; }
 
         public string FuelType { get; set; }

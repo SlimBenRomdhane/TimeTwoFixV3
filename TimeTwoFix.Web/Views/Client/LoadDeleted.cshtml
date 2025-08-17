@@ -5,67 +5,61 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid px-4 py-4 bg-body-tertiary">
-    <div class="container bg-white rounded shadow-sm p-4">
-        <!-- 🗃️ Header -->
-        <h2 class="fw-semibold text-danger mb-2">
-            <i class="bi bi-archive me-2"></i> @ViewData["Title"]
-        </h2>
-        <p class="text-muted mb-4">Manage clients removed from the active list. You may restore or permanently delete entries below.</p>
-
-        <!-- 🧾 Data Table -->
-        <div class="table-responsive rounded border">
-            <table class="table table-sm table-hover align-middle mb-0">
-                <thead class="table-light fw-semibold text-secondary">
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Phone</th>
-                        <th>City</th>
-                        <th>Email</th>
-                        <th>Created</th>
-                        <th>Deleted</th>
-                        <th class="text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
+<div class="container my-5">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+            <!-- Section Header -->
+            <h2 class="section-title text-danger fw-bold mb-4">
+                <i class="bi bi-archive me-2"></i> @ViewData["Title"]
+            </h2>
+            <p class="text-muted mb-4">Manage clients removed from the active list. You may restore or permanently delete entries below.</p>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
                         <tr>
-                            <td>@item.Id</td>
-                            <td>@item.FirstName @item.LastName</td>
-                            <td>@item.PhoneNumber</td>
-                            <td>@item.City</td>
-                            <td>@item.Email</td>
-                            <td>@item.CreatedAt</td>
-                            <td>@item.DeletedAt</td>
-                            <td class="text-center">
-                                <a asp-action="Restore" asp-route-id="@item.Id" class="btn btn-sm btn-outline-success">
-                                    <i class="bi bi-arrow-counterclockwise"></i> Restore
-                                </a>
-                                <a asp-action="DeletePermanently" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">
-                                    <i class="bi bi-x-circle"></i> Delete Permanently
-                                </a>
-                            </td>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>City</th>
+                            <th>Email</th>
+                            <th>Created</th>
+                            <th>Deleted</th>
+                            <th class="text-center">Actions</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-
-        <!-- 📄 Pagination -->
-        <div class="d-flex justify-content-center gap-3 mt-4">
-            <a asp-action="LoadDeleted" asp-route-pageNumber="@(ViewBag.PageNumber - 1)"
-               class="btn btn-outline-primary @(ViewBag.PageNumber == 1 ? "disabled" : "")">
-                <i class="bi bi-chevron-left"></i> Previous
-            </a>
-
-            <span class="text-muted pt-2">Page @ViewBag.PageNumber of @ViewBag.TotalPages</span>
-
-            <a asp-action="LoadDeleted" asp-route-pageNumber="@(ViewBag.PageNumber + 1)"
-               class="btn btn-outline-primary @(ViewBag.PageNumber == ViewBag.TotalPages ? "disabled" : "")">
-                Next <i class="bi bi-chevron-right"></i>
-            </a>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.FirstName @item.LastName</td>
+                                <td>@item.PhoneNumber</td>
+                                <td>@item.City</td>
+                                <td>@item.Email</td>
+                                <td>@item.CreatedAt</td>
+                                <td>@item.DeletedAt</td>
+                                <td class="text-center">
+                                    <div class="btn-group btn-group-sm">
+                                        <a asp-action="Restore" asp-route-id="@item.Id" class="btn btn-outline-success">Restore</a>
+                                        <a asp-action="DeletePermanently" asp-route-id="@item.Id" class="btn btn-outline-danger">Delete Permanently</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex justify-content-center gap-3 mt-4">
+                <a asp-action="LoadDeleted" asp-route-pageNumber="@(ViewBag.PageNumber - 1)"
+                   class="btn btn-outline-primary @(ViewBag.PageNumber == 1 ? "disabled" : "")">
+                    <i class="bi bi-chevron-left"></i> Previous
+                </a>
+                <span class="text-muted pt-2">Page @ViewBag.PageNumber of @ViewBag.TotalPages</span>
+                <a asp-action="LoadDeleted" asp-route-pageNumber="@(ViewBag.PageNumber + 1)"
+                   class="btn btn-outline-primary @(ViewBag.PageNumber == ViewBag.TotalPages ? "disabled" : "")">
+                    Next <i class="bi bi-chevron-right"></i>
+                </a>
+            </div>
         </div>
     </div>
 </div>

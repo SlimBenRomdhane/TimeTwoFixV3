@@ -5,97 +5,79 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container-fluid px-4 py-4 bg-body-tertiary">
-    <div class="container bg-white rounded shadow-sm p-4">
-        <!-- 🧾 Header -->
-        <h2 class="fw-semibold text-primary mb-2">
-            <i class="bi bi-person-lines-fill me-2"></i> @ViewData["Title"]
-        </h2>
-        <p class="text-muted mb-4">View full profile and ownership data for this client.</p>
-
-        <!-- 🧍 Client Information -->
-        <div class="mb-4">
-            <h5 class="text-secondary fw-semibold border-bottom pb-2 mb-3">
-                <i class="bi bi-info-circle me-2"></i> Personal & Contact Info
-            </h5>
-            <div class="row gy-3">
-                <div class="col-md-6">
-                    <span class="text-muted fw-semibold">Name:</span>
-                    <div class="text-dark">@Model.FirstName @Model.LastName</div>
-                </div>
-                <div class="col-md-6">
-                    <span class="text-muted fw-semibold">Phone:</span>
-                    <div class="text-dark">@Model.PhoneNumber</div>
-                </div>
-                <div class="col-md-6">
-                    <span class="text-muted fw-semibold">Email:</span>
-                    <div class="text-dark">@Model.Email</div>
-                </div>
-                <div class="col-md-6">
-                    <span class="text-muted fw-semibold">Address:</span>
-                    <div class="text-dark">@Model.Address, @Model.City</div>
-                </div>
-                <div class="col-md-12">
-                    <span class="text-muted fw-semibold">Notes:</span>
-                    <div class="text-dark">@Model.Notes</div>
-                </div>
-                @if (User.IsInRole("GeneralManager"))
+<div class="row mt-5 justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="card-title text-center">@ViewData["Title"]</h2>
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FirstName)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.FirstName)</dd>
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.LastName)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.LastName)</dd>
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.PhoneNumber)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.PhoneNumber)</dd>
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Email)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.Email)</dd>
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Address)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.Address), @Html.DisplayFor(model => model.City)</dd>
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Notes)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.Notes)</dd>
+                    @if (User.IsInRole("GeneralManager"))
+                    {
+                        <dt class="col-sm-3">Created At</dt>
+                        <dd class="col-sm-9">@Model.CreatedAt</dd>
+                        <dt class="col-sm-3">Updated At</dt>
+                        <dd class="col-sm-9">@Model.UpdatedAt</dd>
+                        <dt class="col-sm-3">Created By</dt>
+                        <dd class="col-sm-9">@Model.CreatedBy</dd>
+                    }
+                </dl>
+                <h5 class="text-secondary fw-semibold mb-3">
+                    <i class="bi bi-truck me-2"></i> Owned Vehicles
+                </h5>
+                @if (Model.Vehicles != null && Model.Vehicles.Any())
                 {
-                    <div class="col-md-6">
-                        <span class="text-muted fw-semibold">Created At:</span>
-                        <div class="text-dark">@Model.CreatedAt</div>
-                    </div>
-                    <div class="col-md-6">
-                        <span class="text-muted fw-semibold">Updated At:</span>
-                        <div class="text-dark">@Model.UpdatedAt</div>
-                    </div>
-                }
-                
-            </div>
-        </div>
-
-        <!-- 🚗 Vehicles Section -->
-        <div class="mb-4">
-            <h5 class="text-secondary fw-semibold border-bottom pb-2 mb-3">
-                <i class="bi bi-truck me-2"></i> Owned Vehicles
-            </h5>
-
-            @if (Model.Vehicles != null && Model.Vehicles.Any())
-            {
-                <table class="table table-sm table-hover align-middle">
-                    <thead class="table-light">
-                        <tr class="fw-semibold text-secondary">
-                            <th><i class="bi bi-car-front me-1"></i> Make</th>
-                            <th>Model</th>
-                            <th>License Plate</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var vehicle in Model.Vehicles)
-                        {
-                            <tr>
-                                <td>@vehicle.Brand</td>
-                                <td>@vehicle.Model</td>
-                                <td>@vehicle.LicensePlate</td>
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr class="fw-semibold text-secondary">
+                                <th><i class="bi bi-car-front me-1"></i> Make</th>
+                                <th>Model</th>
+                                <th>License Plate</th>
+                                <th>VIN</th>
+                                <th>Year</th>
+                                <th>Mileage</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <div class="text-muted fst-italic">No vehicles owned by this client.</div>
-            }
-        </div>
-
-        <!-- 🧭 Actions -->
-        <div class="d-flex justify-content-end gap-3 pt-3 border-top">
-            <a asp-action="Index" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Back to List
-            </a>
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-warning">
-                <i class="bi bi-pencil-square"></i> Edit Client
-            </a>
+                        </thead>
+                        <tbody>
+                            @foreach (var vehicle in Model.Vehicles)
+                            {
+                                <tr>
+                                    <td>@vehicle.Brand</td>
+                                    <td>@vehicle.Model</td>
+                                    <td>@vehicle.LicensePlate</td>
+                                    <td>@vehicle.Vin</td>
+                                    <td>@vehicle.Year</td>
+                                    <td>@vehicle.Mileage</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="text-muted fst-italic">No vehicles owned by this client.</div>
+                }
+                <div class="d-grid mt-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                        <i class="bi bi-arrow-left-circle me-2"></i> Back to Client List
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-warning btn-lg">
+                        <i class="bi bi-pencil-square me-2"></i> Edit Client
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 </div>

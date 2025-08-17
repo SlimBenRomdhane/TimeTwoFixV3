@@ -2,71 +2,54 @@
 
 @{
     ViewData["Title"] = "Vehicle Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-4">
-    <h1 class="text-center text-primary">Vehicle Details</h1>
-    <p class="text-center text-muted">Full specification of the selected vehicle along with its owner.</p>
-
-    <div class="card shadow-sm bg-light p-4">
-        <div class="card-body">
-            <div class="p-3 bg-white rounded">
-
+<div class="row mt-5 justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="card-title text-center">@ViewData["Title"]</h2>
+                <hr />
                 <h5 class="mb-3 text-secondary"><i class="bi bi-person-fill"></i> Client Info</h5>
                 <dl class="row">
-                    <dt class="col-sm-4 text-muted">Client Name:</dt>
-                    <dd class="col-sm-8">@Model.ReadClientViewModel?.FirstName @Model.ReadClientViewModel?.LastName</dd>
-
-                    <dt class="col-sm-4 text-muted">Email:</dt>
-                    <dd class="col-sm-8">@Model.ReadClientViewModel?.Email</dd>
-
-                    <dt class="col-sm-4 text-muted">Phone:</dt>
-                    <dd class="col-sm-8">@Model.ReadClientViewModel?.PhoneNumber</dd>
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ReadClientViewModel.FirstName)</dt>
+                    <dd class="col-sm-9">@Model.ReadClientViewModel?.FirstName @Model.ReadClientViewModel?.LastName</dd>
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ReadClientViewModel.Email)</dt>
+                    <dd class="col-sm-9">@Model.ReadClientViewModel?.Email</dd>
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ReadClientViewModel.PhoneNumber)</dt>
+                    <dd class="col-sm-9">@Model.ReadClientViewModel?.PhoneNumber</dd>
                 </dl>
-
                 <hr />
-
-                <h5 class="mb-3 text-secondary"><i class="bi bi-car-front-fill"></i> Vehicle Specifications</h5>
+                <h5 class="mb-3 text-secondary"><i class="bi bi-car-front"></i> Vehicle Specifications</h5>
                 <dl class="row">
-                    <dt class="col-sm-4 text-muted">VIN:</dt>
-                    <dd class="col-sm-8">@Model.Vin</dd>
-
-                    <dt class="col-sm-4 text-muted">Brand:</dt>
-                    <dd class="col-sm-8">@Model.Brand</dd>
-
-                    <dt class="col-sm-4 text-muted">Model:</dt>
-                    <dd class="col-sm-8">@Model.Model</dd>
-
-                    <dt class="col-sm-4 text-muted">License Plate:</dt>
-                    <dd class="col-sm-8">
-                        <span class="badge bg-info text-dark">@Model.LicensePlate</span>
-                    </dd>
-
-                    <dt class="col-sm-4 text-muted">Fuel Type:</dt>
-                    <dd class="col-sm-8">@Model.FuelType</dd>
-
-                    <dt class="col-sm-4 text-muted">Transmission:</dt>
-                    <dd class="col-sm-8">@Model.TransmissionType</dd>
-
-                    <dt class="col-sm-4 text-muted">Year:</dt>
-                    <dd class="col-sm-8">@Model.Year</dd>
-
-                    <dt class="col-sm-4 text-muted">Mileage:</dt>
-                    <dd class="col-sm-8">@Model.Mileage.ToString("N0") km</dd>
-
-                    <dt class="col-sm-4 text-muted">Notes:</dt>
-                    <dd class="col-sm-8">@Model.Notes</dd>
-
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Vin)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.Vin)</dd>
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Brand)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.Brand)</dd>
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Model)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.Model)</dd>
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.LicensePlate)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.LicensePlate)</dd>
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.FuelType)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.FuelType)</dd>
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.TransmissionType)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.TransmissionType)</dd>
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Year)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.Year)</dd>
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Mileage)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.Mileage) km</dd>
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Notes)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.Notes)</dd>
                 </dl>
-            </div>
-
-            <div class="d-flex justify-content-center mt-4 gap-3">
-                <a asp-action="Index" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Back to List
-                </a>
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">
-                    <i class="bi bi-pencil-square"></i> Edit Vehicle
-                </a>
+                <div class="d-grid mt-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                        <i class="bi bi-arrow-left-circle me-2"></i> Back to Vehicle List
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-warning btn-lg">
+                        <i class="bi bi-pencil-square me-2"></i> Edit Vehicle
+                    </a>
+                </div>
             </div>
         </div>
     </div>

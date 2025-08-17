@@ -237,7 +237,7 @@ namespace TimeTwoFix.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to restore client ID {ClientId}. Error: {ErrorMessage}", id, ex.Message);
+
                 return BadRequest("An error occurred while restoring the client.");
             }
         }
@@ -257,7 +257,7 @@ namespace TimeTwoFix.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to permanently delete client ID {ClientId}. Error: {ErrorMessage}", id, ex.Message);
+
                 return BadRequest("An error occurred while restoring the client.");
             }
         }

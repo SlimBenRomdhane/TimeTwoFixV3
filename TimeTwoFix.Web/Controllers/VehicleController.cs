@@ -60,7 +60,7 @@ namespace TimeTwoFix.Web.Controllers
         public async Task<ActionResult> Create()
         {
             var clients = await _clientServices.GetAllAsyncServiceGeneric();
-            var res = clients.Where(c => c.IsDeleted == false);
+            var res = clients.Where(c => c.IsDeleted == false).OrderBy(c => c.FirstName); ;
             ViewBag.Clients = new SelectList(res.Select(c => new
             {
                 c.Id,
