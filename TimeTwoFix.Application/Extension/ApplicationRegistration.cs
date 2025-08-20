@@ -4,6 +4,7 @@ using TimeTwoFix.Application.AppointmentServices.Services;
 using TimeTwoFix.Application.CategoryService.Interfaces;
 using TimeTwoFix.Application.ClientServices.Interfaces;
 using TimeTwoFix.Application.ClientServices.Services;
+using TimeTwoFix.Application.InterventionService.Interfaces;
 using TimeTwoFix.Application.LiftingBridgeServices.Interfaces;
 using TimeTwoFix.Application.ProvidedServicesService.Interfaces;
 using TimeTwoFix.Application.ProvidedServicesService.Services;
@@ -28,6 +29,7 @@ namespace TimeTwoFix.Application.Extension
             services.AddScoped<ICategoryService, CategoryService.Services.CategoryService>();
             services.AddScoped<IProvidedServiceService, ProvidedServiceService>();
             services.AddScoped<IWorkOrderService, WorkOrderService.Services.WorkOrderService>();
+            services.AddScoped<IInterventionService, InterventionService.Services.InterventionService>();
 
 
             return services;
