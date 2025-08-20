@@ -26,12 +26,13 @@ namespace TimeTwoFix.Web.Controllers
         }
 
         // GET: ClientController
-        public async Task<IActionResult> Index(int pageNumber, int pageSize)
+        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 51)
         {
             try
             {//var clients = await _clientServices.GetAllAsyncServiceGeneric();
                 var clients = await _clientServices.GetAllActiveClientsAsync();
-                var clientsDto = _mapper.Map<IEnumerable<ReadClientDto>>(clients);
+                var pagedClients = clients.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                var clientsDto = _mapper.Map<IEnumerable<ReadClientDto>>(pagedClients);
                 var clientsViewModel = _mapper.Map<IEnumerable<ReadClientViewModel>>(clientsDto);
                 if (clientsViewModel == null || !clientsViewModel.Any())
                 {
@@ -39,6 +40,8 @@ namespace TimeTwoFix.Web.Controllers
                     return View(Enumerable.Empty<ReadClientViewModel>());
                 }
 
+                ViewBag.TotalPages = (int)Math.Ceiling((double)clients.Count() / pageSize);
+                ViewBag.CurrentPage = pageNumber;
                 return View(clientsViewModel);
 
             }

@@ -44,7 +44,7 @@ namespace TimeTwoFix.Web.Controllers
 
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["ErrorMessage"] = "An error occured while loading data";
                 return View(Enumerable.Empty<TReadViewModel>());
@@ -65,7 +65,7 @@ namespace TimeTwoFix.Web.Controllers
                 var viewModel = _mapper.Map<TReadViewModel>(dto);
                 return View(viewModel);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["ErrorMessage"] = "An error occured while loading data";
                 return RedirectToAction(nameof(Index));
@@ -96,7 +96,7 @@ namespace TimeTwoFix.Web.Controllers
                 TempData["SuccessMessage"] = $"{EntityName} Entity created successfully";
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["ErrorMessage"] = "An error occured while creating the entity";
                 return View(viewModel);
@@ -116,7 +116,7 @@ namespace TimeTwoFix.Web.Controllers
                 var viewModel = _mapper.Map<TUpdateViewModel>(dto);
                 return View(viewModel);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["ErrorMessage"] = "An error occured while loading data";
                 return RedirectToAction(nameof(Index));
@@ -149,7 +149,7 @@ namespace TimeTwoFix.Web.Controllers
                 TempData["SuccessMessage"] = "Entity updated successfully";
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["ErrorMessage"] = "An error occured while updating the entity";
                 return View(viewModel);
@@ -169,7 +169,7 @@ namespace TimeTwoFix.Web.Controllers
                 var viewModel = _mapper.Map<TDeleteViewModel>(dto);
                 return View(viewModel);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["ErrorMessage"] = "An error occured while loading data";
                 return RedirectToAction(nameof(Index));
@@ -205,7 +205,7 @@ namespace TimeTwoFix.Web.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["ErrorMessage"] = "An error occured while deleting the entity";
                 return View(viewModel);

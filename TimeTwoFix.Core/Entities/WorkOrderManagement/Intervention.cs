@@ -21,10 +21,36 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
 
         [ForeignKey("LiftingBridge")]
         public int LiftingBridgeId { get; set; }
-
         public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public int ActualTimeSpent { get; set; }
+        private DateTime? _endDate;
+        public DateTime? EndDate
+        {
+            get => _endDate;
+            set
+            {
+                _endDate = value;
+                if (_endDate != null)
+                    CalculateActualTimeSpent();
+            }
+        }
+        public TimeSpan? ActualTimeSpent
+        {
+            get; set;
+            //get
+            //{
+            //    if (EndDate == null)
+            //    {
+            //        return TimeSpan.Zero;
+            //    }
+            //    var duration = EndDate - StartDate;
+            //    var totalPauses = PauseRecords?.Aggregate(
+            //        TimeSpan.Zero,
+            //        (total, pause) => total + (pause.PauseDuration ?? TimeSpan.Zero)
+            //    ) ?? TimeSpan.Zero;
+
+            //    return duration - totalPauses;
+            //}
+        }
         public decimal InterventionPrice { get; set; }
 
         [Required]
@@ -36,5 +62,22 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
         public ProvidedService Service { get; set; }
         public LiftingBridge LiftingBridge { get; set; }
         public ICollection<InterventionSparePart> InterventionSpareParts { get; set; }
+        public ICollection<PauseRecord> PauseRecords { get; set; }
+
+        private void CalculateActualTimeSpent()
+        {
+            if (EndDate == null)
+            {
+                ActualTimeSpent = null;
+                return;
+
+            }
+            var duration = EndDate - StartDate;
+            var totalPauses = PauseRecords?.Aggregate(
+                TimeSpan.Zero,
+                (total, pause) => total + (pause.PauseDuration ?? TimeSpan.Zero)
+            ) ?? TimeSpan.Zero;
+            ActualTimeSpent = duration - totalPauses;
+        }
     }
 }

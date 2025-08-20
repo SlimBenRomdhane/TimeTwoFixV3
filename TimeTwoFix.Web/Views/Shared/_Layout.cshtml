@@ -52,15 +52,16 @@
                                     <i class="fas fa-tools"></i> Workshop
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" asp-controller="Appointment" asp-action="Index"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Client" asp-action="Index"><i class="fas fa-calendar-check"></i> Clients</a></li>
                                     <li><a class="dropdown-item" asp-controller="Vehicle" asp-action="Index"><i class="fas fa-truck"></i> Vehicles</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" asp-controller="WorkOrder" asp-action="Index"><i class="fas fa-file-alt"></i> Work Orders</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Appointment" asp-action="Index"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+                                    
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" asp-controller="WorkOrder" asp-action="Index"><i class="fas fa-file-alt"></i> Work Orders</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Intervention" asp-action="Index"><i class="fas fa-history"></i> Interventions</a></li>
                                 </ul>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-controller="Client" asp-action="Index"><i class="fas fa-home"></i> Clients</a>
-                            </li>
+                            
                            
 
                             @if (User.IsInRole("GeneralManager"))

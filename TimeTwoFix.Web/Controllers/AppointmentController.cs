@@ -43,7 +43,7 @@ namespace TimeTwoFix.Web.Controllers
 
                 return View(appointmentsViewModel);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["AppointmentError"] = "No appointments found for today";
                 return View(Enumerable.Empty<ReadAppointmentViewModel>());

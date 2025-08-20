@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TimeTwoFix.Application.CategoryService.Dtos;
 using TimeTwoFix.Application.CategoryService.Interfaces;
 using TimeTwoFix.Core.Entities.ServiceManagement;
@@ -19,6 +20,19 @@ namespace TimeTwoFix.Web.Controllers
         {
             _categoryService = categoryService;
         }
+        [HttpGet]
+        [Authorize(Roles = "GeneralManager")]
+        public override async Task<IActionResult> Delete(int id)
+        {
+            return await base.Delete(id);
+        }
+        [HttpPost]
+        [Authorize(Roles = "GeneralManager")]
+        public override async Task<IActionResult> Delete(int id, DeleteCategoryViewModel viewModel)
+        {
+            return await base.Delete(id, viewModel);
+        }
+
 
     }
 }

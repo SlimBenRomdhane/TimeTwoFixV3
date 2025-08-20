@@ -14,8 +14,8 @@ namespace TimeTwoFix.Application.ClientServices.Services
 
         public async Task<IEnumerable<ReadClientDto>> GetAllActiveClientsAsync()
         {
-            var deletedClients = await _unitOfWork.Clients.GetActiveClientsAsync();
-            var clientsDto = _mapper.Map<IEnumerable<ReadClientDto>>(deletedClients);
+            var activeClients = await _unitOfWork.Clients.GetActiveClientsAsync();
+            var clientsDto = _mapper.Map<IEnumerable<ReadClientDto>>(activeClients);
             return clientsDto;
         }
 

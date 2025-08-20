@@ -126,8 +126,8 @@ namespace TimeTwoFix.Application.UserServices.Services
             {
                 throw new Exception("User type not found");
             }
-            user.CreatedAt = DateTime.UtcNow;
-            user.UpdatedAt = DateTime.UtcNow;
+            user.CreatedAt = DateTime.Now;
+            user.UpdatedAt = DateTime.Now;
 
             var res = await _userManager.CreateAsync(user, createUserDto.Password);
             return res;
