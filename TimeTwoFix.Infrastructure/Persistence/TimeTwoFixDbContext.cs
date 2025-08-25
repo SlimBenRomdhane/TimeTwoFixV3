@@ -78,6 +78,13 @@ namespace TimeTwoFix.Infrastructure.Persistence
             //modelBuilder.Entity<Client>().HasQueryFilter(c => !c.IsDeleted);
             modelBuilder.SeedRoles();
             modelBuilder.SeedUser();
+            modelBuilder.Entity<Intervention>()
+                .Property(i => i.ActualTimeSpent)
+                .HasConversion(
+                v => v.HasValue ? v.Value.Ticks : (long?)null,
+                    v => v.HasValue ? TimeSpan.FromTicks(v.Value) : (TimeSpan?)null
+                )
+                .HasColumnType("bigint");
         }
     }
 }

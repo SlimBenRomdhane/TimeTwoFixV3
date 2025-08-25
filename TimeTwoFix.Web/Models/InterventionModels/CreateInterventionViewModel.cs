@@ -12,12 +12,12 @@ namespace TimeTwoFix.Web.Models.InterventionModels
         public int ServiceId { get; set; }
         [Required]
         public int LiftingBridgeId { get; set; }
+        [Required]
         public DateTime StartDate { get; set; }
         //public DateTime? EndDate { get; set; }
         //public int ActualTimeSpent { get; set; }
-        public decimal InterventionPrice { get; set; }
+        public decimal? InterventionPrice { get; set; }
+        public string? Notes { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public string? CreatedBy { get; set; }
     }
 }

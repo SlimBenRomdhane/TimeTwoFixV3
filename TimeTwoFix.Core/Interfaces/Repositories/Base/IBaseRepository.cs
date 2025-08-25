@@ -20,5 +20,6 @@ namespace TimeTwoFix.Core.Interfaces.Repositories.Base
         Task DetachAsyncGeneric(T entity);
 
         Task<IEnumerable<T>> GetAllWithIncludesAsyncGeneric(params Expression<Func<T, object>>[] includeProperties);
+
     }
 }

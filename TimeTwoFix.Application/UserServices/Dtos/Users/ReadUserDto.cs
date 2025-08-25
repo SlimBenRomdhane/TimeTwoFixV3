@@ -2,6 +2,7 @@
 {
     public class ReadUserDto
     {
+        public int Id { get; set; }
         ///Displying the user type in the UI
         public string UserType { get; set; }
 

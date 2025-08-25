@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
 using TimeTwoFix.Application.Base;
 using TimeTwoFix.Core.Common;
+using TimeTwoFix.Core.Entities.WorkOrderManagement;
 
 namespace TimeTwoFix.Web.Controllers
 {
@@ -27,6 +29,7 @@ namespace TimeTwoFix.Web.Controllers
         }
         public virtual async Task<IActionResult> Index()
         {
+
             try
             {
                 var entities = await _baseService.GetAllAsyncServiceGeneric();
@@ -71,10 +74,15 @@ namespace TimeTwoFix.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-        public virtual IActionResult Create()
+        // Base async method intentionally lacks 'await' to allow child controllers to override with asynchronous logic.
+        // This method defines the async contract for extensibility — child implementations may perform async operations.
+        // Suppressing CS1998 to avoid misleading compiler warnings; this is a deliberate design choice.
+#pragma warning disable CS1998
+        public virtual async Task<ActionResult> Create()
         {
             return View();
         }
+#pragma warning restore CS1998// Async method lacks 'await' operators and will run synchronously
         [HttpPost]
         [ValidateAntiForgeryToken]
         public virtual async Task<IActionResult> Create(TCreateViewModel viewModel)
@@ -126,13 +134,22 @@ namespace TimeTwoFix.Web.Controllers
         [ValidateAntiForgeryToken]
         public virtual async Task<IActionResult> Edit(int id, TUpdateViewModel viewModel)
         {
+            Expression<Func<TEntity, object>>[] includes = Array.Empty<Expression<Func<TEntity, object>>>();
+            if (typeof(TEntity) == typeof(Intervention))
+                includes = new Expression<Func<TEntity, object>>[]
+                {
+
+                    x => ((Intervention)(object)x).Service,
+                    x => ((Intervention)(object)x).PauseRecords
+
+                };
             if (!ModelState.IsValid)
             {
                 return View(viewModel);
             }
             try
             {
-                var existingEntity = await _baseService.GetByIdAsyncServiceGeneric(id);
+                var existingEntity = await _baseService.GetByIdAsyncServiceGeneric(id, includes);
                 if (existingEntity == null)
                 {
                     TempData["ErrorMessage"] = "Entity not found";
@@ -140,6 +157,11 @@ namespace TimeTwoFix.Web.Controllers
                 }
                 var dto = _mapper.Map<TUpdateDto>(viewModel);
                 var updatedEntity = _mapper.Map(dto, existingEntity);
+                if (updatedEntity is Intervention intervention && intervention.EndDate != null)
+                {
+                    var timeSpent = intervention.CalculateActualTimeSpent();
+                    intervention.InterventionPrice = (decimal)timeSpent.TotalHours * intervention.Service.PricePerHour;
+                }
                 if (updatedEntity is BaseEntity baseEntity)
                 {
                     baseEntity.UpdatedAt = DateTime.Now;

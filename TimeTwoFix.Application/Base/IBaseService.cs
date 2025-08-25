@@ -15,5 +15,6 @@ namespace TimeTwoFix.Application.Base
         Task<int> SaveChangesServiceGeneric();
         Task<int> CountAsyncServiceGeneric();
         Task<IEnumerable<T>> GetAllWithIncludesAsyncServiceGeneric(params Expression<Func<T, object>>[] includeProperties);
+        //Task<IEnumerable<TEntity>> GetAllWithDynamicIncludesGeneric<TEntity>() where TEntity : class;
     }
 }

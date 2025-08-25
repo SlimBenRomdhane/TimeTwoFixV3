@@ -64,12 +64,12 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
         public ICollection<InterventionSparePart> InterventionSpareParts { get; set; }
         public ICollection<PauseRecord> PauseRecords { get; set; }
 
-        private void CalculateActualTimeSpent()
+        public TimeSpan CalculateActualTimeSpent()
         {
             if (EndDate == null)
             {
                 ActualTimeSpent = null;
-                return;
+                return TimeSpan.Zero;
 
             }
             var duration = EndDate - StartDate;
@@ -78,6 +78,7 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
                 (total, pause) => total + (pause.PauseDuration ?? TimeSpan.Zero)
             ) ?? TimeSpan.Zero;
             ActualTimeSpent = duration - totalPauses;
+            return ActualTimeSpent.Value;
         }
     }
 }

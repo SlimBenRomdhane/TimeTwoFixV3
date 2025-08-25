@@ -23,8 +23,13 @@ namespace TimeTwoFix.Web.Controllers
         }
 
         // GET: LiftingBridgeController/Create
+        // This method overrides an async base method and must retain the async signature.
+        // Although no await is used here, async is required for compatibility with the base class.
+        // Suppressing CS1998 to avoid misleading compiler warnings — async behavior may be added later.
+#pragma warning disable CS1998
+
         [HttpGet]
-        override public ActionResult Create()
+        override public async Task<ActionResult> Create()
         {
             ViewBag.BridgeStatus = new SelectList(new[]
             {
@@ -34,7 +39,7 @@ namespace TimeTwoFix.Web.Controllers
             }, "Value", "Text");
             return View();
         }
-
+#pragma warning restore CS1998
         // GET: LiftingBridgeController/Edit/5
         [HttpGet]
         override public async Task<IActionResult> Edit(int id)

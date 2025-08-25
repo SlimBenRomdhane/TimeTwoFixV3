@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using TimeTwoFix.Core.Common;
+using TimeTwoFix.Core.Entities.WorkOrderManagement;
 
 namespace TimeTwoFix.Core.Entities.ServiceManagement
 {
@@ -23,5 +24,6 @@ namespace TimeTwoFix.Core.Entities.ServiceManagement
         public int CategoryId { get; set; }
 
         public Category Category { get; set; }
+        public ICollection<Intervention> Interventions { get; set; }
     }
 }

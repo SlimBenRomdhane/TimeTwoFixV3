@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using TimeTwoFix.Core.Interfaces;
 using TimeTwoFix.Core.Interfaces.Repositories.Base;
+using TimeTwoFix.Infrastructure.Persistence.Includes;
 
 namespace TimeTwoFix.Application.Base
 {
@@ -26,7 +27,7 @@ namespace TimeTwoFix.Application.Base
             {
                 return null;
             }
-            
+
             var addedEntity = await _baseRepository.AddAsyncGeneric(entity);
             if (addedEntity == null)
             {
@@ -90,9 +91,20 @@ namespace TimeTwoFix.Application.Base
             return entities ?? Enumerable.Empty<T>();
         }
 
+        //public async Task<IEnumerable<TEntity>> GetAllWithDynamicIncludesGeneric<TEntity>() where TEntity : class
+        //{
+        //    var includes = EntityIncludeHelper.GetIncludes<TEntity>()
+        //        .Cast<Expression<Func<T, object>>>().ToArray();
+        //    var entities = await _baseRepository.GetAllWithIncludesAsyncGeneric(includes);
+        //    return entities ?? Enumerable.Empty<TEntity>();
+
+
+        //}
+
         // Retrieves all entities with included related properties
         public async Task<IEnumerable<T>> GetAllWithIncludesAsyncServiceGeneric(params Expression<Func<T, object>>[] includeProperties)
         {
+            //var includes = EntityIncludeHelper.GetIncludes();
             var entities = await _baseRepository.GetAllWithIncludesAsyncGeneric(includeProperties);
             return entities ?? Enumerable.Empty<T>();
         }
@@ -116,10 +128,11 @@ namespace TimeTwoFix.Application.Base
             {
                 return;
             }
-            
+
             await _baseRepository.UpdateAsyncGeneric(entity);
             var numberOfChangesSaved = await _unitOfWork.SaveChangesAsync();
             // The caller should handle the case where no changes were saved
         }
+
     }
 }
