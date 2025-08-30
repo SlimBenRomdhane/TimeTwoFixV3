@@ -1,0 +1,159 @@
+﻿@using TimeTwoFix.Application.Base.BaseDtos
+@model IEnumerable<TimeTwoFix.Web.Models.InterventionModels.ReadInterventionViewModel>
+@{
+    ViewData["Title"] = "Interventions";
+    var statusCounts = ViewBag.StatusCounts as IReadOnlyList<StatusCountDto>;
+    var currentStatus = ViewBag.CurrentStatus as string;
+    var currentPage = ViewBag.CurrentPage as int? ?? 1;
+    var totalPages = ViewBag.TotalPages as int? ?? 1;
+    var totalCount = ViewBag.TotalCount as int? ?? 0;
+    var pageSize = ViewBag.PageSize as int? ?? 10;
+
+    // Check if we're showing a specific status or all
+    var isShowingSpecificStatus = !string.IsNullOrEmpty(currentStatus);
+}
+
+<h1>Interventions</h1>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
+</p>
+<div class="alert alert-warning">
+    DEBUG: @ViewBag.Debug
+    <br>StatusCounts: @((ViewBag.StatusCounts as IReadOnlyList<StatusCountDto>)?.Count ?? 0)
+    <br>CurrentStatus: @ViewBag.CurrentStatus
+</div>
+<!-- Navigation Tabs -->
+<ul class="nav nav-tabs" id="interventionStatusTabs" role="tablist">
+    <!-- All tab -->
+    <li class="nav-item" role="presentation">
+        <a class="nav-link @(!isShowingSpecificStatus ? "active" : "")"
+           asp-action="PaginatedIndex"
+           asp-route-page="1"
+           asp-route-pageSize="@pageSize">
+            All (@(statusCounts?.Sum(s => s.Count) ?? 0))
+        </a>
+    </li>
+
+    <!-- Status-specific tabs -->
+    @if (statusCounts != null)
+    {
+        @foreach (var statusCount in statusCounts)
+        {
+            var isActive = statusCount.Status == currentStatus;
+            <li class="nav-item" role="presentation">
+                <a class="nav-link @(isActive ? "active" : "")"
+                   asp-action="PaginatedIndex"
+                   asp-route-status="@statusCount.Status"
+                   asp-route-page="1"
+                   asp-route-pageSize="@pageSize">
+                    @statusCount.Status (@statusCount.Count)
+                </a>
+            </li>
+        }
+    }
+</ul>
+
+<!-- Tab Content -->
+<div class="tab-content mt-3" id="interventionStatusTabsContent">
+    <div class="tab-pane fade show active">
+        @if (!string.IsNullOrEmpty(currentStatus))
+        {
+            <h5>@currentStatus (@totalCount)</h5>
+        }
+
+        @if (Model.Any())
+        {
+            <table class="table table-bordered table-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.Id)</th>
+                        <th>@Html.DisplayNameFor(model => model.WorkOrderId)</th>
+                        <th>@Html.DisplayNameFor(model => model.MechanicId)</th>
+                        <th>@Html.DisplayNameFor(model => model.ServiceId)</th>
+                        <th>@Html.DisplayNameFor(model => model.LiftingBridgeId)</th>
+                        <th>@Html.DisplayNameFor(model => model.StartDate)</th>
+                        <th>@Html.DisplayNameFor(model => model.EndDate)</th>
+                        <th>@Html.DisplayNameFor(model => model.ActualTimeSpent)</th>
+                        <th>@Html.DisplayNameFor(model => model.InterventionPrice)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.WorkOrderId</td>
+                            <td>@item.MechanicId</td>
+                            <td>@item.ServiceId</td>
+                            <td>@item.LiftingBridgeId</td>
+                            <td>@item.StartDate</td>
+                            <td>@item.EndDate</td>
+                            <td>@item.ActualTimeSpent</td>
+                            <td>@($"{item.InterventionPrice:N3} TND")</td>
+                            <td>
+                                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- Pagination -->
+            @if (totalPages > 1)
+            {
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item @(currentPage <= 1 ? "disabled" : "")">
+                            <a class="page-link"
+                               asp-action="PaginatedIndex"
+                               asp-route-status="@currentStatus"
+                               asp-route-page="@(currentPage - 1)"
+                               asp-route-pageSize="@pageSize">
+                                Previous
+                            </a>
+                        </li>
+
+                        @for (int i = Math.Max(1, currentPage - 2); i <= Math.Min(totalPages, currentPage + 2); i++)
+                        {
+                            <li class="page-item @(i == currentPage ? "active" : "")">
+                                <a class="page-link"
+                                   asp-action="PaginatedIndex"
+                                   asp-route-status="@currentStatus"
+                                   asp-route-page="@i"
+                                   asp-route-pageSize="@pageSize">
+                                    @i
+                                </a>
+                            </li>
+                        }
+
+                        <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                            <a class="page-link"
+                               asp-action="PaginatedIndex"
+                               asp-route-status="@currentStatus"
+                               asp-route-page="@(currentPage + 1)"
+                               asp-route-pageSize="@pageSize">
+                                Next
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+
+            <!-- Results info -->
+            <div class="text-center mt-3">
+                <small class="text-muted">
+                    Showing @Model.Count() of @totalCount results for "@currentStatus" (Page @currentPage of @totalPages)
+                </small>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info">
+                No interventions found for status "@currentStatus".
+            </div>
+        }
+    </div>
+</div>

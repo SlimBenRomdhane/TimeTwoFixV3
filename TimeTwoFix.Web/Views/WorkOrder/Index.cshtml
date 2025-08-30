@@ -2,13 +2,19 @@
 
 @{
     ViewData["Title"] = "Work Orders";
+
+    // Group the work orders by Status for navigation
+    var groupedByStatus = Model?
+        .GroupBy(w => w.Status)
+        .OrderBy(g => g.Key) // You can replace with a custom order array if needed
+        .ToList();
 }
 
 <div class="container my-5">
     <div class="card border-0 shadow-sm mb-4">
         <div class="card-body">
 
-            <!-- 🧭 Header -->
+            <!-- Header -->
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2 class="text-primary fw-bold mb-0">
                     <i class="bi bi-clipboard-check me-2"></i> Work Orders
@@ -18,7 +24,7 @@
                 </a>
             </div>
 
-            <!-- ⚠️ TempData Alert -->
+            <!-- TempData Alert -->
             @if (TempData["WorkOrderError"] != null)
             {
                 <div class="alert alert-warning d-flex align-items-center mb-4" role="alert">
@@ -27,66 +33,94 @@
                 </div>
             }
 
-            <!-- 📋 Work Order Table -->
-            @if (Model != null && Model.Any())
+            <!-- Status Tabs -->
+            @if (groupedByStatus != null && groupedByStatus.Any())
             {
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>ID</th>
-                                <th>Vehicle</th>
-                                <th>Mileage</th>
-                                <th>Start</th>
-                                <th>End</th>
-                                <th>Labor Cost</th>
-                                <th>Status</th>
-                                <th>Notes</th>
-                                <th class="text-center">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td>@item.Id</td>
-                                    <td>@item.VehicleViewModel.Vin</td>
-                                    <td>@item.Mileage</td>
-                                    <td>
-                                        <span class="text-nowrap">
-                                            @item.StartDate.ToString("yyyy-MM-dd")<br />
-                                            <small class="text-muted">@item.StartTime.ToString("hh\\:mm")</small>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="text-nowrap">
-                                            @item.EndDate.ToString("yyyy-MM-dd")<br />
-                                            <small class="text-muted">@item.EndTime.ToString("hh\\:mm")</small>
-                                        </span>
-                                    </td>
-                                    <td>@($"{item.TolalLaborCost:N3} TND")</td>
+                <ul class="nav nav-tabs" role="tablist">
+                    @foreach (var group in groupedByStatus)
+                    {
+                        var statusId = group.Key.Replace(" ", "");
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link @(group == groupedByStatus.First() ? "active" : "")"
+                                    id="@statusId-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#@statusId"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="@statusId"
+                                    aria-selected="@(group == groupedByStatus.First())">
+                                @group.Key (@group.Count())
+                            </button>
+                        </li>
+                    }
+                </ul>
 
-                                    <td>
-                                        <span class="badge bg-secondary">@item.Status</span>
-                                    </td>
-                                    <td>@item.Notes</td>
-                                    <td class="text-center">
-                                        <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
-                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning text-white" title="Edit">
-                                                <i class="bi bi-pencil-square me-1"></i> Edit
-                                            </a>
-                                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info text-white" title="Details">
-                                                <i class="bi bi-eye me-1"></i> View
-                                            </a>
-                                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger text-white" title="Delete">
-                                                <i class="bi bi-trash me-1"></i> Delete
-                                            </a>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                <div class="tab-content mt-3">
+                    @foreach (var group in groupedByStatus)
+                    {
+                        var statusId = group.Key.Replace(" ", "");
+                        <div class="tab-pane fade @(group == groupedByStatus.First() ? "show active" : "")"
+                             id="@statusId"
+                             role="tabpanel"
+                             aria-labelledby="@statusId-tab">
+
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Vehicle</th>
+                                            <th>Mileage</th>
+                                            <th>Start</th>
+                                            <th>End</th>
+                                            <th>Labor Cost</th>
+                                            <th>Status</th>
+                                            <th>Notes</th>
+                                            <th class="text-center">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in group)
+                                        {
+                                            <tr>
+                                                <td>@item.Id</td>
+                                                <td>@item.VehicleViewModel.Vin</td>
+                                                <td>@item.Mileage</td>
+                                                <td>
+                                                    <span class="text-nowrap">
+                                                        @item.StartDate.ToString("yyyy-MM-dd")<br />
+                                                        <small class="text-muted">@item.StartTime.ToString("hh\\:mm")</small>
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-nowrap">
+                                                        @item.EndDate.ToString("yyyy-MM-dd")<br />
+                                                        <small class="text-muted">@item.EndTime.ToString("hh\\:mm")</small>
+                                                    </span>
+                                                </td>
+                                                <td>@($"{item.TolalLaborCost:N3} TND")</td>
+                                                <td><span class="badge bg-secondary">@item.Status</span></td>
+                                                <td>@item.Notes</td>
+                                                <td class="text-center">
+                                                    <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
+                                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning text-white">
+                                                            <i class="bi bi-pencil-square me-1"></i> Edit
+                                                        </a>
+                                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info text-white">
+                                                            <i class="bi bi-eye me-1"></i> View
+                                                        </a>
+                                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger text-white">
+                                                            <i class="bi bi-trash me-1"></i> Delete
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }
                 </div>
             }
             else

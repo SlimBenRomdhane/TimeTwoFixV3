@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using TimeTwoFix.Core.Common;
 using TimeTwoFix.Core.Interfaces.Repositories.Base;
 
 namespace TimeTwoFix.Infrastructure.Persistence.Repositories.Base
@@ -64,6 +65,20 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.Base
             //Assuming "Id" is the primary key property.
 
             var res = await query.AsNoTracking().FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
+            return res;
+        }
+
+        public async Task<IReadOnlyList<GroupCount<TKey>>> GroupCountAsynGeneric<TKey>(Expression<Func<T, TKey>> groupByExpression)
+        {
+            var res = await _dbSet
+                .AsNoTracking()
+                .GroupBy(groupByExpression)
+                .Select(g => new GroupCount<TKey>
+                {
+                    Key = g.Key,
+                    Count = g.Count()
+                })
+                .ToListAsync();
             return res;
         }
 

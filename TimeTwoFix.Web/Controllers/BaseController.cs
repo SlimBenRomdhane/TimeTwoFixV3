@@ -134,22 +134,14 @@ namespace TimeTwoFix.Web.Controllers
         [ValidateAntiForgeryToken]
         public virtual async Task<IActionResult> Edit(int id, TUpdateViewModel viewModel)
         {
-            Expression<Func<TEntity, object>>[] includes = Array.Empty<Expression<Func<TEntity, object>>>();
-            if (typeof(TEntity) == typeof(Intervention))
-                includes = new Expression<Func<TEntity, object>>[]
-                {
 
-                    x => ((Intervention)(object)x).Service,
-                    x => ((Intervention)(object)x).PauseRecords
-
-                };
             if (!ModelState.IsValid)
             {
                 return View(viewModel);
             }
             try
             {
-                var existingEntity = await _baseService.GetByIdAsyncServiceGeneric(id, includes);
+                var existingEntity = await _baseService.GetByIdAsyncServiceGeneric(id/*, includes*/);
                 if (existingEntity == null)
                 {
                     TempData["ErrorMessage"] = "Entity not found";
@@ -157,11 +149,7 @@ namespace TimeTwoFix.Web.Controllers
                 }
                 var dto = _mapper.Map<TUpdateDto>(viewModel);
                 var updatedEntity = _mapper.Map(dto, existingEntity);
-                if (updatedEntity is Intervention intervention && intervention.EndDate != null)
-                {
-                    var timeSpent = intervention.CalculateActualTimeSpent();
-                    intervention.InterventionPrice = (decimal)timeSpent.TotalHours * intervention.Service.PricePerHour;
-                }
+
                 if (updatedEntity is BaseEntity baseEntity)
                 {
                     baseEntity.UpdatedAt = DateTime.Now;

@@ -78,10 +78,19 @@ namespace TimeTwoFix.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(CreateProvidedServiceViewModel createProvidedServiceViewModel)
         {
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // Fetch categories for the dropdown
+                    var categories = await _categoryService.GetAllAsyncServiceGeneric();
+                    var activeCategories = categories.Where(c => !c.IsDeleted);
+                    ViewBag.Categories = activeCategories.Select(c => new SelectListItem
+                    {
+                        Value = c.Id.ToString(),
+                        Text = c.Name
+                    }).ToList();
                     // Map the view model to the DTO
                     var providedServiceDto = _mapper.Map<CreateProvidedServiceDto>(createProvidedServiceViewModel);
                     var providedService = _mapper.Map<ProvidedService>(providedServiceDto);

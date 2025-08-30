@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using TimeTwoFix.Core.Common;
 using TimeTwoFix.Core.Interfaces;
 using TimeTwoFix.Core.Interfaces.Repositories.Base;
 using TimeTwoFix.Infrastructure.Persistence.Includes;
@@ -91,20 +92,18 @@ namespace TimeTwoFix.Application.Base
             return entities ?? Enumerable.Empty<T>();
         }
 
-        //public async Task<IEnumerable<TEntity>> GetAllWithDynamicIncludesGeneric<TEntity>() where TEntity : class
-        //{
-        //    var includes = EntityIncludeHelper.GetIncludes<TEntity>()
-        //        .Cast<Expression<Func<T, object>>>().ToArray();
-        //    var entities = await _baseRepository.GetAllWithIncludesAsyncGeneric(includes);
-        //    return entities ?? Enumerable.Empty<TEntity>();
+        public async Task<IEnumerable<T>> GetAllWithDynamicIncludesGeneric()
+        {
+            var includes = EntityIncludeHelper.GetIncludes<T>();
+            var entities = await _baseRepository.GetAllWithIncludesAsyncGeneric(includes);
+            return entities ?? Enumerable.Empty<T>();
 
-
-        //}
+        }
 
         // Retrieves all entities with included related properties
         public async Task<IEnumerable<T>> GetAllWithIncludesAsyncServiceGeneric(params Expression<Func<T, object>>[] includeProperties)
         {
-            //var includes = EntityIncludeHelper.GetIncludes();
+
             var entities = await _baseRepository.GetAllWithIncludesAsyncGeneric(includeProperties);
             return entities ?? Enumerable.Empty<T>();
         }
@@ -112,7 +111,13 @@ namespace TimeTwoFix.Application.Base
         // Retrieves an entity by its identifier, including related properties if specified
         public async Task<T?> GetByIdAsyncServiceGeneric(int id, params Expression<Func<T, object>>[] includeProperties)
         {
+
             return await _baseRepository.GetByIdAsyncGeneric(id, includeProperties);
+        }
+
+        public async Task<IReadOnlyList<GroupCount<TKey>>> GroupCountAsynServiceGeneric<TKey>(Expression<Func<T, TKey>> groupByExpression)
+        {
+            return await _baseRepository.GroupCountAsynGeneric(groupByExpression);
         }
 
         // Saves all changes made in the context

@@ -26,13 +26,17 @@ namespace TimeTwoFix.Web.Controllers
         public async Task<ActionResult> Index()
         {
 
-            var workOrders = await _workOrderService.GetAllWithIncludesAsyncServiceGeneric(wo => wo.Vehicle);
+            var workOrders = await _workOrderService.GetAllWithIncludesAsyncServiceGeneric(wo => wo.Vehicle, wo => wo.Interventions);
             if (workOrders == null || !workOrders.Any())
             {
                 TempData["WorkOrderError"] = "No WorkOrder found in the database";
                 return View(Enumerable.Empty<ReadWorkOrderViewModel>());
             }
             workOrders = workOrders.Where(wo => !wo.IsDeleted);
+            foreach (var workOrder in workOrders)
+            {
+                workOrder.RecalculateLaborCost();
+            }
             var workOrderDtos = _mapper.Map<IEnumerable<ReadWorkOrderDto>>(workOrders);
             var workOrderViewModels = _mapper.Map<IEnumerable<ReadWorkOrderViewModel>>(workOrderDtos);
             return View(workOrderViewModels);

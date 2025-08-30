@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using TimeTwoFix.Core.Common;
 
 namespace TimeTwoFix.Core.Interfaces.Repositories.Base
 {
@@ -20,6 +21,7 @@ namespace TimeTwoFix.Core.Interfaces.Repositories.Base
         Task DetachAsyncGeneric(T entity);
 
         Task<IEnumerable<T>> GetAllWithIncludesAsyncGeneric(params Expression<Func<T, object>>[] includeProperties);
+        Task<IReadOnlyList<GroupCount<TKey>>> GroupCountAsynGeneric<TKey>(Expression<Func<T, TKey>> groupByExpression);
 
     }
 }

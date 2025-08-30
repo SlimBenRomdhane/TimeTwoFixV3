@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using TimeTwoFix.Core.Common;
 
 namespace TimeTwoFix.Application.Base
 {
@@ -15,6 +16,6 @@ namespace TimeTwoFix.Application.Base
         Task<int> SaveChangesServiceGeneric();
         Task<int> CountAsyncServiceGeneric();
         Task<IEnumerable<T>> GetAllWithIncludesAsyncServiceGeneric(params Expression<Func<T, object>>[] includeProperties);
-        //Task<IEnumerable<TEntity>> GetAllWithDynamicIncludesGeneric<TEntity>() where TEntity : class;
+        Task<IReadOnlyList<GroupCount<TKey>>> GroupCountAsynServiceGeneric<TKey>(Expression<Func<T, TKey>> groupByExpression);
     }
 }

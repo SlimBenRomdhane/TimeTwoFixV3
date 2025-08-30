@@ -19,6 +19,7 @@ namespace TimeTwoFix.Web.Models.ProvidedServiceModels
         public int EstimatedTime { get; set; }
 
         [Required]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Price per hour must be greater than zero.")]
         public decimal PricePerHour { get; set; }
         public string? Notes { get; set; }
 
