@@ -1,4 +1,5 @@
-﻿using TimeTwoFix.Web.Models.VehicleModels;
+﻿using TimeTwoFix.Web.Models.InterventionModels;
+using TimeTwoFix.Web.Models.VehicleModels;
 
 namespace TimeTwoFix.Web.Models.WorkOrderModels
 {
@@ -15,5 +16,6 @@ namespace TimeTwoFix.Web.Models.WorkOrderModels
         public decimal TolalLaborCost { get; set; }
         public string Status { get; set; }
         public string Notes { get; set; }
+        public ICollection<ReadInterventionViewModel> InterventionViewModels { get; set; }
     }
 }

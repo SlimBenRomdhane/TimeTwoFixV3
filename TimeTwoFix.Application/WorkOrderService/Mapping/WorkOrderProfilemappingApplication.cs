@@ -14,7 +14,9 @@ namespace TimeTwoFix.Application.WorkOrderService.Mapping
         public WorkOrderProfileMappingApplication()
         {
             CreateMap<WorkOrder, ReadWorkOrderDto>()
-                .ForMember(dest => dest.VehicleDto, opt => opt.MapFrom(src => src.Vehicle));
+                .ForMember(dest => dest.VehicleDto, opt => opt.MapFrom(src => src.Vehicle))
+                .ForMember(dest => dest.InterventionDtos, opt => opt.MapFrom(src => src.Interventions))
+                .ReverseMap();
             CreateMap<CreateWorkOrderDto, WorkOrder>();
             CreateMap<UpdateWorkOrderDto, WorkOrder>();
             CreateMap<DeleteWorkOrderDto, WorkOrder>()

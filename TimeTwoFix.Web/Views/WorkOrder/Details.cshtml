@@ -48,11 +48,11 @@
                     </div>
                     <div class="col-md-6">
                         <label class="text-muted">Labor Cost</label>
-                        <div>@Model.TolalLaborCost</div>
+                        <div>@($"{Model.TolalLaborCost:N3} TND")</div>
                     </div>
                     <div class="col-md-12">
                         <label class="text-muted">Notes</label>
-                        <div>@Model.Notes</div>
+                        <div>@Model.Notes ?? "—"</div>
                     </div>
                 </div>
 
@@ -62,19 +62,107 @@
                 <h5 class="text-dark mb-3">
                     <i class="fas fa-info-circle me-1"></i> Status
                 </h5>
-                <div class="row gy-2">
+                <div class="row gy-2 mb-4">
                     <div class="col-md-6">
                         <label class="text-muted">Status</label>
-                        <span class="badge badge-status rounded-pill px-3 py-2" title="Work order status">@Model.Status</span>
+                        <span class="badge badge-status rounded-pill px-3 py-2" title="Work order status">
+                            @Model.Status
+                        </span>
                     </div>
                 </div>
 
+                @* --- Interventions Section --- *@
+                @if (Model.InterventionViewModels != null && Model.InterventionViewModels.Any())
+                {
+                    <hr />
+
+                    <h5 class="text-dark mb-3">
+                        <i class="fas fa-wrench me-1"></i> Related Interventions
+                    </h5>
+
+                    <div class="table-responsive mb-4">
+                        <table class="table table-bordered table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Service</th>
+                                    <th>Technician</th>
+                                    <th>Start</th>
+                                    <th>End</th>
+                                    <th>Cost</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var iv in Model.InterventionViewModels)
+                                {
+                                    <tr>
+                                        <td>@iv.Id</td>
+
+                                        @* Service Name *@
+                                        <td>
+                                            @iv.ProvidedService?.Name
+                                            ?? "<span class=\"text-muted\">[no service]</span>"
+                                        </td>
+
+                                        @* Technician Name *@
+                                        <td>
+                                            @iv.UserViewModel?.FirstName
+                                            ?? "<span class=\"text-muted\">[no tech]</span>"
+                                        </td>
+
+                                        @* Start Date & Time *@
+                                        <td>
+                                            <span class="text-nowrap">
+                                                @(iv.StartDate.ToString("yyyy-MM-dd"))<br />
+                                                <small class="text-muted">
+                                                    @(iv.StartDate.ToString("HH:mm"))
+                                                </small>
+                                            </span>
+                                        </td>
+
+                                        @* End Date & Time (nullable) *@
+                                        <td>
+                                            @if (iv.EndDate.HasValue)
+                                            {
+                                                <span class="text-nowrap">
+                                                    @(iv.EndDate.Value.ToString("yyyy-MM-dd"))<br />
+                                                    <small class="text-muted">
+                                                        @(iv.EndDate.Value.ToString("HH:mm"))
+                                                    </small>
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">Not completed</span>
+                                            }
+                                        </td>
+
+                                        @* Intervention Cost *@
+                                        <td>@($"{iv.InterventionPrice:N3} TND")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info mt-4">
+                        <i class="bi bi-info-circle me-1"></i> No interventions recorded for this work order.
+                    </div>
+                }
+
                 <!-- Actions -->
                 <div class="text-center mt-4">
-                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-general btn-sm me-2" title="Edit this work order">
+                    <a asp-action="Edit"
+                       asp-route-id="@Model.Id"
+                       class="btn btn-general btn-sm me-2"
+                       title="Edit this work order">
                         <i class="fas fa-edit"></i> Edit Work Order
                     </a>
-                    <a asp-action="Index" class="btn btn-secondary btn-sm" title="Return to work order list">
+                    <a asp-action="Index"
+                       class="btn btn-secondary btn-sm"
+                       title="Return to work order list">
                         <i class="fas fa-arrow-left"></i> Back to List
                     </a>
                 </div>

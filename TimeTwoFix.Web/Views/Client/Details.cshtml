@@ -48,6 +48,7 @@
                                 <th>VIN</th>
                                 <th>Year</th>
                                 <th>Mileage</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -60,6 +61,15 @@
                                     <td>@vehicle.Vin</td>
                                     <td>@vehicle.Year</td>
                                     <td>@vehicle.Mileage</td>
+                                    <td>
+                                        <a asp-controller="WorkOrder"
+                                           asp-action="CreateById"
+                                           asp-route-vehicleId="@vehicle.Id"
+                                           class="btn btn-sm btn-outline-success">
+                                            <i class="bi bi-clipboard-plus me-1"></i> Create Work Order
+                                        </a>
+                                    </td>
+
                                 </tr>
                             }
                         </tbody>

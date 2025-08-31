@@ -115,6 +115,16 @@ namespace TimeTwoFix.Application.Base
             return await _baseRepository.GetByIdAsyncGeneric(id, includeProperties);
         }
 
+        public Task<int> GetCountByPredicateAsyncServiceGeneric(Expression<Func<T, bool>> predicate)
+        {
+            return _baseRepository.GetCountByPredicateAsync(predicate);
+        }
+
+        public Task<IEnumerable<T>> GetPagedByPredicateAsyncServiceGeneric<TOrderKey>(Expression<Func<T, bool>> predicate, int skip, int take, Expression<Func<T, TOrderKey>> orderBy, bool descending = true, Expression<Func<T, object>>[] includes = null)
+        {
+            return _baseRepository.GetPagedByPredicateAsync(predicate, skip, take, orderBy, descending, includes);
+        }
+
         public async Task<IReadOnlyList<GroupCount<TKey>>> GroupCountAsynServiceGeneric<TKey>(Expression<Func<T, TKey>> groupByExpression)
         {
             return await _baseRepository.GroupCountAsynGeneric(groupByExpression);

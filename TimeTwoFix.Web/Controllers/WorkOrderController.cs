@@ -37,6 +37,7 @@ namespace TimeTwoFix.Web.Controllers
             {
                 workOrder.RecalculateLaborCost();
             }
+            await _workOrderService.SaveChangesServiceGeneric();
             var workOrderDtos = _mapper.Map<IEnumerable<ReadWorkOrderDto>>(workOrders);
             var workOrderViewModels = _mapper.Map<IEnumerable<ReadWorkOrderViewModel>>(workOrderDtos);
             return View(workOrderViewModels);
@@ -45,7 +46,10 @@ namespace TimeTwoFix.Web.Controllers
         // GET: WorkOrderController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            var workOrder = await _workOrderService.GetByIdAsyncServiceGeneric(id, wo => wo.Vehicle);
+            var workOrder = await _workOrderService.GetByIdAsyncServiceGeneric(id, wo => wo.Vehicle,
+                wo => wo.Interventions,
+                wo => wo.Interventions.Select(i => i.Service),
+                wo => wo.Interventions.Select(i => i.Mechanic));
             if (workOrder == null)
             {
                 TempData["WorkOrderError"] = "WorkOrder not found";
@@ -80,6 +84,32 @@ namespace TimeTwoFix.Web.Controllers
             }
             try
             {
+                var workOrderDto = _mapper.Map<CreateWorkOrderDto>(createWorkOrderViewModel);
+                workOrderDto.CreatedBy = User.Identity?.Name;
+                var workOrder = _mapper.Map<WorkOrder>(workOrderDto);
+                await _workOrderService.AddAsyncServiceGeneric(workOrder);
+                TempData["WorkOrderSuccess"] = "Work Order created successfully";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["WorkOrderError"] = $"An error occurred while creating the Work Order: {ex.Message}";
+                return View(createWorkOrderViewModel);
+            }
+        }
+
+        public async Task<ActionResult> CreateById(int vehicleId)
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> CreateById(CreateWorkOrderViewModel createWorkOrderViewModel)
+        {
+
+            try
+            {
+
                 var workOrderDto = _mapper.Map<CreateWorkOrderDto>(createWorkOrderViewModel);
                 workOrderDto.CreatedBy = User.Identity?.Name;
                 var workOrder = _mapper.Map<WorkOrder>(workOrderDto);

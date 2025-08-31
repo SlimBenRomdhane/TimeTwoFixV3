@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TimeTwoFix.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDb : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -457,6 +457,8 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     StartTime = table.Column<TimeOnly>(type: "time", nullable: false),
                     EndDate = table.Column<DateOnly>(type: "date", nullable: false),
                     EndTime = table.Column<TimeOnly>(type: "time", nullable: false),
+                    Paid = table.Column<bool>(type: "bit", nullable: false),
+                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     TolalLaborCost = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
@@ -491,7 +493,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                     LiftingBridgeId = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ActualTimeSpent = table.Column<TimeSpan>(type: "time", nullable: true),
+                    ActualTimeSpent = table.Column<long>(type: "bigint", nullable: true),
                     InterventionPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
@@ -601,18 +603,18 @@ namespace TimeTwoFix.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "Employees",
                 columns: new[] { "Id", "Address", "City", "ConcurrencyStamp", "CreatedAt", "Email", "EmailConfirmed", "FirstName", "HireDate", "HourlyWage", "ImageUrl", "LastEmployer", "LastName", "NormalizedEmail", "NormalizedUserName", "OfficeNumber", "PasswordHash", "PhoneNumber", "RoleTypeDiscriminator", "SecurityStamp", "Status", "UpdatedAt", "UserName", "UserType", "YearsInManagement", "YearsOfExperience", "ZipCode" },
-                values: new object[] { 1, "admin", "admin", "a141f8f9-9dc8-4bf6-a9b4-a28830da60b2", new DateTime(2025, 8, 19, 19, 52, 33, 62, DateTimeKind.Utc).AddTicks(654), "admin@admin.com", false, "admin", new DateOnly(1, 1, 1), 0m, "admin", "admin", "admin", "ADMIN@ADMIN.COM", "ADMIN", "manager", "AQAAAAIAAYagAAAAEK001lQ0KEX/qq/LhapVxLPkIoUaOZ0DeXAnvYGf3mAJ9HiobPtZMwVonS8crIzR5g==", "99999999", "GeneralManager", "00000000-0000-0000-0000-000000000000", "Active", new DateTime(2025, 8, 19, 19, 52, 33, 62, DateTimeKind.Utc).AddTicks(655), "admin", "GeneralManager", 99, 0, 0 });
+                values: new object[] { 1, "admin", "admin", "16b6d2bd-42e2-4dbd-b715-b0da0b22f277", new DateTime(2025, 8, 31, 20, 42, 16, 274, DateTimeKind.Utc).AddTicks(3670), "admin@admin.com", false, "admin", new DateOnly(1, 1, 1), 0m, "admin", "admin", "admin", "ADMIN@ADMIN.COM", "ADMIN", "manager", "AQAAAAIAAYagAAAAEJVCdTL9Z/dDLRwMA+M7LB6Qj1dsxEDj4Wlf+aUZDisxI8lipDV1CdsGuWlON414Sg==", "99999999", "GeneralManager", "00000000-0000-0000-0000-000000000000", "Active", new DateTime(2025, 8, 31, 20, 42, 16, 274, DateTimeKind.Utc).AddTicks(3671), "admin", "GeneralManager", 99, 0, 0 });
 
             migrationBuilder.InsertData(
                 table: "Roles",
                 columns: new[] { "Id", "CreatedAt", "Description", "IsActive", "Name", "NormalizedName", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 8, 19, 19, 52, 33, 62, DateTimeKind.Utc).AddTicks(133), "Mechanic role with access to work orders and interventions.", true, "Mechanic", "MECHANIC", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, new DateTime(2025, 8, 19, 19, 52, 33, 62, DateTimeKind.Utc).AddTicks(138), "Front Desk Assistant role with access to client management and appointments.", true, "FrontDeskAssistant", "FRONTDESKASSISTANT", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 3, new DateTime(2025, 8, 19, 19, 52, 33, 62, DateTimeKind.Utc).AddTicks(139), "Warehouse Manager role with access to spare parts and inventory management.", true, "WareHouseManager", "WAREHOUSEMANAGER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 4, new DateTime(2025, 8, 19, 19, 52, 33, 62, DateTimeKind.Utc).AddTicks(140), "Workshop Manager role with access to workshop operations and team management.", true, "WorkshopManager", "WORKSHOPMANAGER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 5, new DateTime(2025, 8, 19, 19, 52, 33, 62, DateTimeKind.Utc).AddTicks(141), "General Manager role with access to all operations and management.", true, "GeneralManager", "GENERALMANAGER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                    { 1, new DateTime(2025, 8, 31, 20, 42, 16, 274, DateTimeKind.Utc).AddTicks(3426), "Mechanic role with access to work orders and interventions.", true, "Mechanic", "MECHANIC", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, new DateTime(2025, 8, 31, 20, 42, 16, 274, DateTimeKind.Utc).AddTicks(3434), "Front Desk Assistant role with access to client management and appointments.", true, "FrontDeskAssistant", "FRONTDESKASSISTANT", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, new DateTime(2025, 8, 31, 20, 42, 16, 274, DateTimeKind.Utc).AddTicks(3435), "Warehouse Manager role with access to spare parts and inventory management.", true, "WareHouseManager", "WAREHOUSEMANAGER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 4, new DateTime(2025, 8, 31, 20, 42, 16, 274, DateTimeKind.Utc).AddTicks(3437), "Workshop Manager role with access to workshop operations and team management.", true, "WorkshopManager", "WORKSHOPMANAGER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 5, new DateTime(2025, 8, 31, 20, 42, 16, 274, DateTimeKind.Utc).AddTicks(3437), "General Manager role with access to all operations and management.", true, "GeneralManager", "GENERALMANAGER", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified) }
                 });
 
             migrationBuilder.InsertData(

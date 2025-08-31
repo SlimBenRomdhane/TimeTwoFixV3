@@ -8,8 +8,6 @@
     var totalPages = ViewBag.TotalPages as int? ?? 1;
     var totalCount = ViewBag.TotalCount as int? ?? 0;
     var pageSize = ViewBag.PageSize as int? ?? 10;
-
-    // Check if we're showing a specific status or all
     var isShowingSpecificStatus = !string.IsNullOrEmpty(currentStatus);
 }
 
@@ -17,14 +15,9 @@
 <p>
     <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
-<div class="alert alert-warning">
-    DEBUG: @ViewBag.Debug
-    <br>StatusCounts: @((ViewBag.StatusCounts as IReadOnlyList<StatusCountDto>)?.Count ?? 0)
-    <br>CurrentStatus: @ViewBag.CurrentStatus
-</div>
+
 <!-- Navigation Tabs -->
 <ul class="nav nav-tabs" id="interventionStatusTabs" role="tablist">
-    <!-- All tab -->
     <li class="nav-item" role="presentation">
         <a class="nav-link @(!isShowingSpecificStatus ? "active" : "")"
            asp-action="PaginatedIndex"
@@ -33,11 +26,9 @@
             All (@(statusCounts?.Sum(s => s.Count) ?? 0))
         </a>
     </li>
-
-    <!-- Status-specific tabs -->
     @if (statusCounts != null)
     {
-        @foreach (var statusCount in statusCounts)
+        foreach (var statusCount in statusCounts)
         {
             var isActive = statusCount.Status == currentStatus;
             <li class="nav-item" role="presentation">
@@ -84,9 +75,9 @@
                         <tr>
                             <td>@item.Id</td>
                             <td>@item.WorkOrderId</td>
-                            <td>@item.MechanicId</td>
-                            <td>@item.ServiceId</td>
-                            <td>@item.LiftingBridgeId</td>
+                            <td>@item.UserViewModel.FirstName</td>
+                            <td>@item.ProvidedService.Name</td>
+                            <td>@item.LiftingBridge.Name</td>
                             <td>@item.StartDate</td>
                             <td>@item.EndDate</td>
                             <td>@item.ActualTimeSpent</td>
@@ -102,50 +93,80 @@
             </table>
 
             <!-- Pagination -->
-            @if (totalPages > 1)
-            {
-                <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item @(currentPage <= 1 ? "disabled" : "")">
+            
+                int startPage = Math.Max(1, currentPage - 2);
+                int endPage = Math.Min(totalPages, currentPage + 2);
+            
+
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+
+                    <!-- Previous -->
+                    <li class="page-item @(currentPage <= 1 ? "disabled" : "")">
+                        <a class="page-link"
+                           asp-action="PaginatedIndex"
+                           asp-route-status="@currentStatus"
+                           asp-route-page="@(currentPage - 1)"
+                           asp-route-pageSize="@pageSize">Previous</a>
+                    </li>
+
+                    <!-- First page + ellipsis -->
+                    @if (startPage > 1)
+                    {
+                        <li class="page-item">
                             <a class="page-link"
                                asp-action="PaginatedIndex"
                                asp-route-status="@currentStatus"
-                               asp-route-page="@(currentPage - 1)"
-                               asp-route-pageSize="@pageSize">
-                                Previous
-                            </a>
+                               asp-route-page="1"
+                               asp-route-pageSize="@pageSize">1</a>
                         </li>
+                        <li class="page-item disabled"><span class="page-link">…</span></li>
+                    }
 
-                        @for (int i = Math.Max(1, currentPage - 2); i <= Math.Min(totalPages, currentPage + 2); i++)
-                        {
-                            <li class="page-item @(i == currentPage ? "active" : "")">
-                                <a class="page-link"
-                                   asp-action="PaginatedIndex"
-                                   asp-route-status="@currentStatus"
-                                   asp-route-page="@i"
-                                   asp-route-pageSize="@pageSize">
-                                    @i
-                                </a>
-                            </li>
-                        }
-
-                        <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                    <!-- Page range -->
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        <li class="page-item @(i == currentPage ? "active" : "")">
                             <a class="page-link"
                                asp-action="PaginatedIndex"
                                asp-route-status="@currentStatus"
-                               asp-route-page="@(currentPage + 1)"
-                               asp-route-pageSize="@pageSize">
-                                Next
-                            </a>
+                               asp-route-page="@i"
+                               asp-route-pageSize="@pageSize">@i</a>
                         </li>
-                    </ul>
-                </nav>
-            }
+                    }
 
-            <!-- Results info -->
-            <div class="text-center mt-3">
+                    <!-- Ellipsis + last page -->
+                    @if (endPage < totalPages)
+                    {
+                        <li class="page-item disabled"><span class="page-link">…</span></li>
+                        <li class="page-item">
+                            <a class="page-link"
+                               asp-action="PaginatedIndex"
+                               asp-route-status="@currentStatus"
+                               asp-route-page="@totalPages"
+                               asp-route-pageSize="@pageSize">@totalPages</a>
+                        </li>
+                    }
+
+                    <!-- Next -->
+                    <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                        <a class="page-link"
+                           asp-action="PaginatedIndex"
+                           asp-route-status="@currentStatus"
+                           asp-route-page="@(currentPage + 1)"
+                           asp-route-pageSize="@pageSize">Next</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Results Summary -->
+           
+                int skip = (currentPage - 1) * pageSize;
+                int showingTo = Math.Min(skip + pageSize, totalCount);
+            
+            <div class="text-center mt-2">
                 <small class="text-muted">
-                    Showing @Model.Count() of @totalCount results for "@currentStatus" (Page @currentPage of @totalPages)
+                    Showing @skip+1–@showingTo of @totalCount interventions
                 </small>
             </div>
         }

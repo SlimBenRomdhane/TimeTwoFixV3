@@ -13,7 +13,11 @@ namespace TimeTwoFix.Application.InterventionService.Mapping
             CreateMap<Intervention, CreateInterventionDto>().ReverseMap();
             CreateMap<Intervention, DeleteInterventionDto>().ReverseMap();
             CreateMap<Intervention, UpdateInterventionDto>().ReverseMap();
-            CreateMap<Intervention, ReadInterventionDto>().ReverseMap();
+            CreateMap<Intervention, ReadInterventionDto>()
+                .ForMember(dest => dest.ProvidedServiceDto, opt => opt.MapFrom(src => src.Service))
+                .ForMember(dest => dest.LiftingBridgeDto, opt => opt.MapFrom(src => src.LiftingBridge))
+                .ForMember(dest => dest.UserDto, opt => opt.MapFrom(src => src.Mechanic))
+                .ReverseMap();
 
         }
     }

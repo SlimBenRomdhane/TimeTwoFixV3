@@ -17,6 +17,9 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
         public TimeOnly StartTime { get; set; }
         public DateOnly EndDate { get; set; }
         public TimeOnly EndTime { get; set; }
+        public bool Paid { get; set; }
+        public DateTime? PaymentDate { get; set; }
+
         private decimal _totalLaborCost;
         //public decimal TolalLaborCost { get; set; }
 
@@ -29,8 +32,9 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
             }
         }
 
-        [MaxLength(50)]
+
         private string _status;
+        [MaxLength(50)]
         public string Status
         {
             get => _status;

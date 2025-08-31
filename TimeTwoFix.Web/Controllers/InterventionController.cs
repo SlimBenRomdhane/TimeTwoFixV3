@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using TimeTwoFix.Application.Base.BaseDtos;
 using TimeTwoFix.Application.InterventionService.Dtos;
 using TimeTwoFix.Application.InterventionService.Interfaces;
@@ -39,11 +38,6 @@ namespace TimeTwoFix.Web.Controllers
 
         }
 
-
-        // In your InterventionController class, replace your PaginatedIndex method with this:
-
-        // In your InterventionController class, replace your PaginatedIndex method with this:
-
         [HttpGet]
         public override async Task<IActionResult> Index()
         {
@@ -51,12 +45,11 @@ namespace TimeTwoFix.Web.Controllers
             return RedirectToAction("PaginatedIndex", "Intervention");
         }
 
-        // Keep your PaginatedIndex method as is - just rename it if you want
+
         [HttpGet]
         public async Task<IActionResult> PaginatedIndex(string status = null, int page = 1, int pageSize = 100)
         {
             var includes = EntityIncludeHelper.GetIncludes<Intervention>();
-
             // Get status counts for tabs
             var statusCountsRaw = await _interventionService.GroupCountAsynServiceGeneric(i => i.Status);
             var statusCounts = _mapper.Map<IReadOnlyList<StatusCountDto>>(statusCountsRaw);
@@ -68,18 +61,18 @@ namespace TimeTwoFix.Web.Controllers
                         ?? statusCounts.First().Status;
             }
 
-            var allInterventions = await _interventionService.GetAllAsyncServiceGeneric();
+            var skip = (page - 1) * pageSize;
+            var pagedInterventions = await _interventionService.GetPagedByPredicateAsyncServiceGeneric(
+                i => i.Status == status,
+                skip,
+                pageSize,
+                i => i.CreatedAt,
+                descending: true, includes);
 
-            // Always filter by status - no more loading all data
-            var filteredInterventions = allInterventions.Where(i => i.Status == status);
 
-            var totalCount = filteredInterventions.Count();
+            var totalCount = await _interventionService.GetCountByPredicateAsyncServiceGeneric(i => i.Status == status);
 
-            var pagedInterventions = filteredInterventions
-                .OrderByDescending(i => i.CreatedAt)
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
+
 
             var interventionDtos = _mapper.Map<List<ReadInterventionDto>>(pagedInterventions);
             var viewModels = _mapper.Map<List<ReadInterventionViewModel>>(interventionDtos);
@@ -94,9 +87,7 @@ namespace TimeTwoFix.Web.Controllers
             return View(viewModels);
         }
 
-        // DELETE your PaginatedIndex method completely
 
-        // DELETE your PaginatedIndex method completely
 
 
         [HttpGet]

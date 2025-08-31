@@ -6,7 +6,8 @@
 }
 
 <div class="container my-5">
-    <!-- Section Header -->
+
+    <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="section-title text-primary fw-bold">
             <i class="bi bi-car-front me-2"></i> Vehicle Management
@@ -16,7 +17,7 @@
         </a>
     </div>
 
-    <!-- Statistics Summary -->
+    <!-- Summary -->
     <div class="alert alert-info mb-4">
         <div class="row">
             <div class="col-md-6">
@@ -37,7 +38,40 @@
         </div>
     }
 
-    <!-- Vehicles Table -->
+    <!-- VIN Search -->
+    <form asp-action="Index" method="get" class="row g-3 mb-3">
+        <div class="col-md-6">
+            <input type="text" name="searchVin" value="@ViewBag.SearchVin" class="form-control" placeholder="Search by VIN" />
+        </div>
+        <div class="col-md-6 text-end">
+            <button type="submit" class="btn btn-outline-primary">
+                <i class="bi bi-search me-1"></i> Search VIN
+            </button>
+        </div>
+    </form>
+
+    <!-- Multi-field Search -->
+    <form asp-action="Index" method="get" class="row g-3 mb-4">
+        <div class="col-md-3">
+            <input type="text" name="searchBrand" value="@ViewBag.SearchBrand" class="form-control" placeholder="Brand" />
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="searchModel" value="@ViewBag.SearchModel" class="form-control" placeholder="Model" />
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="searchFuel" value="@ViewBag.SearchFuel" class="form-control" placeholder="Fuel Type" />
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="searchTransmission" value="@ViewBag.SearchTransmission" class="form-control" placeholder="Transmission Type" />
+        </div>
+        <div class="col-12 text-end">
+            <button type="submit" class="btn btn-outline-success">
+                <i class="bi bi-funnel me-1"></i> Filter Vehicles
+            </button>
+        </div>
+    </form>
+
+    <!-- Vehicle Table -->
     <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
             <table class="table table-hover align-middle mb-0">
@@ -73,6 +107,7 @@
                                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info">Details</a>
                                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning">Edit</a>
                                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">Delete</a>
+                                    <a asp-action="CreateById" asp-controller="WorkOrder" asp-route-vehicleId="@item.Id" class="btn btn-outline-success">Create Work Order</a>
                                 </div>
                             </td>
                         </tr>
@@ -83,63 +118,87 @@
     </div>
 
     <!-- Pagination -->
-    <div class="d-flex justify-content-center gap-3 mt-4">
-        @{
-            int currentPage = ViewBag.CurrentPage;
-            int totalPages = ViewBag.TotalPages;
-            int startPage = Math.Max(1, currentPage - 2);
-            int endPage = Math.Min(totalPages, currentPage + 2);
-        }
+    @if (ViewBag.TotalPages > 1)
+    {
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center flex-wrap">
+                @{
+                    int currentPage = ViewBag.CurrentPage;
+                    int totalPages = ViewBag.TotalPages;
+                    int startPage = Math.Max(1, currentPage - 2);
+                    int endPage = Math.Min(totalPages, currentPage + 2);
+                }
 
-        @if (totalPages > 1)
-        {
-            <nav class="mt-4">
-                <div class="overflow-auto">
-                    <ul class="pagination justify-content-center flex-nowrap">
+                <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-pageNumber="@(currentPage - 1)"
+                       asp-route-searchVin="@ViewBag.SearchVin"
+                       asp-route-searchModel="@ViewBag.SearchModel"
+                       asp-route-searchBrand="@ViewBag.SearchBrand"
+                       asp-route-searchFuel="@ViewBag.SearchFuel"
+                       asp-route-searchTransmission="@ViewBag.SearchTransmission">
+                        Previous
+                    </a>
+                </li>
 
-                        <!-- Previous -->
-                        <li class="page-item @(currentPage == 1 ? "disabled" : "")">
-                            <a class="page-link" asp-action="Index" asp-route-pageNumber="@(currentPage - 1)">Previous</a>
-                        </li>
+                @if (startPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber="1"
+                           asp-route-searchVin="@ViewBag.SearchVin"
+                           asp-route-searchModel="@ViewBag.SearchModel"
+                           asp-route-searchBrand="@ViewBag.SearchBrand"
+                           asp-route-searchFuel="@ViewBag.SearchFuel"
+                           asp-route-searchTransmission="@ViewBag.SearchTransmission">
+                            1
+                        </a>
+                    </li>
+                    <li class="page-item disabled"><span class="page-link">…</span></li>
+                }
 
-                        <!-- First page + ellipsis -->
-                        @if (startPage > 1)
-                        {
-                            <li class="page-item">
-                                <a class="page-link" asp-action="Index" asp-route-pageNumber="1">1</a>
-                            </li>
-                            <li class="page-item disabled">
-                                <span class="page-link">…</span>
-                            </li>
-                        }
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item @(i == currentPage ? "active" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@i"
+                           asp-route-searchVin="@ViewBag.SearchVin"
+                           asp-route-searchModel="@ViewBag.SearchModel"
+                           asp-route-searchBrand="@ViewBag.SearchBrand"
+                           asp-route-searchFuel="@ViewBag.SearchFuel"
+                           asp-route-searchTransmission="@ViewBag.SearchTransmission">
+                            @i
+                        </a>
+                    </li>
+                }
 
-                        <!-- Page range -->
-                        @for (int i = startPage; i <= endPage; i++)
-                        {
-                            <li class="page-item @(i == currentPage ? "active" : "")">
-                                <a class="page-link" asp-action="Index" asp-route-pageNumber="@i">@i</a>
-                            </li>
-                        }
+                @if (endPage < totalPages)
+                {
+                    <li class="page-item disabled"><span class="page-link">…</span></li>
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index" asp-route-pageNumber="@totalPages"
+                           asp-route-searchVin="@ViewBag.SearchVin"
+                           asp-route-searchModel="@ViewBag.SearchModel"
+                           asp-route-searchBrand="@ViewBag.SearchBrand"
+                           asp-route-searchFuel="@ViewBag.SearchFuel"
+                           asp-route-searchTransmission="@ViewBag.SearchTransmission">
+                            @totalPages
+                        </a>
+                    </li>
+                }
 
-                        <!-- Ellipsis + last page -->
-                        @if (endPage < totalPages)
-                        {
-                            <li class="page-item disabled">
-                                <span class="page-link">…</span>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" asp-action="Index" asp-route-pageNumber="@totalPages">@totalPages</a>
-                            </li>
-                        }
-
-                        <!-- Next -->
-                        <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-                            <a class="page-link" asp-action="Index" asp-route-pageNumber="@(currentPage + 1)">Next</a>
-                        </li>
-
-                    </ul>
-                </div>
-            </nav>
-        }
-    </div>
+                <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-pageNumber="@(currentPage + 1)"
+                       asp-route-searchVin="@ViewBag.SearchVin"
+                       asp-route-searchModel="@ViewBag.SearchModel"
+                       asp-route-searchBrand="@ViewBag.SearchBrand"
+                       asp-route-searchFuel="@ViewBag.SearchFuel"
+                       asp-route-searchTransmission="@ViewBag.SearchTransmission">
+                        Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
 </div>

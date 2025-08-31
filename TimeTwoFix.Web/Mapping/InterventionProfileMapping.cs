@@ -9,7 +9,11 @@ namespace TimeTwoFix.Web.Mapping
         public InterventionProfileMapping()
         {
             CreateMap<CreateInterventionViewModel, CreateInterventionDto>().ReverseMap();
-            CreateMap<ReadInterventionViewModel, ReadInterventionDto>().ReverseMap();
+            CreateMap<ReadInterventionViewModel, ReadInterventionDto>()
+                .ForMember(dest => dest.ProvidedServiceDto, opt => opt.MapFrom(src => src.ProvidedService))
+                .ForMember(dest => dest.LiftingBridgeDto, opt => opt.MapFrom(src => src.LiftingBridge))
+                .ForMember(dest => dest.UserDto, opt => opt.MapFrom(src => src.UserViewModel))
+                .ReverseMap();
             CreateMap<UpdateInterventionViewModel, UpdateInterventionDto>().ReverseMap();
             CreateMap<DeleteInterventionViewModel, DeleteInterventionDto>().ReverseMap();
         }

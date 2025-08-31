@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TimeTwoFix.Application.InterventionService.Dtos;
 using TimeTwoFix.Application.VehicleServices.Dtos;
 
 namespace TimeTwoFix.Application.WorkOrderService.Dtos
@@ -20,5 +21,6 @@ namespace TimeTwoFix.Application.WorkOrderService.Dtos
         public decimal TolalLaborCost { get; set; }
         public string Status { get; set; }
         public string Notes { get; set; }
+        public ICollection<ReadInterventionDto> InterventionDtos { get; set; }
     }
 }

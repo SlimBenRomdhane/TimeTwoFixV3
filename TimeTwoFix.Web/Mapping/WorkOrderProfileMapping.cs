@@ -11,6 +11,7 @@ namespace TimeTwoFix.Web.Mapping
             CreateMap<CreateWorkOrderViewModel, CreateWorkOrderDto>();
             CreateMap<ReadWorkOrderDto, ReadWorkOrderViewModel>()
                 .ForMember(dest => dest.VehicleViewModel, opt => opt.MapFrom(src => src.VehicleDto))
+                .ForMember(dest => dest.InterventionViewModels, opt => opt.MapFrom(src => src.InterventionDtos))
                 .ReverseMap();
             CreateMap<UpdateWorkOrderDto, UpdateWorkOrderViewModel>().ReverseMap();
             CreateMap<DeleteWorkOrderDto, DeleteWorkOrderViewModel>()

@@ -25,12 +25,52 @@ namespace TimeTwoFix.Web.Controllers
         }
 
         // GET: VehicleController
-        public async Task<ActionResult> Index(int pageNumber = 1, int pageSize = 50)
+        public async Task<ActionResult> Index(string searchVin, string searchModel, string searchBrand,
+           string searchFuel, string searchTransmission, int pageNumber = 1, int pageSize = 50)
         {
+
             var totalVahicle = await _vehicleService.CountAsyncServiceGeneric();
             var vehicles = await _vehicleService.GetAllAsyncServiceGeneric();
             var activeVehicles = vehicles.Where(v => !v.IsDeleted).ToList();
 
+            if (!string.IsNullOrWhiteSpace(searchVin))
+            {
+                var vehicleDto = await _vehicleService.GetVehicleByVin(searchVin.Trim());
+
+                if (vehicleDto == null)
+                {
+                    TempData["VehicleError"] = "No matching VIN found.";
+                    return View(Enumerable.Empty<ReadVehicleViewModel>());
+                }
+
+                var viewModel = _mapper.Map<ReadVehicleViewModel>(vehicleDto);
+                ViewBag.TotalPages = 1;
+                ViewBag.CurrentPage = 1;
+                ViewBag.CountVehicle = 1;
+
+
+                return View(new List<ReadVehicleViewModel> { viewModel });
+            }
+            else
+            {
+                var vehicleDtoss = await _vehicleService.GetVehiclesByMultipleParam(searchBrand?.Trim(),
+                    searchModel?.Trim(),
+                    searchFuel?.Trim(),
+                    searchTransmission?.Trim());
+
+                var paginated = vehicleDtoss
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize);
+
+                var viewModels = _mapper.Map<IEnumerable<ReadVehicleViewModel>>(paginated);
+
+                ViewBag.TotalPages = (int)Math.Ceiling((double)vehicleDtoss.Count() / pageSize);
+                ViewBag.CurrentPage = pageNumber;
+                ViewBag.CountVehicle = vehicleDtoss.Count();
+                ViewBag.ActiveVehicle = vehicleDtoss.Count(); // since all are active
+
+                return View(viewModels);
+            }
             var paginatedVahicles = activeVehicles.Skip((pageNumber - 1) * pageSize).Take(pageSize);
             var vehicleDtos = _mapper.Map<IEnumerable<ReadVehicleDto>>(paginatedVahicles);
             var vehicleViewModels = _mapper.Map<IEnumerable<ReadVehicleViewModel>>(vehicleDtos);
@@ -38,6 +78,13 @@ namespace TimeTwoFix.Web.Controllers
             ViewBag.CurrentPage = pageNumber;
             ViewBag.CountVehicle = totalVahicle;
             ViewBag.ActiveVehicle = activeVehicles.Count;
+            //////////////////
+            // Preserve search terms
+            ViewBag.SearchVin = searchVin;
+            ViewBag.SearchModel = searchModel;
+            ViewBag.SearchBrand = searchBrand;
+            ViewBag.SearchFuel = searchFuel;
+            ViewBag.SearchTransmission = searchTransmission;
 
             return View(vehicleViewModels);
         }

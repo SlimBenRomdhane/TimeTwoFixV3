@@ -68,6 +68,39 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.Base
             return res;
         }
 
+        public Task<int> GetCountByPredicateAsync(Expression<Func<T, bool>> predicate)
+        {
+            var query = _dbSet.AsQueryable();
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+            return query.CountAsync();
+        }
+
+        public async Task<IEnumerable<T>> GetPagedByPredicateAsync<TOrderKey>(Expression<Func<T, bool>> predicate, int skip, int take, Expression<Func<T, TOrderKey>> orderBy, bool descending = true, Expression<Func<T, object>>[] includes = null)
+        {
+            var query = _dbSet.AsQueryable();
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+            if (predicate != null)
+            {
+                query = query.Where(predicate);
+            }
+            if (orderBy != null)
+            {
+                query = descending ? query.OrderByDescending(orderBy) : query.OrderBy(orderBy);
+            }
+            query = query.Skip(skip).Take(take);
+            return await query.AsNoTracking().ToListAsync();
+
+        }
+
         public async Task<IReadOnlyList<GroupCount<TKey>>> GroupCountAsynGeneric<TKey>(Expression<Func<T, TKey>> groupByExpression)
         {
             var res = await _dbSet

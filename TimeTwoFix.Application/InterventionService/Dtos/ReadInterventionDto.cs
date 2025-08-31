@@ -1,4 +1,7 @@
 ﻿using TimeTwoFix.Application.Base;
+using TimeTwoFix.Application.LiftingBridgeServices.Dtos;
+using TimeTwoFix.Application.ProvidedServicesService.Dtos;
+using TimeTwoFix.Application.UserServices.Dtos.Users;
 
 namespace TimeTwoFix.Application.InterventionService.Dtos
 {
@@ -6,9 +9,12 @@ namespace TimeTwoFix.Application.InterventionService.Dtos
     {
         public int Id { get; set; }
         public int WorkOrderId { get; set; }
+        public ReadUserDto UserDto { get; set; }
         public int MechanicId { get; set; }
         public int ServiceId { get; set; }
+        public ReadProvidedServiceDto ProvidedServiceDto { get; set; }
         public int LiftingBridgeId { get; set; }
+        public ReadLiftingBridgeDto LiftingBridgeDto { get; set; }
         public string Status { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }
