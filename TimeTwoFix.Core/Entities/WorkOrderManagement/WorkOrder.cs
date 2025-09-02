@@ -70,8 +70,64 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
             }
 
             TolalLaborCost = total;
-            Status = Interventions != null && Interventions.Any(i => i.Status != "Completed") ? "In Progress" : "Completed";
+            //Status = Interventions != null && Interventions.Any(i => i.Status != "Completed") ? "In Progress" : "Completed";
             //EndDate = Interventions != null && Interventions.Any(i => i.Status == "Completed") ? Interventions.Where(i => i.Status == "Completed").Max(i => i.EndDate)?.Date ?? EndDate : EndDate;
+        }
+        //public void UpdateStatus()
+        //{
+        //    if (Interventions != null && Interventions.Any(i => i.Status != "Completed"))
+        //    {
+        //        Status = "In Progress";
+        //    }
+        //    else if (Interventions != null && Interventions.All(i => i.Status == "Completed"))
+        //    {
+        //        Status = "Completed";
+        //        EndDate = Interventions.Where(i => i.Status == "Completed").Max(i => i.EndDate)?.Date ?? EndDate;
+        //        EndTime = Interventions.Where(i => i.Status == "Completed").Max(i => i.EndDate)?.TimeOfDay ?? EndTime;
+        //    }
+        //    else
+        //    {
+        //        Status = "Paused";
+        //    }
+        //}
+        public void UpdateStatus2()
+        {
+            if (Status == "Cancelled" || Status == "Paused")
+            {
+                return; // Do not change status if it's Cancelled or Paused
+            }
+            if (Interventions == null || !Interventions.Any())
+            {
+                Status = "Pending";
+                return;
+            }
+
+            var completedInterventions = Interventions
+                .Where(i => !i.IsDeleted && i.Status == "Completed")
+                .ToList();
+
+            if (Interventions.Any(i => !i.IsDeleted && i.Status != "Completed"))
+            {
+                Status = "In Progress";
+            }
+            else if (completedInterventions.Any())
+            {
+                Status = "Completed";
+
+                var latestEndDateTime = completedInterventions
+                    .Where(i => i.EndDate.HasValue)
+                    .Max(i => i.EndDate.Value);
+                var earliestStartDateTime = completedInterventions
+                    .Min(i => i.StartDate);
+                StartDate = DateOnly.FromDateTime(earliestStartDateTime);
+                StartTime = TimeOnly.FromDateTime(earliestStartDateTime);
+                EndDate = DateOnly.FromDateTime(latestEndDateTime);
+                EndTime = TimeOnly.FromDateTime(latestEndDateTime);
+            }
+            else
+            {
+                Status = "Paused";
+            }
         }
 
     }

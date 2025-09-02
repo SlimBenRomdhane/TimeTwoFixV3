@@ -50,7 +50,7 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.Base
             {
                 query = query.Include(includeProperty);
             }
-            return await query.AsNoTracking().ToListAsync();
+            return await query.ToListAsync();
         }
 
         public async Task<T?> GetByIdAsyncGeneric(int id, params Expression<Func<T, object>>[] includeProperties)

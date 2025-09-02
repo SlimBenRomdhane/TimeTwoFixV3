@@ -19,6 +19,8 @@ namespace TimeTwoFix.Application.WorkOrderService.Dtos
         public TimeOnly EndTime { get; set; }
         public decimal TolalLaborCost { get; set; }
         public string Status { get; set; }
+        public bool Paid { get; set; }
+        public DateTime PaymentDate { get; set; }
         public string Notes { get; set; }
         public DateTime DeletedAt { get; set; } = DateTime.Now;
         public string DeletedBy { get; set; }

@@ -14,6 +14,8 @@ namespace TimeTwoFix.Web.Models.WorkOrderModels
         public TimeOnly? EndTime { get; set; }
         public decimal? TolalLaborCost { get; set; }
         public WorkOrderStatus Status { get; set; } = WorkOrderStatus.Pending;
+        public bool? Paid { get; set; }
+        public DateTime? PaymentDate { get; set; }
         public string? Notes { get; set; }
     }
 }

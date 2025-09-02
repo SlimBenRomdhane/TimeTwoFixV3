@@ -44,6 +44,21 @@
                         </select>
                         <span asp-validation-for="Status" class="text-danger"></span>
                     </div>
+                    <div class="mb-3">
+                        <label asp-for="Paid" class="form-label"></label>
+                        <select asp-for="Paid" class="form-select">
+                            <option value="">-- Select Payment Status --</option>
+                            <option value="true">Paid</option>
+                            <option value="false">Unpaid</option>
+                        </select>
+                        <span asp-validation-for="Paid" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="PaymentDate" class="form-label"></label>
+                        <input asp-for="PaymentDate" class="form-control" type="datetime-local" />
+                        <span asp-validation-for="PaymentDate" class="text-danger"></span>
+                    </div>
 
                     <div class="mb-3">
                         <label asp-for="Notes" class="form-label"></label>

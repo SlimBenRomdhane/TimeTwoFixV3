@@ -36,6 +36,7 @@ namespace TimeTwoFix.Web.Controllers
             foreach (var workOrder in workOrders)
             {
                 workOrder.RecalculateLaborCost();
+                workOrder.UpdateStatus2();
             }
             await _workOrderService.SaveChangesServiceGeneric();
             var workOrderDtos = _mapper.Map<IEnumerable<ReadWorkOrderDto>>(workOrders);
