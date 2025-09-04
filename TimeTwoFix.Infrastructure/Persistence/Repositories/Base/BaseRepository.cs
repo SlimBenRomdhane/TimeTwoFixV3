@@ -53,12 +53,16 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.Base
             return await query.ToListAsync();
         }
 
-        public async Task<T?> GetByIdAsyncGeneric(int id, params Expression<Func<T, object>>[] includeProperties)
+        public async Task<T?> GetByIdAsyncGeneric(int id, Func<IQueryable<T>, IQueryable<T>>? includeBuilder = null, params Expression<Func<T, object>>[] includeProperties)
         {
             IQueryable<T> query = _dbSet;
             foreach (var includeProperty in includeProperties)
             {
                 query = query.Include(includeProperty);
+            }
+            if (includeBuilder != null)
+            {
+                query = includeBuilder(query);
             }
             //If the entity has a property named "Id", we can use EF.Property to access it dynamically.
             //Otherwise, we can use a different approach to get the entity by its primary key.

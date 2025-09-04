@@ -16,24 +16,34 @@
                 <h5 class="text-dark mb-3">
                     <i class="fas fa-car me-1"></i> Vehicle Info
                 </h5>
-                <div class="row gy-2 mb-4">
-                    <div class="col-md-6">
-                        <label class="text-muted">VIN</label>
-                        <div class="fw-semibold">@Model.VehicleViewModel?.Vin</div>
+
+                @if (Model.VehicleViewModel != null)
+                {
+                    <div class="row gy-2 mb-4">
+                        <div class="col-md-6">
+                            <label class="text-muted">VIN</label>
+                            <div class="fw-semibold">@Model.VehicleViewModel.Vin</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted">License Plate</label>
+                            <div class="fw-semibold">@Model.VehicleViewModel.LicensePlate</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted">Brand</label>
+                            <div>@Model.VehicleViewModel.Brand</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="text-muted">Model</label>
+                            <div>@Model.VehicleViewModel.Model</div>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <label class="text-muted">License Plate</label>
-                        <div class="fw-semibold">@Model.VehicleViewModel?.LicensePlate</div>
+                }
+                else
+                {
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-1"></i> Vehicle details are not available.
                     </div>
-                    <div class="col-md-6">
-                        <label class="text-muted">Brand</label>
-                        <div>@Model.VehicleViewModel?.Brand</div>
-                    </div>
-                    <div class="col-md-6">
-                        <label class="text-muted">Model</label>
-                        <div>@Model.VehicleViewModel?.Model</div>
-                    </div>
-                </div>
+                }
 
                 <hr />
 
@@ -71,25 +81,25 @@
                     </div>
                 </div>
 
-                @* --- Interventions Section --- *@
+                <!-- Interventions -->
                 @if (Model.InterventionViewModels != null && Model.InterventionViewModels.Any())
                 {
                     <hr />
-
                     <h5 class="text-dark mb-3">
                         <i class="fas fa-wrench me-1"></i> Related Interventions
                     </h5>
 
                     <div class="table-responsive mb-4">
-                        <table class="table table-bordered table-hover align-middle">
+                        <table class="table table-bordered table-hover align-middle text-center">
                             <thead class="table-light">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Service</th>
-                                    <th>Technician</th>
-                                    <th>Start</th>
-                                    <th>End</th>
-                                    <th>Cost</th>
+                                <tr class="align-middle">
+                                    <th scope="col">#</th>
+                                    <th scope="col">Service</th>
+                                    <th scope="col">Technician</th>
+                                    <th scope="col">Start</th>
+                                    <th scope="col">End</th>
+                                    <th scope="col">Cost</th>
+                                    <th scope="col">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -98,37 +108,41 @@
                                     <tr>
                                         <td>@iv.Id</td>
 
-                                        @* Service Name *@
                                         <td>
-                                            @iv.ProvidedService?.Name
-                                            ?? "<span class=\"text-muted\">[no service]</span>"
+                                            @if (!string.IsNullOrEmpty(iv.ProvidedService?.Name))
+                                            {
+                                                <span>@iv.ProvidedService.Name</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">[no service]</span>
+                                            }
                                         </td>
 
-                                        @* Technician Name *@
                                         <td>
-                                            @iv.UserViewModel?.FirstName
-                                            ?? "<span class=\"text-muted\">[no tech]</span>"
+                                            @if (!string.IsNullOrEmpty(iv.UserViewModel?.FirstName))
+                                            {
+                                                <span>@iv.UserViewModel.FirstName</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">[no tech]</span>
+                                            }
                                         </td>
 
-                                        @* Start Date & Time *@
                                         <td>
-                                            <span class="text-nowrap">
-                                                @(iv.StartDate.ToString("yyyy-MM-dd"))<br />
-                                                <small class="text-muted">
-                                                    @(iv.StartDate.ToString("HH:mm"))
-                                                </small>
+                                            <span class="text-nowrap" title="Start time">
+                                                @iv.StartDate.ToString("yyyy-MM-dd")<br />
+                                                <small class="text-muted">@iv.StartDate.ToString("HH:mm")</small>
                                             </span>
                                         </td>
 
-                                        @* End Date & Time (nullable) *@
                                         <td>
                                             @if (iv.EndDate.HasValue)
                                             {
-                                                <span class="text-nowrap">
-                                                    @(iv.EndDate.Value.ToString("yyyy-MM-dd"))<br />
-                                                    <small class="text-muted">
-                                                        @(iv.EndDate.Value.ToString("HH:mm"))
-                                                    </small>
+                                                <span class="text-nowrap" title="End time">
+                                                    @iv.EndDate.Value.ToString("yyyy-MM-dd")<br />
+                                                    <small class="text-muted">@iv.EndDate.Value.ToString("HH:mm")</small>
                                                 </span>
                                             }
                                             else
@@ -137,8 +151,15 @@
                                             }
                                         </td>
 
-                                        @* Intervention Cost *@
-                                        <td>@($"{iv.InterventionPrice:N3} TND")</td>
+                                        <td>
+                                            <span class="fw-semibold">@($"{iv.InterventionPrice:N3} TND")</span>
+                                        </td>
+
+                                        <td>
+                                            <span class="badge bg-secondary text-light rounded-pill px-3 py-2" title="Intervention status">
+                                                @iv.Status
+                                            </span>
+                                        </td>
                                     </tr>
                                 }
                             </tbody>
@@ -154,15 +175,10 @@
 
                 <!-- Actions -->
                 <div class="text-center mt-4">
-                    <a asp-action="Edit"
-                       asp-route-id="@Model.Id"
-                       class="btn btn-general btn-sm me-2"
-                       title="Edit this work order">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-general btn-sm me-2" title="Edit this work order">
                         <i class="fas fa-edit"></i> Edit Work Order
                     </a>
-                    <a asp-action="Index"
-                       class="btn btn-secondary btn-sm"
-                       title="Return to work order list">
+                    <a asp-action="Index" class="btn btn-secondary btn-sm" title="Return to work order list">
                         <i class="fas fa-arrow-left"></i> Back to List
                     </a>
                 </div>

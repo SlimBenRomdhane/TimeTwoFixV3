@@ -10,8 +10,8 @@ namespace TimeTwoFix.Web.Models.WorkOrderModels
         Completed, // Work has been finished and is awaiting final review or payment
 
 
-        OnHold,   // Temporarily paused, waiting for parts or customer response     
+
         Paused, // Temporarily stopped, but not cancelled, can be resumed later
-        Cancelled,    // Generally by teh customer or admin 
+        Canceled,    // Generally by teh customer or admin 
     }
 }

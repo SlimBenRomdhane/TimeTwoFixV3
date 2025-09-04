@@ -80,12 +80,41 @@
                             <td>@item.LiftingBridge.Name</td>
                             <td>@item.StartDate</td>
                             <td>@item.EndDate</td>
-                            <td>@item.ActualTimeSpent</td>
+                            @* <td>@item.ActualTimeSpent</td> *@
+                            <td>@item.ActualTimeSpent.ToString(@"hh\:mm\:ss")</td>
+
                             <td>@($"{item.InterventionPrice:N3} TND")</td>
                             <td>
                                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                                 @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                                @Html.ActionLink("Delete", "Delete", new { id = item.Id }) |
+                                @if (item.Status == "In Progress")
+                                {
+                                    <details class="mt-2">
+                                        <summary class="btn btn-outline-danger btn-sm">Pause</summary>
+                                        <form asp-action="PauseIntervention" method="post" class="mt-2">
+                                            <input type="hidden" name="InterventionId" value="@item.Id" />
+                                            <select name="Reason" class="form-select form-select-sm mb-2">
+                                                <option value="">-- Select Reason --</option>
+                                                <option>Waiting for Parts</option>
+                                                <option>Technician Break</option>
+                                                <option>Client Decision Pending</option>
+                                                <option>Equipment Issue</option>
+                                            </select>
+                                            
+                                            <button type="submit" class="btn btn-danger btn-sm w-100">Confirm Pause</button>
+                                        </form>
+                                    </details>
+                                }
+
+                                @if (item.Status == "Paused")
+                                {
+                                    <form asp-action="ResumeIntervention" method="post" class="mt-2">
+                                        <input type="hidden" name="interventionId" value="@item.Id" />
+                                        <button type="submit" class="btn btn-outline-success btn-sm w-100">Resume</button>
+                                    </form>
+                                }
+
                             </td>
                         </tr>
                     }

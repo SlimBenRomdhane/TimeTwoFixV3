@@ -9,7 +9,7 @@ namespace TimeTwoFix.Application.Base
         Task<T?> AddAsyncServiceGeneric(T entity);
         Task UpdateAsyncServiceGeneric(T entity);
         Task DeleteAsyncServiceGeneric(int id);
-        Task<T?> GetByIdAsyncServiceGeneric(int id, params Expression<Func<T, object>>[] includeProperties);
+        Task<T?> GetByIdAsyncServiceGeneric(int id, Func<IQueryable<T>, IQueryable<T>>? includeBuilder = null, params Expression<Func<T, object>>[] includeProperties);
         Task<IEnumerable<T>> GetAllAsyncServiceGeneric();
         Task AttachAsyncServiceGeneric(T entity, EntityState entityState);
         Task DetachAsyncServiceGeneric(T entity);

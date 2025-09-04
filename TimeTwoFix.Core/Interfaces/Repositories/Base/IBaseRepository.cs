@@ -12,7 +12,7 @@ namespace TimeTwoFix.Core.Interfaces.Repositories.Base
 
         Task DeleteAsyncGeneric(T entity);
 
-        Task<T?> GetByIdAsyncGeneric(int id, params Expression<Func<T, object>>[] includeProperties);
+        Task<T?> GetByIdAsyncGeneric(int id, Func<IQueryable<T>, IQueryable<T>>? includeBuilder = null, params Expression<Func<T, object>>[] includeProperties);
 
         Task<IEnumerable<T>> GetAllAsyncGeneric();
 

@@ -80,7 +80,7 @@ namespace TimeTwoFix.Web.Controllers
         {
             try
             {
-                var client = await _clientServices.GetByIdAsyncServiceGeneric(id, c => c.Vehicles);
+                var client = await _clientServices.GetByIdAsyncServiceGeneric(id, null, c => c.Vehicles);
                 if (client == null)
                 {
                     return NotFound();

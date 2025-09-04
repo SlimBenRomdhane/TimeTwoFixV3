@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using TimeTwoFix.Application.VehicleServices.Interfaces;
 using TimeTwoFix.Application.WorkOrderService.Dtos;
 using TimeTwoFix.Application.WorkOrderService.Interfaces;
@@ -47,10 +48,12 @@ namespace TimeTwoFix.Web.Controllers
         // GET: WorkOrderController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            var workOrder = await _workOrderService.GetByIdAsyncServiceGeneric(id, wo => wo.Vehicle,
-                wo => wo.Interventions,
-                wo => wo.Interventions.Select(i => i.Service),
-                wo => wo.Interventions.Select(i => i.Mechanic));
+            var workOrder = await _workOrderService.GetByIdAsyncServiceGeneric(id, includeBuilder: query => query
+            .Include(wo => wo.Vehicle)
+            .Include(wo => wo.Interventions)
+                .ThenInclude(inter => inter.Service)
+            .Include(wo => wo.Interventions)
+                .ThenInclude(inter => inter.Mechanic));
             if (workOrder == null)
             {
                 TempData["WorkOrderError"] = "WorkOrder not found";
@@ -136,9 +139,8 @@ namespace TimeTwoFix.Web.Controllers
             }
             var allowedStatus = new List<SelectListItem>
             {
-                new SelectListItem { Value = WorkOrderStatus.OnHold.ToString(), Text = WorkOrderStatus.OnHold.ToString() },
                 new SelectListItem { Value = WorkOrderStatus.Paused.ToString(), Text = WorkOrderStatus.Paused.ToString() },
-                new SelectListItem { Value = WorkOrderStatus.Cancelled.ToString(), Text = WorkOrderStatus.Cancelled.ToString() }
+                new SelectListItem { Value = WorkOrderStatus.Canceled.ToString(), Text = WorkOrderStatus.Canceled.ToString() }
             };
             var currentStatus = workOrder.Status.ToString();
             if (!allowedStatus.Any(s => s.Value == currentStatus))
@@ -189,7 +191,7 @@ namespace TimeTwoFix.Web.Controllers
         // GET: WorkOrderController/Delete/5
         public async Task<ActionResult> Delete(int id)
         {
-            var workOrder = await _workOrderService.GetByIdAsyncServiceGeneric(id, wo => wo.Vehicle);
+            var workOrder = await _workOrderService.GetByIdAsyncServiceGeneric(id, null, wo => wo.Vehicle);
             if (workOrder == null)
             {
                 TempData["WorkOrderError"] = "Work Order not found";

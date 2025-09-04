@@ -11,25 +11,41 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
 
         public required string Reason { get; set; }
         public DateTime StartTime { get; set; }
-        public DateTime? EndTime { get; set; }
-        [ForeignKey("Intervention")]
-        public int InterventionId { get; set; }
-        public Intervention Intervention { get; set; }
-
-        public TimeSpan? PauseDuration
+        private DateTime? _endTime;
+        public DateTime? EndTime
         {
-            get
+            get => _endTime;
+            set
             {
-                if (EndTime.HasValue)
+                if (value.HasValue && value.Value < StartTime)
                 {
-                    return EndTime.Value - StartTime;
+                    throw new ArgumentException("EndTime cannot be earlier than StartTime.");
                 }
-                else
+                _endTime = value;
+                if (_endTime.HasValue)
                 {
-                    return null;
+                    PauseDuration = _endTime.Value - StartTime;
                 }
             }
         }
+        [ForeignKey("Intervention")]
+        public int InterventionId { get; set; }
+        public Intervention Intervention { get; set; }
+        public TimeSpan? PauseDuration { get; set; }
+        //public TimeSpan? PauseDuration
+        //{
+        //    get
+        //    {
+        //        if (EndTime.HasValue)
+        //        {
+        //            return EndTime.Value - StartTime;
+        //        }
+        //        else
+        //        {
+        //            return null;
+        //        }
+        //    }
+        //}
 
 
 

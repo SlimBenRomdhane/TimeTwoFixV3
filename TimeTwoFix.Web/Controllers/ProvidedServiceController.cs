@@ -47,7 +47,7 @@ namespace TimeTwoFix.Web.Controllers
         // GET: ProvidedServiceController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            var service = await _providedServiceService.GetByIdAsyncServiceGeneric(id, cat => cat.Category);
+            var service = await _providedServiceService.GetByIdAsyncServiceGeneric(id, null, cat => cat.Category);
             if (service == null)
             {
                 return NotFound($"Provided service with ID {id} not found.");
@@ -173,7 +173,7 @@ namespace TimeTwoFix.Web.Controllers
         [Authorize(Roles = "GeneralManager")]
         public async Task<ActionResult> Delete(int id)
         {
-            var service = await _providedServiceService.GetByIdAsyncServiceGeneric(id, c => c.Category);
+            var service = await _providedServiceService.GetByIdAsyncServiceGeneric(id, null, c => c.Category);
             if (service == null)
             {
                 return NotFound($"Provided service with ID {id} not found.");

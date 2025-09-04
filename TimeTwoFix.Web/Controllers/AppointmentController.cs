@@ -82,7 +82,7 @@ namespace TimeTwoFix.Web.Controllers
         // GET: AppointmentController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            var appointment = await _appointmentService.GetByIdAsyncServiceGeneric(id, a => a.Vehicle);
+            var appointment = await _appointmentService.GetByIdAsyncServiceGeneric(id, null, a => a.Vehicle);
             if (appointment == null)
             {
                 return NotFound();
@@ -175,7 +175,7 @@ namespace TimeTwoFix.Web.Controllers
         // GET: AppointmentController/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
-            var appointment = await _appointmentService.GetByIdAsyncServiceGeneric(id, v => v.Vehicle);
+            var appointment = await _appointmentService.GetByIdAsyncServiceGeneric(id, null, v => v.Vehicle);
             if (appointment == null)
             {
                 return NotFound();

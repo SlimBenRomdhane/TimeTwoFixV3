@@ -109,10 +109,10 @@ namespace TimeTwoFix.Application.Base
         }
 
         // Retrieves an entity by its identifier, including related properties if specified
-        public async Task<T?> GetByIdAsyncServiceGeneric(int id, params Expression<Func<T, object>>[] includeProperties)
+        public async Task<T?> GetByIdAsyncServiceGeneric(int id, Func<IQueryable<T>, IQueryable<T>>? includeBuilder = null, params Expression<Func<T, object>>[] includeProperties)
         {
 
-            return await _baseRepository.GetByIdAsyncGeneric(id, includeProperties);
+            return await _baseRepository.GetByIdAsyncGeneric(id, includeBuilder, includeProperties);
         }
 
         public Task<int> GetCountByPredicateAsyncServiceGeneric(Expression<Func<T, bool>> predicate)

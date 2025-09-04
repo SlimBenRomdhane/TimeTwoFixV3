@@ -5,6 +5,7 @@ using TimeTwoFix.Application.Base.BaseDtos;
 using TimeTwoFix.Application.InterventionService.Dtos;
 using TimeTwoFix.Application.InterventionService.Interfaces;
 using TimeTwoFix.Application.LiftingBridgeServices.Interfaces;
+using TimeTwoFix.Application.PauseRecordService.Interfaces;
 using TimeTwoFix.Application.ProvidedServicesService.Interfaces;
 using TimeTwoFix.Application.UserServices.Interfaces;
 using TimeTwoFix.Application.WorkOrderService.Interfaces;
@@ -12,6 +13,7 @@ using TimeTwoFix.Core.Entities.WorkOrderManagement;
 using TimeTwoFix.Core.Interfaces;
 using TimeTwoFix.Infrastructure.Persistence.Includes;
 using TimeTwoFix.Web.Models.InterventionModels;
+using TimeTwoFix.Web.Models.PauseRecordModel;
 
 namespace TimeTwoFix.Web.Controllers
 {
@@ -25,15 +27,17 @@ namespace TimeTwoFix.Web.Controllers
         private readonly IProvidedServiceService _providedServiceService;
         private readonly IUserService _userService;
         private readonly ILiftingBridgeServices _liftingBridgeServices;
+        private readonly IPauseRecordService _pauseRecordService;
         private readonly IUnitOfWork _unitOfWork;
         public InterventionController(IInterventionService interventionService, IMapper mapper, IWorkOrderService workOrderService, IProvidedServiceService providedServiceService,
-            IUserService userService, ILiftingBridgeServices liftingBridgeServices, IUnitOfWork unitOfWork) : base(interventionService, mapper)
+            IUserService userService, ILiftingBridgeServices liftingBridgeServices, IUnitOfWork unitOfWork, IPauseRecordService pauseRecordService) : base(interventionService, mapper)
         {
             _interventionService = interventionService;
             _workOrderService = workOrderService;
             _userService = userService;
             _providedServiceService = providedServiceService;
             _liftingBridgeServices = liftingBridgeServices;
+            _pauseRecordService = pauseRecordService;
             _unitOfWork = unitOfWork;
 
         }
@@ -93,7 +97,8 @@ namespace TimeTwoFix.Web.Controllers
         [HttpGet]
         public override async Task<ActionResult> Create()
         {
-            var activeWorkOrders = (await _workOrderService.GetAllAsyncServiceGeneric()).Where(w => !w.IsDeleted && w.Status != "Completed");
+            var activeWorkOrders = (await _workOrderService.GetAllAsyncServiceGeneric()).Where(w => !w.IsDeleted && w.Status != "Completed"
+            && w.Status != "Canceled");
             var activeProvidedServices = (await _providedServiceService.GetAllAsyncServiceGeneric()).Where(ps => !ps.IsDeleted);
             var activeMechanics = (await _userService.GetAllApplicationUsers()).Where(u => u.UserType.Equals("Mechanic"));
             var activeLiftingBridges = (await _liftingBridgeServices.GetAllAsyncServiceGeneric()).Where(lb => !lb.IsDeleted);
@@ -184,7 +189,7 @@ namespace TimeTwoFix.Web.Controllers
             var includesIntervention = EntityIncludeHelper.GetIncludes<Intervention>();
             var includesWorkOrder = EntityIncludeHelper.GetIncludes<WorkOrder>();
 
-            var intervention = await _interventionService.GetByIdAsyncServiceGeneric(id, includesIntervention);
+            var intervention = await _interventionService.GetByIdAsyncServiceGeneric(id, null, includesIntervention);
 
 
 
@@ -211,7 +216,7 @@ namespace TimeTwoFix.Web.Controllers
                 await _interventionService.UpdateAsyncServiceGeneric(updatedEntity);
                 await _workOrderService.DetachAsyncServiceGeneric(updatedEntity.WorkOrder);
 
-                var workOrder = await _workOrderService.GetByIdAsyncServiceGeneric(updatedEntity.WorkOrderId, includesWorkOrder);
+                var workOrder = await _workOrderService.GetByIdAsyncServiceGeneric(updatedEntity.WorkOrderId, null, includesWorkOrder);
 
 
                 workOrder.RecalculateLaborCost();
@@ -230,6 +235,79 @@ namespace TimeTwoFix.Web.Controllers
             }
 
 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PauseIntervention(CreatePauseRecordViewModel createPauseRecordViewModel)
+        {
+            var includes = EntityIncludeHelper.GetIncludes<Intervention>();
+            var intervention = await _interventionService.GetByIdAsyncServiceGeneric(createPauseRecordViewModel.InterventionId, null, includes);
+            if (intervention == null)
+            {
+                return NotFound(new { message = "Intervention not found" });
+            }
+            if (intervention.Status != "In Progress")
+            {
+                return BadRequest(new { message = "Only interventions that are 'In Progress' can be paused." });
+            }
+            try
+            {
+                // Create a new PauseRecord
+                var pauseRecord = new PauseRecord
+                {
+                    Reason = createPauseRecordViewModel.Reason,
+                    StartTime = DateTime.Now,
+                    InterventionId = intervention.Id
+                };
+                // Update the intervention status to "Paused"
+                intervention.Status = "Paused";
+                // Save changes
+                await _pauseRecordService.AddAsyncServiceGeneric(pauseRecord);
+                await _interventionService.UpdateAsyncServiceGeneric(intervention);
+
+                //return Ok(new { message = "Intervention paused successfully." });
+                return RedirectToAction("PaginatedIndex");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"An error occurred while pausing the intervention: {ex.Message}" });
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResumeIntervention(int interventionId)
+        {
+            var includes = EntityIncludeHelper.GetIncludes<Intervention>();
+            var intervention = await _interventionService.GetByIdAsyncServiceGeneric(interventionId, null, includes);
+
+            if (intervention == null)
+                return NotFound(new { message = "Intervention not found" });
+
+            if (intervention.Status != "Paused")
+                return BadRequest(new { message = "Only paused interventions can be resumed." });
+
+            var activePause = intervention.PauseRecords
+                .FirstOrDefault(p => p.EndTime == null);
+
+            if (activePause == null)
+                return BadRequest(new { message = "No active pause found for this intervention." });
+
+            try
+            {
+                activePause.EndTime = DateTime.Now;
+
+                // Resume to "In Progress" — or use your own logic if completion is externally tracked
+                intervention.Status = "In Progress";
+
+                await _pauseRecordService.UpdateAsyncServiceGeneric(activePause);
+                await _interventionService.UpdateAsyncServiceGeneric(intervention);
+
+                //return Ok(new { message = "Intervention resumed successfully." });
+                return RedirectToAction("PaginatedIndex");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"An error occurred while resuming the intervention: {ex.Message}" });
+            }
         }
     }
 }
