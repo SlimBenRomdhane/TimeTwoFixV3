@@ -8,12 +8,14 @@ using TimeTwoFix.Application.LiftingBridgeServices.Interfaces;
 using TimeTwoFix.Application.PauseRecordService.Interfaces;
 using TimeTwoFix.Application.ProvidedServicesService.Interfaces;
 using TimeTwoFix.Application.UserServices.Interfaces;
+using TimeTwoFix.Application.WorkOrderService.Dtos;
 using TimeTwoFix.Application.WorkOrderService.Interfaces;
 using TimeTwoFix.Core.Entities.WorkOrderManagement;
 using TimeTwoFix.Core.Interfaces;
 using TimeTwoFix.Infrastructure.Persistence.Includes;
 using TimeTwoFix.Web.Models.InterventionModels;
 using TimeTwoFix.Web.Models.PauseRecordModel;
+using TimeTwoFix.Web.Models.WorkOrderModels;
 
 namespace TimeTwoFix.Web.Controllers
 {
@@ -166,7 +168,15 @@ namespace TimeTwoFix.Web.Controllers
                 dto.CreatedAt = DateTime.Now; // Set the creation date
 
                 var entity = _mapper.Map<Intervention>(dto);
-                entity.Status = "In Progress"; // Set default status
+                if (DateTime.Now < entity.StartDate)
+                {
+                    entity.Status = "Planned";
+                }
+                else
+                {
+                    entity.Status = "In Progress"; // Set default status
+                }
+
                 await _interventionService.AddAsyncServiceGeneric(entity);
                 TempData["SuccessMessage"] = "Intervention created successfully";
                 return RedirectToAction(nameof(Index));
@@ -188,12 +198,7 @@ namespace TimeTwoFix.Web.Controllers
         {
             var includesIntervention = EntityIncludeHelper.GetIncludes<Intervention>();
             var includesWorkOrder = EntityIncludeHelper.GetIncludes<WorkOrder>();
-
             var intervention = await _interventionService.GetByIdAsyncServiceGeneric(id, null, includesIntervention);
-
-
-
-
             if (intervention == null)
             {
                 TempData["ErrorMessage"] = "Intervention not found";
@@ -308,6 +313,89 @@ namespace TimeTwoFix.Web.Controllers
             {
                 return StatusCode(500, new { message = $"An error occurred while resuming the intervention: {ex.Message}" });
             }
+        }
+        public async Task<ActionResult> CreateById(int workOrderId)
+        {
+
+            var activeProvidedServices = (await _providedServiceService.GetAllAsyncServiceGeneric()).Where(ps => !ps.IsDeleted);
+            var activeMechanics = (await _userService.GetAllApplicationUsers()).Where(u => u.UserType.Equals("Mechanic"));
+            var activeLiftingBridges = (await _liftingBridgeServices.GetAllAsyncServiceGeneric()).Where(lb => !lb.IsDeleted);
+
+            ViewBag.ProvidedService = activeProvidedServices.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
+            ViewBag.Mechanic = new SelectList(activeMechanics.Select(c => new
+            {
+                c.Id,
+                FullName = c.FirstName + " " + c.LastName
+            }), "Id", "FullName");
+            ViewBag.LiftingBridge = activeLiftingBridges.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> CreateById(CreateInterventionViewModel createInterventionViewModel)
+        {
+            var activeProvidedServices = (await _providedServiceService.GetAllAsyncServiceGeneric()).Where(ps => !ps.IsDeleted);
+            var activeMechanics = (await _userService.GetAllApplicationUsers()).Where(u => u.UserType.Equals("Mechanic"));
+            var activeLiftingBridges = (await _liftingBridgeServices.GetAllAsyncServiceGeneric()).Where(lb => !lb.IsDeleted);
+
+            ViewBag.ProvidedService = activeProvidedServices.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
+            ViewBag.Mechanic = new SelectList(activeMechanics.Select(c => new
+            {
+                c.Id,
+                FullName = c.FirstName + " " + c.LastName
+            }), "Id", "FullName");
+            ViewBag.LiftingBridge = activeLiftingBridges.Select(c => new SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
+
+            try
+            {
+
+                var interventionDto = _mapper.Map<CreateInterventionDto>(createInterventionViewModel);
+                interventionDto.CreatedBy = User.Identity?.Name;
+                interventionDto.CreatedAt = DateTime.Now;
+
+
+                var intervention = _mapper.Map<Intervention>(interventionDto);
+                if (DateTime.Now < intervention.StartDate)
+                {
+                    intervention.Status = "Planned";
+                }
+                else
+                {
+                    intervention.Status = "In Progress"; // Set default status
+                }
+                await _interventionService.AddAsyncServiceGeneric(intervention);
+                TempData["InterventionSuccess"] = "Intervention created successfully";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["WorkOrderError"] = $"An error occurred while creating the Work Order: {ex.Message}";
+                return View(createInterventionViewModel);
+            }
+
+
+
+
+
+
+
+
         }
     }
 }

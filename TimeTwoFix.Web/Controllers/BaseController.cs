@@ -95,6 +95,7 @@ namespace TimeTwoFix.Web.Controllers
             {
                 var dto = _mapper.Map<TCreateDto>(viewModel);
                 var entity = _mapper.Map<TEntity>(dto);
+
                 if (entity is BaseEntity baseEntity)
                 {
                     baseEntity.CreatedAt = DateTime.Now;

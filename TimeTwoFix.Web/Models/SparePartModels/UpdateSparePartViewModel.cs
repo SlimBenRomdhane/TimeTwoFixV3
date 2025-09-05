@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using TimeTwoFix.Core.Common;
 
-namespace TimeTwoFix.Core.Entities.SparePartManagement
+namespace TimeTwoFix.Web.Models.SparePartModels
 {
-    public class SparePart : BaseEntity
+    public class UpdateSparePartViewModel
     {
+        public int Id { get; set; }
         [Required]
         [MaxLength(50)]
         public string PartCode { get; set; }
@@ -20,6 +20,5 @@ namespace TimeTwoFix.Core.Entities.SparePartManagement
 
         [Range(0, int.MaxValue, ErrorMessage = "Quantity must be a non-negative number.")]
         public int QuantityInStock { get; set; }
-        public ICollection<InterventionSparePart> InterventionSpareParts { get; set; }
     }
 }
