@@ -11,6 +11,7 @@ namespace TimeTwoFix.Web
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             //Add InfrastructureRegistration
             builder.Services.AddInfrastructure(builder.Configuration);
             //Add ApplicationRegistration

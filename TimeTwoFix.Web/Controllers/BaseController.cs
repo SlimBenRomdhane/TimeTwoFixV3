@@ -29,7 +29,6 @@ namespace TimeTwoFix.Web.Controllers
         }
         public virtual async Task<IActionResult> Index()
         {
-
             try
             {
                 var entities = await _baseService.GetAllAsyncServiceGeneric();
@@ -39,20 +38,15 @@ namespace TimeTwoFix.Web.Controllers
                     TempData["ErrorMessage"] = $"No entities found";
                     return View(Enumerable.Empty<TReadViewModel>());
                 }
-
-
                 var dtos = _mapper.Map<IEnumerable<TReadDto>>(activeEntities);
                 var viewModels = _mapper.Map<IEnumerable<TReadViewModel>>(dtos);
                 return View(viewModels);
-
-
             }
             catch (Exception)
             {
                 TempData["ErrorMessage"] = "An error occured while loading data";
                 return View(Enumerable.Empty<TReadViewModel>());
             }
-
         }
         public virtual async Task<IActionResult> Details(int id)
         {

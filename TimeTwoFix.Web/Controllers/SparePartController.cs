@@ -1,8 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using TimeTwoFix.Application.Base;
-using TimeTwoFix.Application.CategoryService.Interfaces;
 using TimeTwoFix.Application.SparePartServices.Dtos;
 using TimeTwoFix.Application.SparePartServices.Interfaces;
 using TimeTwoFix.Core.Entities.SparePartManagement;
