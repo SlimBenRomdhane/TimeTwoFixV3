@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Linq.Expressions;
 using TimeTwoFix.Application.Base;
 using TimeTwoFix.Core.Common;
@@ -26,6 +27,7 @@ namespace TimeTwoFix.Web.Controllers
         {
             _baseService = baseService;
             _mapper = mapper;
+
         }
         public virtual async Task<IActionResult> Index()
         {
@@ -40,6 +42,7 @@ namespace TimeTwoFix.Web.Controllers
                 }
                 var dtos = _mapper.Map<IEnumerable<TReadDto>>(activeEntities);
                 var viewModels = _mapper.Map<IEnumerable<TReadViewModel>>(dtos);
+                TempData["SuccessMessage"] = $"Loaded {viewModels.Count()} items.";
                 return View(viewModels);
             }
             catch (Exception)
@@ -55,7 +58,7 @@ namespace TimeTwoFix.Web.Controllers
                 var entity = await _baseService.GetByIdAsyncServiceGeneric(id);
                 if (entity == null)
                 {
-                    TempData["ErrorMessage"] = "Entity not found";
+                    TempData["ErrorMessage"] = $"{EntityName} Entity not found";
                     return NotFound();
                 }
                 var dto = _mapper.Map<TReadDto>(entity);
@@ -112,7 +115,7 @@ namespace TimeTwoFix.Web.Controllers
                 var entity = await _baseService.GetByIdAsyncServiceGeneric(id);
                 if (entity == null)
                 {
-                    TempData["ErrorMessage"] = "Entity not found";
+                    TempData["ErrorMessage"] = $"{EntityName} Entity not found";
                     return NotFound();
                 }
                 var dto = _mapper.Map<TUpdateDto>(entity);
@@ -132,6 +135,12 @@ namespace TimeTwoFix.Web.Controllers
 
             if (!ModelState.IsValid)
             {
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                TempData["ErrorMessage"] = "Validation failed: " + string.Join(" | ", errors);
                 return View(viewModel);
             }
             try
@@ -139,7 +148,7 @@ namespace TimeTwoFix.Web.Controllers
                 var existingEntity = await _baseService.GetByIdAsyncServiceGeneric(id/*, includes*/);
                 if (existingEntity == null)
                 {
-                    TempData["ErrorMessage"] = "Entity not found";
+                    TempData["ErrorMessage"] = $"{EntityName} Entity not found";
                     return NotFound();
                 }
                 var dto = _mapper.Map<TUpdateDto>(viewModel);
@@ -151,7 +160,7 @@ namespace TimeTwoFix.Web.Controllers
                     baseEntity.UpdatedBy = User.Identity?.Name;
                 }
                 await _baseService.UpdateAsyncServiceGeneric(updatedEntity);
-                TempData["SuccessMessage"] = "Entity updated successfully";
+                TempData["SuccessMessage"] = $"{EntityName} updated successfully";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception)
@@ -167,7 +176,7 @@ namespace TimeTwoFix.Web.Controllers
                 var entity = await _baseService.GetByIdAsyncServiceGeneric(id);
                 if (entity == null)
                 {
-                    TempData["ErrorMessage"] = "Entity not found";
+                    TempData["ErrorMessage"] = $"{EntityName} Entity not found";
                     return NotFound();
                 }
                 var dto = _mapper.Map<TDeleteDto>(entity);
@@ -189,7 +198,7 @@ namespace TimeTwoFix.Web.Controllers
                 var entity = await _baseService.GetByIdAsyncServiceGeneric(id);
                 if (entity == null)
                 {
-                    TempData["ErrorMessage"] = "Entity not found";
+                    TempData["ErrorMessage"] = $"{EntityName} Entity not found";
                     return NotFound();
                 }
                 if (entity is BaseEntity baseEntity)
@@ -198,7 +207,7 @@ namespace TimeTwoFix.Web.Controllers
                     baseEntity.DeletedAt = DateTime.Now;
                     baseEntity.DeletedBy = User.Identity?.Name;
                     await _baseService.UpdateAsyncServiceGeneric(entity);
-                    TempData["SuccessMessage"] = "Entity deleted successfully";
+                    TempData["SuccessMessage"] = $"{EntityName} Entity deleted successfully";
                     return RedirectToAction(nameof(Index));
                 }
 

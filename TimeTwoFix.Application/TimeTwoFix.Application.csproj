@@ -14,4 +14,11 @@
 		<ProjectReference Include="..\TimeTwoFix.Infrastructure\TimeTwoFix.Infrastructure.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="ProviderServices\Dtos\" />
+	  <Folder Include="ProviderServices\Interfaces\" />
+	  <Folder Include="ProviderServices\Mapping\" />
+	  <Folder Include="ProviderServices\Services\" />
+	</ItemGroup>
+
 </Project>

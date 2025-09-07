@@ -33,6 +33,9 @@ namespace TimeTwoFix.Infrastructure.Persistence
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<SparePart> SpareParts { get; set; }
         public DbSet<PauseRecord> PauseRecords { get; set; }
+        public DbSet<SparePartCategory> SparePartCategories { get; set; }
+        public DbSet<Provider> Providers { get; set; }
+        public DbSet<ProviderSparePart> ProviderSpareParts { get; set; }
         public DbSet<FrontDeskAssistant> FrontDeskAssistants { get; set; }
         public DbSet<Mechanic> Mechanics { get; set; }
         public DbSet<WareHouseManager> WareHouseManagers { get; set; }

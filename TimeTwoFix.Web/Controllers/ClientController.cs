@@ -36,7 +36,7 @@ namespace TimeTwoFix.Web.Controllers
                 var clientsViewModel = _mapper.Map<IEnumerable<ReadClientViewModel>>(clientsDto);
                 if (clientsViewModel == null || !clientsViewModel.Any())
                 {
-                    TempData["ClientError"] = "No records found ";
+                    TempData["ErrorMessage"] = "No records found ";
                     return View(Enumerable.Empty<ReadClientViewModel>());
                 }
 
@@ -49,7 +49,7 @@ namespace TimeTwoFix.Web.Controllers
             {
 
 
-                TempData["ClientError"] = "An Error occured while loading clients";
+                TempData["ErrorMessage"] = "An Error occured while loading clients";
                 return View(Enumerable.Empty<ReadClientViewModel>());
             }
 
@@ -68,11 +68,26 @@ namespace TimeTwoFix.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(string searchName, string searchPhone, string searchEmail)
         {
-            var clients = await _clientServices.GetClientByMultipleParam(searchName, searchPhone, searchEmail);
+            try
+            {
+                var clients = await _clientServices.GetClientByMultipleParam(searchName, searchPhone, searchEmail);
+                if (!clients.Any())
+                {
+                    TempData["ErrorMessage"] = "No clients found matching the search criteria.";
+                }
 
-            var clientsDto = _mapper.Map<IEnumerable<ReadClientDto>>(clients);
-            var clientsViewModel = _mapper.Map<IEnumerable<ReadClientViewModel>>(clientsDto);
-            return View(clientsViewModel);
+
+                var clientsDto = _mapper.Map<IEnumerable<ReadClientDto>>(clients);
+                var clientsViewModel = _mapper.Map<IEnumerable<ReadClientViewModel>>(clientsDto);
+                return View(clientsViewModel);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"An error occurred while loading clients: {ex.Message}";
+                return View(Enumerable.Empty<ReadClientViewModel>());
+
+            }
+
         }
 
         // GET: ClientController/Details/5
@@ -83,7 +98,10 @@ namespace TimeTwoFix.Web.Controllers
                 var client = await _clientServices.GetByIdAsyncServiceGeneric(id, null, c => c.Vehicles);
                 if (client == null)
                 {
-                    return NotFound();
+                    //return NotFound();
+                    TempData["ErrorMessage"] = $"Client with ID {id} not found.";
+                    return RedirectToAction(nameof(Index));
+
                 }
                 //var vehicleList = await _unitOfWork.Vehicles.GetVehiclesByClientIdAsync(client.Id);
 
@@ -91,9 +109,11 @@ namespace TimeTwoFix.Web.Controllers
                 var clientViewModel = _mapper.Map<ReadClientViewModel>(clientDto);
                 return View(clientViewModel);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest();
+                TempData["ErrorMessage"] = $"An error occurred while loading client details: {ex.Message}";
+                return RedirectToAction(nameof(Index));
+
             }
         }
 
@@ -112,16 +132,22 @@ namespace TimeTwoFix.Web.Controllers
             {
                 if (!ModelState.IsValid)
                 {
+                    var errors = ModelState.Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+
+                    TempData["ErrorMessage"] = string.Join(" | ", errors);
                     return View(createClientViewModel);
                 }
-
-
 
                 // Check if the email already exists
                 var existingClient = await _clientServices.GetClientByEmail(createClientViewModel.Email);
                 if (existingClient != null)
                 {
                     ModelState.AddModelError("Email", "Email already exists.");
+                    TempData["ErrorMessage"] = "Client creation failed: Email already exists.";
+
                     return View(createClientViewModel);
                 }
 
@@ -129,11 +155,14 @@ namespace TimeTwoFix.Web.Controllers
                 var client = _mapper.Map<Client>(clientDto);
                 client.CreatedBy = User.Identity?.Name;
                 var addedElement = await _clientServices.AddAsyncServiceGeneric(client);
+                TempData["SuccessMessage"] = $"Client '{client.FirstName}' '{client.LastName}' created successfully.";
+
 
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
+                TempData["ErrorMessage"] = $"An unexpected error occurred: {ex.Message}";
                 return View();
             }
         }
@@ -142,6 +171,12 @@ namespace TimeTwoFix.Web.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var client = await _clientServices.GetByIdAsyncServiceGeneric(id);
+            if (client == null)
+            {
+                //return NotFound();
+                TempData["ErrorMessage"] = "Client not found.";
+                return RedirectToAction(nameof(Index));
+            }
             var clientDto = _mapper.Map<UpdateClientDto>(client);
             var clientView = _mapper.Map<UpdateClientViewModel>(clientDto);
 
@@ -158,7 +193,10 @@ namespace TimeTwoFix.Web.Controllers
                 var client = await _clientServices.GetByIdAsyncServiceGeneric(updateClientViewModel.Id);
                 if (client == null)
                 {
-                    return NotFound();
+                    //return NotFound();
+                    TempData["ErrorMessage"] = "Client not found.";
+                    return RedirectToAction(nameof(Index));
+
                 }
                 var clientDto = _mapper.Map<UpdateClientDto>(updateClientViewModel);
 
@@ -166,14 +204,17 @@ namespace TimeTwoFix.Web.Controllers
                 //updatedClient.UpdatedAt = DateTime.Now;
                 updatedClient.UpdatedBy = User.Identity?.Name;
                 await _clientServices.UpdateAsyncServiceGeneric(updatedClient);
+                TempData["SuccessMessage"] = $"Client '{client.FirstName}' '{client.LastName}' updated successfully.";
                 //await _unitOfWork.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                TempData["ErrorMessage"] = $"An unexpected error occurred: {ex.Message}";
+                return RedirectToAction(nameof(Index));
             }
+
         }
 
         // GET: ClientController/Delete/5
@@ -183,7 +224,9 @@ namespace TimeTwoFix.Web.Controllers
             var client = await _clientServices.GetByIdAsyncServiceGeneric(id);
             if (client == null)
             {
-                return NotFound();
+                //return NotFound();
+                TempData["ErrorMessage"] = "Client not found.";
+                return RedirectToAction(nameof(Index));
             }
             var clientDto = _mapper.Map<DeleteClientDto>(client);
             var clientView = _mapper.Map<DeleteClientViewModel>(clientDto);
@@ -199,25 +242,32 @@ namespace TimeTwoFix.Web.Controllers
             var clientToDetete = await _clientServices.GetByIdAsyncServiceGeneric(deleteClientViewModel.Id);
             if (clientToDetete == null)
             {
-                return NotFound();
-            }
-            clientToDetete.IsDeleted = true;
-            clientToDetete.DeletedAt = DateTime.UtcNow;
-            clientToDetete.DeletedBy = User.Identity?.Name;
-
-            //await _unitOfWork.SaveChangesAsync();
-            await _clientServices.AttachAsyncServiceGeneric(clientToDetete, EntityState.Modified);
-            //var a = await _clientServices.SaveChangesServiceGeneric();
-            //await _clientServices.UpdateAsyncServiceGeneric(clientToDetete);
-            await _clientServices.SaveChangesServiceGeneric();
-            try
-            {
+                //return NotFound();
+                TempData["ErrorMessage"] = "Client not found.";
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            clientToDetete.IsDeleted = true;
+            clientToDetete.DeletedAt = DateTime.Now;
+            clientToDetete.DeletedBy = User.Identity?.Name;
+
+
+            try
             {
-                return View();
+
+                //await _unitOfWork.SaveChangesAsync();
+                await _clientServices.AttachAsyncServiceGeneric(clientToDetete, EntityState.Modified);
+                //var a = await _clientServices.SaveChangesServiceGeneric();
+                //await _clientServices.UpdateAsyncServiceGeneric(clientToDetete);
+                await _clientServices.SaveChangesServiceGeneric();
+                TempData["SuccessMessage"] = $"Client deleted successfully.";
+                return RedirectToAction(nameof(Index));
             }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"An unexpected error occurred: {ex.Message}";
+                return View(deleteClientViewModel);
+            }
+
         }
 
         [Authorize(Roles = "GeneralManager")]

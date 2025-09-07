@@ -8,14 +8,12 @@ using TimeTwoFix.Application.LiftingBridgeServices.Interfaces;
 using TimeTwoFix.Application.PauseRecordService.Interfaces;
 using TimeTwoFix.Application.ProvidedServicesService.Interfaces;
 using TimeTwoFix.Application.UserServices.Interfaces;
-using TimeTwoFix.Application.WorkOrderService.Dtos;
 using TimeTwoFix.Application.WorkOrderService.Interfaces;
 using TimeTwoFix.Core.Entities.WorkOrderManagement;
 using TimeTwoFix.Core.Interfaces;
 using TimeTwoFix.Infrastructure.Persistence.Includes;
 using TimeTwoFix.Web.Models.InterventionModels;
 using TimeTwoFix.Web.Models.PauseRecordModel;
-using TimeTwoFix.Web.Models.WorkOrderModels;
 
 namespace TimeTwoFix.Web.Controllers
 {
@@ -55,42 +53,55 @@ namespace TimeTwoFix.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> PaginatedIndex(string status = null, int page = 1, int pageSize = 100)
         {
-            var includes = EntityIncludeHelper.GetIncludes<Intervention>();
-            // Get status counts for tabs
-            var statusCountsRaw = await _interventionService.GroupCountAsynServiceGeneric(i => i.Status);
-            var statusCounts = _mapper.Map<IReadOnlyList<StatusCountDto>>(statusCountsRaw);
-
-            // If no status is provided, default to "In Progress" or first available status
-            if (string.IsNullOrEmpty(status) && statusCounts.Any())
+            try
             {
-                status = statusCounts.FirstOrDefault(s => s.Status == "In Progress")?.Status
-                        ?? statusCounts.First().Status;
+                var includes = EntityIncludeHelper.GetIncludes<Intervention>();
+                // Get status counts for tabs
+                var statusCountsRaw = await _interventionService.GroupCountAsynServiceGeneric(i => i.Status);
+                var statusCounts = _mapper.Map<IReadOnlyList<StatusCountDto>>(statusCountsRaw);
+
+                // If no status is provided, default to "In Progress" or first available status
+                if (string.IsNullOrEmpty(status) && statusCounts.Any())
+                {
+                    status = statusCounts.FirstOrDefault(s => s.Status == "In Progress")?.Status
+                            ?? statusCounts.First().Status;
+                }
+
+                var skip = (page - 1) * pageSize;
+                var pagedInterventions = await _interventionService.GetPagedByPredicateAsyncServiceGeneric(
+                    i => i.Status == status,
+                    skip,
+                    pageSize,
+                    i => i.CreatedAt,
+                    descending: true, includes);
+                var totalCount = await _interventionService.GetCountByPredicateAsyncServiceGeneric(i => i.Status == status);
+                if (pagedInterventions == null)
+                {
+                    TempData["ErrorMessage"] = "No interventions found.";
+                    return View(new List<ReadInterventionViewModel>());
+                }
+                else
+                {
+                    var interventionDtos = _mapper.Map<List<ReadInterventionDto>>(pagedInterventions);
+                    var viewModels = _mapper.Map<List<ReadInterventionViewModel>>(interventionDtos);
+                    TempData["SuccessMessage"] = $"Loaded {viewModels.Count} interventions for status '{status}'.";
+                    ViewBag.StatusCounts = statusCounts;
+                    ViewBag.CurrentStatus = status;
+                    ViewBag.CurrentPage = page;
+                    ViewBag.PageSize = pageSize;
+                    ViewBag.TotalCount = totalCount;
+                    ViewBag.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+                    return View(viewModels);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"An error occurred while loading interventions: {ex.Message}";
+                return View(new List<ReadInterventionViewModel>());
+
             }
 
-            var skip = (page - 1) * pageSize;
-            var pagedInterventions = await _interventionService.GetPagedByPredicateAsyncServiceGeneric(
-                i => i.Status == status,
-                skip,
-                pageSize,
-                i => i.CreatedAt,
-                descending: true, includes);
-
-
-            var totalCount = await _interventionService.GetCountByPredicateAsyncServiceGeneric(i => i.Status == status);
-
-
-
-            var interventionDtos = _mapper.Map<List<ReadInterventionDto>>(pagedInterventions);
-            var viewModels = _mapper.Map<List<ReadInterventionViewModel>>(interventionDtos);
-
-            ViewBag.StatusCounts = statusCounts;
-            ViewBag.CurrentStatus = status;
-            ViewBag.CurrentPage = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalCount = totalCount;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
-
-            return View(viewModels);
         }
 
 
@@ -99,35 +110,53 @@ namespace TimeTwoFix.Web.Controllers
         [HttpGet]
         public override async Task<ActionResult> Create()
         {
-            var activeWorkOrders = (await _workOrderService.GetAllAsyncServiceGeneric()).Where(w => !w.IsDeleted && w.Status != "Completed"
+            try
+            {
+                var activeWorkOrders = (await _workOrderService.GetAllAsyncServiceGeneric()).Where(w => !w.IsDeleted && w.Status != "Completed"
             && w.Status != "Canceled");
-            var activeProvidedServices = (await _providedServiceService.GetAllAsyncServiceGeneric()).Where(ps => !ps.IsDeleted);
-            var activeMechanics = (await _userService.GetAllApplicationUsers()).Where(u => u.UserType.Equals("Mechanic"));
-            var activeLiftingBridges = (await _liftingBridgeServices.GetAllAsyncServiceGeneric()).Where(lb => !lb.IsDeleted);
-            ViewBag.WorkOrder = activeWorkOrders.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.Id.ToString()
-            }).ToList();
-            ViewBag.ProvidedService = activeProvidedServices.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.Name
-            }).ToList();
-            ViewBag.Mechanic = new SelectList(activeMechanics.Select(c => new
-            {
-                c.Id,
-                FullName = c.FirstName + " " + c.LastName
-            }), "Id", "FullName");
-            ViewBag.LiftingBridge = activeLiftingBridges.Select(c => new SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.Name
-            }).ToList();
+                var activeProvidedServices = (await _providedServiceService.GetAllAsyncServiceGeneric()).Where(ps => !ps.IsDeleted);
+                var activeMechanics = (await _userService.GetAllApplicationUsers()).Where(u => u.UserType.Equals("Mechanic"));
+                var activeLiftingBridges = (await _liftingBridgeServices.GetAllAsyncServiceGeneric()).Where(lb => !lb.IsDeleted);
+                // Check for missing dependencies
+                if (!activeWorkOrders.Any() || !activeProvidedServices.Any() || !activeMechanics.Any() || !activeLiftingBridges.Any())
+                {
+                    TempData["ErrorMessage"] = "Some required data is missing. Please check work orders, services, mechanics, or lifting bridges.";
+                }
+                else
+                {
+                    TempData["SuccessMessage"] = "All dependencies loaded successfully.";
+                }
 
+                ViewBag.WorkOrder = activeWorkOrders.Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Id.ToString()
+                }).ToList();
+                ViewBag.ProvidedService = activeProvidedServices.Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToList();
+                ViewBag.Mechanic = new SelectList(activeMechanics.Select(c => new
+                {
+                    c.Id,
+                    FullName = c.FirstName + " " + c.LastName
+                }), "Id", "FullName");
+                ViewBag.LiftingBridge = activeLiftingBridges.Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToList();
 
+                return View();
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"An error occurred while preparing the form: {ex.Message}";
+                return RedirectToAction(nameof(Index));
 
-            return View();
+            }
+
         }
         [HttpPost]
         public override async Task<IActionResult> Create(CreateInterventionViewModel viewModel)
@@ -202,7 +231,8 @@ namespace TimeTwoFix.Web.Controllers
             if (intervention == null)
             {
                 TempData["ErrorMessage"] = "Intervention not found";
-                return NotFound();
+                return RedirectToAction(nameof(Index));
+                //return NotFound();
             }
 
             try
@@ -213,17 +243,12 @@ namespace TimeTwoFix.Web.Controllers
                 {
                     var timeSpent = updatedEntity.CalculateActualTimeSpent();
                     updatedEntity.InterventionPrice = (decimal)timeSpent.TotalHours * updatedEntity.Service.PricePerHour;
-                }
-                if (updatedEntity.EndDate != null)
-                {
                     updatedEntity.Status = "Completed";
                 }
                 await _interventionService.UpdateAsyncServiceGeneric(updatedEntity);
                 await _workOrderService.DetachAsyncServiceGeneric(updatedEntity.WorkOrder);
 
                 var workOrder = await _workOrderService.GetByIdAsyncServiceGeneric(updatedEntity.WorkOrderId, null, includesWorkOrder);
-
-
                 workOrder.RecalculateLaborCost();
                 workOrder.UpdatedAt = DateTime.Now;
                 workOrder.UpdatedBy = User.Identity?.Name;
