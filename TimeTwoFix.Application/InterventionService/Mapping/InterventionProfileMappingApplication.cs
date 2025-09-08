@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using TimeTwoFix.Application.Base.BaseDtos;
 using TimeTwoFix.Application.InterventionService.Dtos;
-using TimeTwoFix.Core.Common;
 using TimeTwoFix.Core.Entities.WorkOrderManagement;
 
 namespace TimeTwoFix.Application.InterventionService.Mapping
@@ -18,7 +16,6 @@ namespace TimeTwoFix.Application.InterventionService.Mapping
                 .ForMember(dest => dest.LiftingBridgeDto, opt => opt.MapFrom(src => src.LiftingBridge))
                 .ForMember(dest => dest.UserDto, opt => opt.MapFrom(src => src.Mechanic))
                 .ReverseMap();
-
         }
     }
 }

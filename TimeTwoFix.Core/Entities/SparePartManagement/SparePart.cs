@@ -15,7 +15,7 @@ namespace TimeTwoFix.Core.Entities.SparePartManagement
 
         [Required]
         [MaxLength(50)]
-        public required string PartCode { get; set; }
+        public string PartCode { get; set; }
 
         [Required]
         [MaxLength(100)]
@@ -31,8 +31,10 @@ namespace TimeTwoFix.Core.Entities.SparePartManagement
 
         // Navigation properties pour le destockage des pièces
         public ICollection<InterventionSparePart> InterventionSpareParts { get; set; }
+
         // Navigation properties pour l'alimentation des pièces
         public ICollection<ProviderSparePart> ProviderSpareParts { get; set; }
+
         public SparePartCategory SparePartCategory { get; set; }
     }
 }

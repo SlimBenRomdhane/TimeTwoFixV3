@@ -11,6 +11,10 @@ using TimeTwoFix.Application.LiftingBridgeServices.Interfaces;
 using TimeTwoFix.Application.PauseRecordService.Interfaces;
 using TimeTwoFix.Application.ProvidedServicesService.Interfaces;
 using TimeTwoFix.Application.ProvidedServicesService.Services;
+using TimeTwoFix.Application.ProviderServices.Interfaces;
+using TimeTwoFix.Application.ProviderServices.Services;
+using TimeTwoFix.Application.SparePartCategoryServices.Interfaces;
+using TimeTwoFix.Application.SparePartCategoryServices.Services;
 using TimeTwoFix.Application.SparePartServices.Interfaces;
 using TimeTwoFix.Application.SparePartServices.Services;
 using TimeTwoFix.Application.UserServices.Interfaces;
@@ -38,7 +42,8 @@ namespace TimeTwoFix.Application.Extension
             services.AddScoped<IPauseRecordService, PauseRecordService.Services.PauseRecordService>();
             services.AddScoped<ISparePartService, SparePartService>();
             services.AddScoped<IInterventionSparePartService, InterventionSparePartService>();
-
+            services.AddScoped<IProviderService, ProviderService>();
+            services.AddScoped<ISparePartCategoryService, SparePartCategoryService>();
 
             return services;
         }

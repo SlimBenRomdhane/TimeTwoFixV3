@@ -8,6 +8,5 @@
         public DateTime? EndTime { get; set; }
         public int InterventionId { get; set; }
         public TimeSpan? PauseDuration { get; set; }
-
     }
 }

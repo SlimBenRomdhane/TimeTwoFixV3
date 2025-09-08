@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using TimeTwoFix.Core.Entities.SparePartManagement;
 
 namespace TimeTwoFix.Web.Models.SparePartModels
 {
@@ -20,6 +19,5 @@ namespace TimeTwoFix.Web.Models.SparePartModels
 
         [Range(0, int.MaxValue, ErrorMessage = "Quantity must be a non-negative number.")]
         public int QuantityInStock { get; set; }
-
     }
 }

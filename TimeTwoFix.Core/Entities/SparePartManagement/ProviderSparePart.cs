@@ -9,10 +9,13 @@ namespace TimeTwoFix.Core.Entities.SparePartManagement
     {
         [ForeignKey("Provider")]
         public int ProviderId { get; set; }
+
         [ForeignKey("SparePart")]
         public int SparePartId { get; set; }
+
         [Required]
-        public required string DeliveryReceipt { get; set; }
+        public string DeliveryReceipt { get; set; }
+
         public int QuantityReceived { get; set; }
         public DateTime DateReceived { get; set; }
         public decimal UnitPriceAtPurchase { get; set; }

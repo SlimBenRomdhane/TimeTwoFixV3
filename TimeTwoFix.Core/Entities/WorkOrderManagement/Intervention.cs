@@ -21,8 +21,10 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
 
         [ForeignKey("LiftingBridge")]
         public int LiftingBridgeId { get; set; }
+
         public DateTime StartDate { get; set; }
         private DateTime? _endDate;
+
         public DateTime? EndDate
         {
             get => _endDate;
@@ -33,6 +35,7 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
                     CalculateActualTimeSpent();
             }
         }
+
         public TimeSpan? ActualTimeSpent
         {
             get; set;
@@ -51,6 +54,7 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
             //    return duration - totalPauses;
             //}
         }
+
         public decimal InterventionPrice { get; set; }
 
         [Required]
@@ -70,7 +74,6 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
             {
                 ActualTimeSpent = null;
                 return TimeSpan.Zero;
-
             }
             var duration = EndDate - StartDate;
             var totalPauses = PauseRecords?.Aggregate(

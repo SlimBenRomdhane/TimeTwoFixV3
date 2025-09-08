@@ -12,9 +12,6 @@ namespace TimeTwoFix.Application.CategoryService.Mapping
             CreateMap<Category, CreateCategoryDto>().ReverseMap();
             CreateMap<Category, UpdateCategoryDto>().ReverseMap();
             CreateMap<Category, DeleteCategoryDto>().ReverseMap();
-
-
-
         }
     }
 }

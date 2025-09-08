@@ -13,23 +13,23 @@ namespace TimeTwoFix.Web.Controllers
     [Authorize(Roles = "GeneralManager,WorkshopManager")]
     public class ProvidedServiceController : Controller
     {
-
         private readonly IMapper _mapper;
         private readonly IProvidedServiceService _providedServiceService;
         private readonly ICategoryService _categoryService;
+
         public ProvidedServiceController(IMapper mapper, IProvidedServiceService providedServiceService, ICategoryService categoryService)
         {
             _mapper = mapper;
             _categoryService = categoryService;
             _providedServiceService = providedServiceService;
         }
+
         // GET: ProvidedServiceController
         public async Task<ActionResult> Index()
         {
             // Example: Fetching all provided services
             //var services = await _providedServiceService.GetAllAsyncServiceGeneric();
             var services = await _providedServiceService.GetAllWithIncludesAsyncServiceGeneric(s => s.Category);
-
 
             var activeServices = services.Where(s => !s.IsDeleted);
             if (activeServices == null || !activeServices.Any())
@@ -55,7 +55,6 @@ namespace TimeTwoFix.Web.Controllers
             var serviceDto = _mapper.Map<ReadProvidedServiceDto>(service);
             var serviceViewModel = _mapper.Map<ReadProvidedServiceViewModel>(serviceDto);
             return View(serviceViewModel);
-
         }
 
         // GET: ProvidedServiceController/Create
@@ -78,7 +77,6 @@ namespace TimeTwoFix.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(CreateProvidedServiceViewModel createProvidedServiceViewModel)
         {
-
             if (ModelState.IsValid)
             {
                 try
@@ -127,7 +125,6 @@ namespace TimeTwoFix.Web.Controllers
             var serviceDto = _mapper.Map<UpdateProvidedServiceDto>(service);
             var serviceViewModel = _mapper.Map<UpdateProvidedServiceViewModel>(serviceDto);
 
-
             // Fetch categories for the dropdown
             var categories = await _categoryService.GetAllAsyncServiceGeneric();
             var activeCategories = categories.Where(c => !c.IsDeleted);
@@ -166,7 +163,6 @@ namespace TimeTwoFix.Web.Controllers
             {
                 return View();
             }
-
         }
 
         // GET: ProvidedServiceController/Delete/5
@@ -181,7 +177,6 @@ namespace TimeTwoFix.Web.Controllers
             var serviceDto = _mapper.Map<DeleteProvidedServiceDto>(service);
             var serviceViewModel = _mapper.Map<DeleteProvidedServiceViewModel>(serviceDto);
             return View(serviceViewModel);
-
         }
 
         // POST: ProvidedServiceController/Delete/5
@@ -192,7 +187,6 @@ namespace TimeTwoFix.Web.Controllers
         {
             try
             {
-
                 var serviceToDelete = await _providedServiceService.GetByIdAsyncServiceGeneric(deleteProvidedServiceViewModel.Id);
                 if (serviceToDelete == null)
                 {

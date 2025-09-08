@@ -22,9 +22,6 @@ namespace TimeTwoFix.Application.WorkOrderService.Services
             }
             var workOrderDtos = _mapper.Map<IEnumerable<ReadWorkOrderDto>>(workOrders);
             return workOrderDtos;
-
-
-
         }
 
         public async Task<IEnumerable<ReadWorkOrderDto>> GetWorkOrdersByStatus(string status)

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TimeTwoFix.Application.InterventionService.Dtos;
+﻿using TimeTwoFix.Application.InterventionService.Dtos;
 using TimeTwoFix.Application.VehicleServices.Dtos;
 
 namespace TimeTwoFix.Application.WorkOrderService.Dtos

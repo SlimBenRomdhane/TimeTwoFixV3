@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TimeTwoFix.Application.WorkOrderService.Dtos
+﻿namespace TimeTwoFix.Application.WorkOrderService.Dtos
 {
     public class CreateWorkOrderDto
     {
-
         public int VehicleId { get; set; }
         public int Mileage { get; set; }
         public DateOnly StartDate { get; set; }

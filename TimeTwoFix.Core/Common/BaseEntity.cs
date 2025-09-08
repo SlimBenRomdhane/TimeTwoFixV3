@@ -8,6 +8,7 @@ namespace TimeTwoFix.Core.Common
 
         [MaxLength(255)]
         public string? Notes { get; set; }
+
         public bool IsDeleted { get; set; } = false;
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
@@ -18,10 +19,8 @@ namespace TimeTwoFix.Core.Common
 
         [MaxLength(50)]
         public string? UpdatedBy { get; set; }
+
         [MaxLength(50)]
         public string? DeletedBy { get; set; }
-
-
-
     }
 }

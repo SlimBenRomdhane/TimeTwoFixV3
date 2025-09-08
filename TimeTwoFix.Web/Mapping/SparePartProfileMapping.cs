@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using TimeTwoFix.Application.SparePartServices.Dtos;
-using TimeTwoFix.Core.Entities.SparePartManagement;
 using TimeTwoFix.Web.Models.SparePartModels;
 
 namespace TimeTwoFix.Web.Mapping

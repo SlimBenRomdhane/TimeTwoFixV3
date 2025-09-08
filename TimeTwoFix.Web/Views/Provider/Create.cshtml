@@ -1,0 +1,68 @@
+﻿@model TimeTwoFix.Web.Models.ProviderModels.CreateProviderViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>CreateProviderViewModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ContactEmail" class="control-label"></label>
+                <input asp-for="ContactEmail" class="form-control" />
+                <span asp-validation-for="ContactEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MobileContactPhone" class="control-label"></label>
+                <input asp-for="MobileContactPhone" class="form-control" />
+                <span asp-validation-for="MobileContactPhone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LandContactPhone" class="control-label"></label>
+                <input asp-for="LandContactPhone" class="form-control" />
+                <span asp-validation-for="LandContactPhone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Fax" class="control-label"></label>
+                <input asp-for="Fax" class="form-control" />
+                <span asp-validation-for="Fax" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Address" class="control-label"></label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="RIB" class="control-label"></label>
+                <input asp-for="RIB" class="form-control" />
+                <span asp-validation-for="RIB" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FiscalId" class="control-label"></label>
+                <input asp-for="FiscalId" class="form-control" />
+                <span asp-validation-for="FiscalId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

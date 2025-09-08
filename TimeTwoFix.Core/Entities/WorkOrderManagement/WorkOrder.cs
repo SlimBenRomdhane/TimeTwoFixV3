@@ -32,8 +32,8 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
             }
         }
 
-
         private string _status;
+
         [MaxLength(50)]
         public string Status
         {
@@ -46,6 +46,7 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
 
         public Vehicle Vehicle { get; set; }
         public ICollection<Intervention> Interventions { get; set; }
+
         public void RecalculateLaborCost()
         {
             decimal total = 0;
@@ -73,6 +74,7 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
             //Status = Interventions != null && Interventions.Any(i => i.Status != "Completed") ? "In Progress" : "Completed";
             //EndDate = Interventions != null && Interventions.Any(i => i.Status == "Completed") ? Interventions.Where(i => i.Status == "Completed").Max(i => i.EndDate)?.Date ?? EndDate : EndDate;
         }
+
         //public void UpdateStatus()
         //{
         //    if (Interventions != null && Interventions.Any(i => i.Status != "Completed"))
@@ -129,6 +131,5 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
                 Status = "Paused";
             }
         }
-
     }
 }

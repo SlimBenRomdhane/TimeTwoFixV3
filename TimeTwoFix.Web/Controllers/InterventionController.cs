@@ -17,7 +17,6 @@ using TimeTwoFix.Web.Models.PauseRecordModel;
 
 namespace TimeTwoFix.Web.Controllers
 {
-
     public class InterventionController : BaseController<Intervention, CreateInterventionDto, ReadInterventionDto, UpdateInterventionDto, DeleteInterventionDto,
         CreateInterventionViewModel, ReadInterventionViewModel, UpdateInterventionViewModel, DeleteInterventionViewModel>
 
@@ -29,6 +28,7 @@ namespace TimeTwoFix.Web.Controllers
         private readonly ILiftingBridgeServices _liftingBridgeServices;
         private readonly IPauseRecordService _pauseRecordService;
         private readonly IUnitOfWork _unitOfWork;
+
         public InterventionController(IInterventionService interventionService, IMapper mapper, IWorkOrderService workOrderService, IProvidedServiceService providedServiceService,
             IUserService userService, ILiftingBridgeServices liftingBridgeServices, IUnitOfWork unitOfWork, IPauseRecordService pauseRecordService) : base(interventionService, mapper)
         {
@@ -39,7 +39,6 @@ namespace TimeTwoFix.Web.Controllers
             _liftingBridgeServices = liftingBridgeServices;
             _pauseRecordService = pauseRecordService;
             _unitOfWork = unitOfWork;
-
         }
 
         [HttpGet]
@@ -48,7 +47,6 @@ namespace TimeTwoFix.Web.Controllers
             // Redirect to PaginatedIndex to handle the status and pagination logic
             return RedirectToAction("PaginatedIndex", "Intervention");
         }
-
 
         [HttpGet]
         public async Task<IActionResult> PaginatedIndex(string status = null, int page = 1, int pageSize = 100)
@@ -93,19 +91,13 @@ namespace TimeTwoFix.Web.Controllers
                     ViewBag.TotalPages = (int)Math.Ceiling((double)totalCount / pageSize);
                     return View(viewModels);
                 }
-
             }
             catch (Exception ex)
             {
                 TempData["ErrorMessage"] = $"An error occurred while loading interventions: {ex.Message}";
                 return View(new List<ReadInterventionViewModel>());
-
             }
-
         }
-
-
-
 
         [HttpGet]
         public override async Task<ActionResult> Create()
@@ -154,10 +146,9 @@ namespace TimeTwoFix.Web.Controllers
             {
                 TempData["ErrorMessage"] = $"An error occurred while preparing the form: {ex.Message}";
                 return RedirectToAction(nameof(Index));
-
             }
-
         }
+
         [HttpPost]
         public override async Task<IActionResult> Create(CreateInterventionViewModel viewModel)
         {
@@ -222,6 +213,7 @@ namespace TimeTwoFix.Web.Controllers
         {
             return base.Edit(id);
         }
+
         [HttpPost]
         public override async Task<IActionResult> Edit(int id, UpdateInterventionViewModel viewModel)
         {
@@ -263,8 +255,6 @@ namespace TimeTwoFix.Web.Controllers
                 TempData["ErrorMessage"] = $"An error occurred while updating the intervention: {ex.Message}";
                 return View(viewModel);
             }
-
-
         }
 
         [HttpPost]
@@ -303,6 +293,7 @@ namespace TimeTwoFix.Web.Controllers
                 return StatusCode(500, new { message = $"An error occurred while pausing the intervention: {ex.Message}" });
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> ResumeIntervention(int interventionId)
         {
@@ -339,9 +330,9 @@ namespace TimeTwoFix.Web.Controllers
                 return StatusCode(500, new { message = $"An error occurred while resuming the intervention: {ex.Message}" });
             }
         }
+
         public async Task<ActionResult> CreateById(int workOrderId)
         {
-
             var activeProvidedServices = (await _providedServiceService.GetAllAsyncServiceGeneric()).Where(ps => !ps.IsDeleted);
             var activeMechanics = (await _userService.GetAllApplicationUsers()).Where(u => u.UserType.Equals("Mechanic"));
             var activeLiftingBridges = (await _liftingBridgeServices.GetAllAsyncServiceGeneric()).Where(lb => !lb.IsDeleted);
@@ -363,6 +354,7 @@ namespace TimeTwoFix.Web.Controllers
             }).ToList();
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> CreateById(CreateInterventionViewModel createInterventionViewModel)
@@ -389,11 +381,9 @@ namespace TimeTwoFix.Web.Controllers
 
             try
             {
-
                 var interventionDto = _mapper.Map<CreateInterventionDto>(createInterventionViewModel);
                 interventionDto.CreatedBy = User.Identity?.Name;
                 interventionDto.CreatedAt = DateTime.Now;
-
 
                 var intervention = _mapper.Map<Intervention>(interventionDto);
                 if (DateTime.Now < intervention.StartDate)
@@ -413,14 +403,6 @@ namespace TimeTwoFix.Web.Controllers
                 TempData["WorkOrderError"] = $"An error occurred while creating the Work Order: {ex.Message}";
                 return View(createInterventionViewModel);
             }
-
-
-
-
-
-
-
-
         }
     }
 }

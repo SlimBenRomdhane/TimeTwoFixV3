@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.Linq.Expressions;
 using TimeTwoFix.Application.Base;
 using TimeTwoFix.Core.Common;
-using TimeTwoFix.Core.Entities.WorkOrderManagement;
 
 namespace TimeTwoFix.Web.Controllers
 {
@@ -23,12 +20,13 @@ namespace TimeTwoFix.Web.Controllers
         protected readonly IBaseService<TEntity> _baseService;
         protected readonly IMapper _mapper;
         protected string EntityName => typeof(TEntity).Name;
+
         public BaseController(IBaseService<TEntity> baseService, IMapper mapper)
         {
             _baseService = baseService;
             _mapper = mapper;
-
         }
+
         public virtual async Task<IActionResult> Index()
         {
             try
@@ -51,6 +49,7 @@ namespace TimeTwoFix.Web.Controllers
                 return View(Enumerable.Empty<TReadViewModel>());
             }
         }
+
         public virtual async Task<IActionResult> Details(int id)
         {
             try
@@ -71,15 +70,19 @@ namespace TimeTwoFix.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+
         // Base async method intentionally lacks 'await' to allow child controllers to override with asynchronous logic.
         // This method defines the async contract for extensibility — child implementations may perform async operations.
         // Suppressing CS1998 to avoid misleading compiler warnings; this is a deliberate design choice.
 #pragma warning disable CS1998
+
         public virtual async Task<ActionResult> Create()
         {
             return View();
         }
+
 #pragma warning restore CS1998// Async method lacks 'await' operators and will run synchronously
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public virtual async Task<IActionResult> Create(TCreateViewModel viewModel)
@@ -108,6 +111,7 @@ namespace TimeTwoFix.Web.Controllers
                 return View(viewModel);
             }
         }
+
         public virtual async Task<IActionResult> Edit(int id)
         {
             try
@@ -128,11 +132,11 @@ namespace TimeTwoFix.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public virtual async Task<IActionResult> Edit(int id, TUpdateViewModel viewModel)
         {
-
             if (!ModelState.IsValid)
             {
                 var errors = ModelState.Values
@@ -169,6 +173,7 @@ namespace TimeTwoFix.Web.Controllers
                 return View(viewModel);
             }
         }
+
         public virtual async Task<IActionResult> Delete(int id)
         {
             try
@@ -189,6 +194,7 @@ namespace TimeTwoFix.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public virtual async Task<IActionResult> Delete(int id, TDeleteViewModel viewModel)
@@ -210,7 +216,6 @@ namespace TimeTwoFix.Web.Controllers
                     TempData["SuccessMessage"] = $"{EntityName} Entity deleted successfully";
                     return RedirectToAction(nameof(Index));
                 }
-
                 else
                 {
                     await _baseService.DeleteAsyncServiceGeneric(id);

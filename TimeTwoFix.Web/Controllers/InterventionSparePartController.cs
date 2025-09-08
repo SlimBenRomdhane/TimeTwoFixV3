@@ -21,11 +21,13 @@ namespace TimeTwoFix.Web.Controllers
     {
         private readonly IInterventionSparePartService _interventionSparePartService;
         private readonly ISparePartService _sparePartService;
+
         public InterventionSparePartController(IInterventionSparePartService baseService, ISparePartService sparePartService, IMapper mapper) : base(baseService, mapper)
         {
             _interventionSparePartService = baseService;
             _sparePartService = sparePartService;
         }
+
         public override async Task<ActionResult> Create()
         {
             return await base.Create();
@@ -77,8 +79,6 @@ namespace TimeTwoFix.Web.Controllers
                 TempData["ErrorMessage"] = "Insufficient stock for the requested quantity.";
                 return View(viewModel);
             }
-
         }
-
     }
 }

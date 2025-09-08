@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TimeTwoFix.Core.Entities.ServiceManagement;
-
-namespace TimeTwoFix.Application.ProvidedServicesService.Dtos
+﻿namespace TimeTwoFix.Application.ProvidedServicesService.Dtos
 {
     public class CreateProvidedServiceDto
     {
@@ -19,6 +10,5 @@ namespace TimeTwoFix.Application.ProvidedServicesService.Dtos
         public string? Notes { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public string? Createdby { get; set; }
-
     }
 }

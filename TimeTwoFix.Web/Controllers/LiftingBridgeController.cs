@@ -13,12 +13,10 @@ namespace TimeTwoFix.Web.Controllers
     public class LiftingBridgeController : BaseController<LiftingBridge, CreateLiftingBridgeDto, ReadLiftingBridgeDto, UpdateLiftingBridgeDto, DeleteLiftingBridgeDto,
         CreateLiftingBridgeViewModel, ReadLiftingBridgeViewModel, UpdateLiftingBridgeViewModel, DeleteLiftingBridgeViewModel>
     {
-
         private readonly ILiftingBridgeServices _liftingBridgeServices;
 
         public LiftingBridgeController(IMapper mapper, ILiftingBridgeServices liftingBridgeServices) : base(liftingBridgeServices, mapper)
         {
-
             _liftingBridgeServices = liftingBridgeServices;
         }
 
@@ -29,7 +27,7 @@ namespace TimeTwoFix.Web.Controllers
 #pragma warning disable CS1998
 
         [HttpGet]
-        override public async Task<ActionResult> Create()
+        public override async Task<ActionResult> Create()
         {
             ViewBag.BridgeStatus = new SelectList(new[]
             {
@@ -39,10 +37,12 @@ namespace TimeTwoFix.Web.Controllers
             }, "Value", "Text");
             return View();
         }
+
 #pragma warning restore CS1998
+
         // GET: LiftingBridgeController/Edit/5
         [HttpGet]
-        override public async Task<IActionResult> Edit(int id)
+        public override async Task<IActionResult> Edit(int id)
         {
             ViewBag.BridgeStatus = new SelectList(new[]
             {

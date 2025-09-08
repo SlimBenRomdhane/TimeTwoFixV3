@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace TimeTwoFix.Web.Models.SparePartModels
+﻿namespace TimeTwoFix.Web.Models.SparePartModels
 {
     public class ReadSparePartViewModel
     {

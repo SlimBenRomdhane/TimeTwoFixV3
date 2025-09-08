@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TimeTwoFix.Application.CategoryService.Dtos
+﻿namespace TimeTwoFix.Application.CategoryService.Dtos
 {
     public class CreateCategoryDto
     {

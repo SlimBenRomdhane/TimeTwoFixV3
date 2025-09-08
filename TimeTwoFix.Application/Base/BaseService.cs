@@ -97,13 +97,11 @@ namespace TimeTwoFix.Application.Base
             var includes = EntityIncludeHelper.GetIncludes<T>();
             var entities = await _baseRepository.GetAllWithIncludesAsyncGeneric(includes);
             return entities ?? Enumerable.Empty<T>();
-
         }
 
         // Retrieves all entities with included related properties
         public async Task<IEnumerable<T>> GetAllWithIncludesAsyncServiceGeneric(params Expression<Func<T, object>>[] includeProperties)
         {
-
             var entities = await _baseRepository.GetAllWithIncludesAsyncGeneric(includeProperties);
             return entities ?? Enumerable.Empty<T>();
         }
@@ -111,7 +109,6 @@ namespace TimeTwoFix.Application.Base
         // Retrieves an entity by its identifier, including related properties if specified
         public async Task<T?> GetByIdAsyncServiceGeneric(int id, Func<IQueryable<T>, IQueryable<T>>? includeBuilder = null, params Expression<Func<T, object>>[] includeProperties)
         {
-
             return await _baseRepository.GetByIdAsyncGeneric(id, includeBuilder, includeProperties);
         }
 
@@ -148,6 +145,5 @@ namespace TimeTwoFix.Application.Base
             var numberOfChangesSaved = await _unitOfWork.SaveChangesAsync();
             // The caller should handle the case where no changes were saved
         }
-
     }
 }

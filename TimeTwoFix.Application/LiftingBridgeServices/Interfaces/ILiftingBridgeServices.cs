@@ -6,8 +6,8 @@ namespace TimeTwoFix.Application.LiftingBridgeServices.Interfaces
 {
     public interface ILiftingBridgeServices : IBaseService<LiftingBridge>
     {
-
         Task<IEnumerable<ReadLiftingBridgeDto>> GetLiftingBridgesByLoadCapacityAsync(int loadCapacity);
+
         Task<IEnumerable<ReadLiftingBridgeDto>> GetLiftingBridgesByStatusAsync(string status);
     }
 }

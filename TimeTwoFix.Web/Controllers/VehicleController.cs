@@ -28,7 +28,6 @@ namespace TimeTwoFix.Web.Controllers
         public async Task<ActionResult> Index(string searchVin, string searchModel, string searchBrand,
            string searchFuel, string searchTransmission, int pageNumber = 1, int pageSize = 50)
         {
-
             var totalVahicle = await _vehicleService.CountAsyncServiceGeneric();
             var vehicles = await _vehicleService.GetAllAsyncServiceGeneric();
             var activeVehicles = vehicles.Where(v => !v.IsDeleted).ToList();
@@ -47,7 +46,6 @@ namespace TimeTwoFix.Web.Controllers
                 ViewBag.TotalPages = 1;
                 ViewBag.CurrentPage = 1;
                 ViewBag.CountVehicle = 1;
-
 
                 return View(new List<ReadVehicleViewModel> { viewModel });
             }

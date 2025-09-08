@@ -15,8 +15,8 @@ namespace TimeTwoFix.Web.Controllers
     {
         //private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IClientServices _clientServices;
 
+        private readonly IClientServices _clientServices;
 
         public ClientController(IUnitOfWork unitOfWork, IMapper mapper, IClientServices clientServices)
         {
@@ -43,16 +43,12 @@ namespace TimeTwoFix.Web.Controllers
                 ViewBag.TotalPages = (int)Math.Ceiling((double)clients.Count() / pageSize);
                 ViewBag.CurrentPage = pageNumber;
                 return View(clientsViewModel);
-
             }
             catch (Exception)
             {
-
-
                 TempData["ErrorMessage"] = "An Error occured while loading clients";
                 return View(Enumerable.Empty<ReadClientViewModel>());
             }
-
         }
 
         [Authorize(Roles = "GeneralManager")]
@@ -76,7 +72,6 @@ namespace TimeTwoFix.Web.Controllers
                     TempData["ErrorMessage"] = "No clients found matching the search criteria.";
                 }
 
-
                 var clientsDto = _mapper.Map<IEnumerable<ReadClientDto>>(clients);
                 var clientsViewModel = _mapper.Map<IEnumerable<ReadClientViewModel>>(clientsDto);
                 return View(clientsViewModel);
@@ -85,9 +80,7 @@ namespace TimeTwoFix.Web.Controllers
             {
                 TempData["ErrorMessage"] = $"An error occurred while loading clients: {ex.Message}";
                 return View(Enumerable.Empty<ReadClientViewModel>());
-
             }
-
         }
 
         // GET: ClientController/Details/5
@@ -101,7 +94,6 @@ namespace TimeTwoFix.Web.Controllers
                     //return NotFound();
                     TempData["ErrorMessage"] = $"Client with ID {id} not found.";
                     return RedirectToAction(nameof(Index));
-
                 }
                 //var vehicleList = await _unitOfWork.Vehicles.GetVehiclesByClientIdAsync(client.Id);
 
@@ -113,7 +105,6 @@ namespace TimeTwoFix.Web.Controllers
             {
                 TempData["ErrorMessage"] = $"An error occurred while loading client details: {ex.Message}";
                 return RedirectToAction(nameof(Index));
-
             }
         }
 
@@ -157,7 +148,6 @@ namespace TimeTwoFix.Web.Controllers
                 var addedElement = await _clientServices.AddAsyncServiceGeneric(client);
                 TempData["SuccessMessage"] = $"Client '{client.FirstName}' '{client.LastName}' created successfully.";
 
-
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -196,7 +186,6 @@ namespace TimeTwoFix.Web.Controllers
                     //return NotFound();
                     TempData["ErrorMessage"] = "Client not found.";
                     return RedirectToAction(nameof(Index));
-
                 }
                 var clientDto = _mapper.Map<UpdateClientDto>(updateClientViewModel);
 
@@ -214,7 +203,6 @@ namespace TimeTwoFix.Web.Controllers
                 TempData["ErrorMessage"] = $"An unexpected error occurred: {ex.Message}";
                 return RedirectToAction(nameof(Index));
             }
-
         }
 
         // GET: ClientController/Delete/5
@@ -250,10 +238,8 @@ namespace TimeTwoFix.Web.Controllers
             clientToDetete.DeletedAt = DateTime.Now;
             clientToDetete.DeletedBy = User.Identity?.Name;
 
-
             try
             {
-
                 //await _unitOfWork.SaveChangesAsync();
                 await _clientServices.AttachAsyncServiceGeneric(clientToDetete, EntityState.Modified);
                 //var a = await _clientServices.SaveChangesServiceGeneric();
@@ -267,7 +253,6 @@ namespace TimeTwoFix.Web.Controllers
                 TempData["ErrorMessage"] = $"An unexpected error occurred: {ex.Message}";
                 return View(deleteClientViewModel);
             }
-
         }
 
         [Authorize(Roles = "GeneralManager")]
@@ -290,7 +275,6 @@ namespace TimeTwoFix.Web.Controllers
             }
             catch (Exception ex)
             {
-
                 return BadRequest("An error occurred while restoring the client.");
             }
         }
@@ -310,7 +294,6 @@ namespace TimeTwoFix.Web.Controllers
             }
             catch (Exception ex)
             {
-
                 return BadRequest("An error occurred while restoring the client.");
             }
         }

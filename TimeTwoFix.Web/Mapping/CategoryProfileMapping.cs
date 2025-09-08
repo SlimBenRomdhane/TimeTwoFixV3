@@ -12,8 +12,6 @@ namespace TimeTwoFix.Web.Mapping
             CreateMap<UpdateCategoryViewModel, UpdateCategoryDto>().ReverseMap();
             CreateMap<DeleteCategoryViewModel, DeleteCategoryDto>().ReverseMap();
             CreateMap<ReadCategoryDto, ReadCategoryViewModel>().ReverseMap();
-
         }
     }
-
 }

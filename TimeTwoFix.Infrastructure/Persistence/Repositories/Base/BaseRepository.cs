@@ -102,7 +102,6 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.Base
             }
             query = query.Skip(skip).Take(take);
             return await query.AsNoTracking().ToListAsync();
-
         }
 
         public async Task<IReadOnlyList<GroupCount<TKey>>> GroupCountAsynGeneric<TKey>(Expression<Func<T, TKey>> groupByExpression)

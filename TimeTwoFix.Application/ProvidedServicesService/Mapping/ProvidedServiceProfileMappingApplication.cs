@@ -18,5 +18,4 @@ namespace TimeTwoFix.Application.ProvidedServicesService.Mapping
                 .ReverseMap();
         }
     }
-
 }

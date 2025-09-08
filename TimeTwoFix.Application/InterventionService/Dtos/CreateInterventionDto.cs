@@ -2,7 +2,6 @@
 {
     public class CreateInterventionDto
     {
-
         public int WorkOrderId { get; set; }
         public int MechanicId { get; set; }
         public int ServiceId { get; set; }
@@ -14,6 +13,5 @@
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public string? CreatedBy { get; set; }
-
     }
 }

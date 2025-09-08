@@ -22,8 +22,8 @@ namespace TimeTwoFix.Application.ClientServices.Dtos
         [MaxLength(50)]
         [EmailAddress]
         public string Email { get; set; }
-        [MaxLength(255)]
 
+        [MaxLength(255)]
         public string Notes { get; set; }
 
         public DateTime? UpdatedAt { get; set; }

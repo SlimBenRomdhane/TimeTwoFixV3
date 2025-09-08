@@ -8,10 +8,11 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
     {
         [Required]
         [MaxLength(255)]
+        public string Reason { get; set; }
 
-        public required string Reason { get; set; }
         public DateTime StartTime { get; set; }
         private DateTime? _endTime;
+
         public DateTime? EndTime
         {
             get => _endTime;
@@ -28,8 +29,10 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
                 }
             }
         }
+
         [ForeignKey("Intervention")]
         public int InterventionId { get; set; }
+
         public Intervention Intervention { get; set; }
         public TimeSpan? PauseDuration { get; set; }
         //public TimeSpan? PauseDuration
@@ -46,8 +49,5 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
         //        }
         //    }
         //}
-
-
-
     }
 }

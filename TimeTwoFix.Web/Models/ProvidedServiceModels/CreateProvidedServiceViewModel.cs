@@ -10,10 +10,10 @@ namespace TimeTwoFix.Web.Models.ProvidedServiceModels
         [Required]
         [MaxLength(50)]
         [Display(Name = "Service Name")]
-        public required string Name { get; set; }
+        public string Name { get; set; }
 
         [MaxLength(100)]
-        public required string Description { get; set; }
+        public string Description { get; set; }
 
         [Required]
         public int EstimatedTime { get; set; }
@@ -21,8 +21,7 @@ namespace TimeTwoFix.Web.Models.ProvidedServiceModels
         [Required]
         [Range(0.01, double.MaxValue, ErrorMessage = "Price per hour must be greater than zero.")]
         public decimal PricePerHour { get; set; }
+
         public string? Notes { get; set; }
-
-
     }
 }

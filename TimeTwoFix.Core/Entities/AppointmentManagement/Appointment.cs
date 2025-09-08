@@ -12,7 +12,7 @@ namespace TimeTwoFix.Core.Entities.AppointmentManagement
 
         [Required]
         [MaxLength(50)]
-        public required string Title { get; set; }
+        public string Title { get; set; }
 
         [Required]
         [MaxLength(255)]
@@ -26,11 +26,11 @@ namespace TimeTwoFix.Core.Entities.AppointmentManagement
 
         [Required]
         [MaxLength(50)]
-        public required string ContactName { get; set; }
+        public string ContactName { get; set; }
 
         [Required]
         [MaxLength(50)]
-        public required string ContactPhone { get; set; }
+        public string ContactPhone { get; set; }
 
         [MaxLength(50)]
         public string Urgency { get; set; }

@@ -16,7 +16,6 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.SparePartManagement
             var providerSpareParts = await _context.ProviderSpareParts
                 .Where(psp => psp.ProviderId == providerId).ToListAsync();
             return providerSpareParts;
-
         }
 
         public async Task<IEnumerable<ProviderSparePart>> GetProviderSparePartsBySparePartIdAsync(int sparePartId)

@@ -9,7 +9,6 @@ namespace TimeTwoFix.Application.SparePartServices.Services
 {
     public class SparePartService : BaseService<SparePart>, ISparePartService
     {
-
         public SparePartService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
         }

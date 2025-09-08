@@ -22,6 +22,7 @@ namespace TimeTwoFix.Core.Entities.SparePartManagement
         [Required]
         [MaxLength(50)]
         public string DeliveryNote { get; set; }
+
         public Intervention Intervention { get; set; }
         public SparePart SparePart { get; set; }
     }

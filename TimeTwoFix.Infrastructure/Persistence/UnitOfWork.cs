@@ -48,6 +48,9 @@ namespace TimeTwoFix.Infrastructure.Persistence
             WorkOrders = new WorkOrderRepository(_context);
             Interventions = new InterventionRepository(_context);
             MechanicSkills = new MechanicSkillRepository(_context);
+            Providers = new ProviderRepository(_context);
+            SparePartCategories = new SparePartCategoryRepository(_context);
+            ProviderSpareParts = new ProviderSparePartRepository(_context);
             ApplicationUsers = new ApplicationUserRepository(userManager, roleManager, signInManager);
         }
 
@@ -64,6 +67,9 @@ namespace TimeTwoFix.Infrastructure.Persistence
         public IInterventionRepository Interventions { get; private set; }
         public IApplicationUserRepository ApplicationUsers { get; private set; }
         public IMechanicSkillRepository MechanicSkills { get; private set; }
+        public IProviderRepository Providers { get; private set; }
+        public ISparePartCategoryRepository SparePartCategories { get; private set; }
+        public IProviderSparePartRepository ProviderSpareParts { get; private set; }
 
         public Task<IDbContextTransaction> BeginTransactionAsync()
         {

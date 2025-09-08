@@ -7,6 +7,7 @@ namespace TimeTwoFix.Application.ProvidedServicesService.Interfaces
     public interface IProvidedServiceService : IBaseService<ProvidedService>
     {
         Task<IEnumerable<ReadProvidedServiceDto>> GetServicesByNameAsync(string name);
+
         Task<IEnumerable<ReadProvidedServiceDto>> GetServicesByCategoryIdAsync(int categoryId);
     }
 }

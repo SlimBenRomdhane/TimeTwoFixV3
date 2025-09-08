@@ -7,6 +7,7 @@ namespace TimeTwoFix.Application.SparePartServices.Interfaces
     public interface ISparePartService : IBaseService<SparePart>
     {
         Task<IEnumerable<ReadSparePartDto>> GetSparePartsByNameAsync(string searchTerm);
+
         Task<ReadSparePartDto?> GetSparePartByPartCodeAsync(string partCode);
     }
 }

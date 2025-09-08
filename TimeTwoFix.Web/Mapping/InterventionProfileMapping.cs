@@ -18,5 +18,4 @@ namespace TimeTwoFix.Web.Mapping
             CreateMap<DeleteInterventionViewModel, DeleteInterventionDto>().ReverseMap();
         }
     }
-
 }

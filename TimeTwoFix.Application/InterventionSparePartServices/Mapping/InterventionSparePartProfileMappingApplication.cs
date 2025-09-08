@@ -12,7 +12,6 @@ namespace TimeTwoFix.Application.InterventionSparePartServices.Mapping
             CreateMap<InterventionSparePart, UpdateInterventionSparePartDto>().ReverseMap();
             CreateMap<InterventionSparePart, CreateInterventionSparePartDto>().ReverseMap();
             CreateMap<InterventionSparePart, DeleteInterventionSparePartDto>().ReverseMap();
-
         }
     }
 }

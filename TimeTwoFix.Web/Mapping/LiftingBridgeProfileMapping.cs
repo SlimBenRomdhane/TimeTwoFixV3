@@ -14,5 +14,4 @@ namespace TimeTwoFix.Web.Mapping
             CreateMap<DeleteLiftingBridgeViewModel, DeleteLiftingBridgeDto>().ReverseMap();
         }
     }
-
 }

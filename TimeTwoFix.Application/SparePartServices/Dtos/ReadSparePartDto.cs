@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TimeTwoFix.Core.Entities.SparePartManagement;
-
-namespace TimeTwoFix.Application.SparePartServices.Dtos
+﻿namespace TimeTwoFix.Application.SparePartServices.Dtos
 {
     public class ReadSparePartDto
     {
@@ -19,6 +11,5 @@ namespace TimeTwoFix.Application.SparePartServices.Dtos
         public decimal UnitPrice { get; set; }
 
         public int QuantityInStock { get; set; }
-
     }
 }

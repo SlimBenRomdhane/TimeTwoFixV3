@@ -15,10 +15,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="ProviderServices\Dtos\" />
-	  <Folder Include="ProviderServices\Interfaces\" />
-	  <Folder Include="ProviderServices\Mapping\" />
-	  <Folder Include="ProviderServices\Services\" />
+	  <Folder Include="TemplateOfFolderStructure\Dtos\" />
+	  <Folder Include="TemplateOfFolderStructure\Interfaces\" />
+	  <Folder Include="TemplateOfFolderStructure\Mapping\" />
+	  <Folder Include="TemplateOfFolderStructure\Services\" />
 	</ItemGroup>
 
 </Project>

@@ -22,7 +22,6 @@ namespace TimeTwoFix.Application.InterventionService.Services
             }
             var interventionDtos = _mapper.Map<IEnumerable<ReadInterventionDto>>(interventions);
             return interventionDtos;
-
         }
 
         public async Task<IEnumerable<ReadInterventionDto>> GetInterventionsByLiftingBridgeId(int liftingBridgeId)

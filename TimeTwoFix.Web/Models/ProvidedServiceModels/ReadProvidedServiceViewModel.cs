@@ -8,13 +8,13 @@ namespace TimeTwoFix.Web.Models.ProvidedServiceModels
         public ReadCategoryViewModel ReadCategoryViewModel { get; set; }
         public int CategoryId { get; set; }
         public int Id { get; set; }
+
         [Display(Name = "Service Name")]
-        public required string Name { get; set; }
-        public required string Description { get; set; }
+        public string Name { get; set; }
+
+        public string Description { get; set; }
         public int EstimatedTime { get; set; }
         public decimal PricePerHour { get; set; }
         public string? Notes { get; set; }
-
-
     }
 }

@@ -6,8 +6,10 @@ namespace TimeTwoFix.Web.Models.WorkOrderModels
     {
         [Required]
         public int VehicleId { get; set; }
+
         [Range(0, int.MaxValue, ErrorMessage = "Mileage must be a non-negative integer.")]
         public int Mileage { get; set; }
+
         public DateOnly? StartDate { get; set; }
         public TimeOnly? StartTime { get; set; }
         public DateOnly? EndDate { get; set; }

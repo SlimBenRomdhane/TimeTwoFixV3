@@ -5,6 +5,7 @@ namespace TimeTwoFix.Web.Models.SparePartModels
     public class UpdateSparePartViewModel
     {
         public int Id { get; set; }
+
         [Required]
         [MaxLength(50)]
         public string PartCode { get; set; }

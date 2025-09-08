@@ -26,6 +26,9 @@ namespace TimeTwoFix.Core.Interfaces
         IMechanicSkillRepository MechanicSkills { get; }
         IAppointmentRepository Appointments { get; }
         ISparePartRepository SpareParts { get; }
+        ISparePartCategoryRepository SparePartCategories { get; }
+        IProviderRepository Providers { get; }
+        IProviderSparePartRepository ProviderSpareParts { get; }
         IApplicationUserRepository ApplicationUsers { get; }
 
         //Till Now No Need For These Repositories Bacause ApplicationUserRepository Is Enough

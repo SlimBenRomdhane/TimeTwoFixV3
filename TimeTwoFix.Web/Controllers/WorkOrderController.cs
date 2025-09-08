@@ -17,16 +17,17 @@ namespace TimeTwoFix.Web.Controllers
         private readonly IWorkOrderService _workOrderService;
         private readonly IVehicleService _vehicleService;
         private readonly IMapper _mapper;
+
         public WorkOrderController(IWorkOrderService workOrderService, IMapper mapper, IVehicleService vehicleService)
         {
             _workOrderService = workOrderService;
             _mapper = mapper;
             _vehicleService = vehicleService;
         }
+
         // GET: WorkOrderController
         public async Task<ActionResult> Index()
         {
-
             var workOrders = await _workOrderService.GetAllWithIncludesAsyncServiceGeneric(wo => wo.Vehicle, wo => wo.Interventions);
             if (workOrders == null || !workOrders.Any())
             {
@@ -62,7 +63,6 @@ namespace TimeTwoFix.Web.Controllers
             var workOrderDto = _mapper.Map<ReadWorkOrderDto>(workOrder);
             var workOrderViewModel = _mapper.Map<ReadWorkOrderViewModel>(workOrderDto);
             return View(workOrderViewModel);
-
         }
 
         // GET: WorkOrderController/Create
@@ -106,14 +106,13 @@ namespace TimeTwoFix.Web.Controllers
         {
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> CreateById(CreateWorkOrderViewModel createWorkOrderViewModel)
         {
-
             try
             {
-
                 var workOrderDto = _mapper.Map<CreateWorkOrderDto>(createWorkOrderViewModel);
                 workOrderDto.CreatedBy = User.Identity?.Name;
                 var workOrder = _mapper.Map<WorkOrder>(workOrderDto);
@@ -154,7 +153,6 @@ namespace TimeTwoFix.Web.Controllers
 
             var workOrderDto = _mapper.Map<UpdateWorkOrderDto>(workOrder);
             var workOrderViewModel = _mapper.Map<UpdateWorkOrderViewModel>(workOrderDto);
-
 
             return View(workOrderViewModel);
         }

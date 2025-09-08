@@ -19,7 +19,6 @@ namespace TimeTwoFix.Infrastructure.Persistence.Includes
                 return new Expression<Func<TEntity, object>>[]
                 {
                     c => ((Client)(object)c).Vehicles,
-
                 };
             }
             else if (typeof(TEntity) == typeof(Vehicle))
@@ -49,8 +48,6 @@ namespace TimeTwoFix.Infrastructure.Persistence.Includes
                     i => ((Intervention)(object)i).LiftingBridge,
                     i => ((Intervention)(object)i).PauseRecords,
                     i => ((Intervention)(object)i).InterventionSpareParts
-
-
                 };
             }
             else if (typeof(TEntity) == typeof(ProvidedService))
@@ -104,14 +101,10 @@ namespace TimeTwoFix.Infrastructure.Persistence.Includes
                     a => ((Appointment)(object)a).Vehicle
                 };
             }
-
             else
             {
                 return Array.Empty<Expression<Func<TEntity, object>>>();
             }
         }
-
-
-
     }
 }

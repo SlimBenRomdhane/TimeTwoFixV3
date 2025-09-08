@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TimeTwoFix.Application.WorkOrderService.Dtos
+﻿namespace TimeTwoFix.Application.WorkOrderService.Dtos
 {
     public class UpdateWorkOrderDto
     {
