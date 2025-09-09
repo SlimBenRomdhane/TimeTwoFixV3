@@ -1,4 +1,4 @@
-﻿@model TimeTwoFix.Web.Models.SparePartModels.CreateSparePartViewModel
+﻿@model TimeTwoFix.Web.Models.SparePartCategoryModel.CreateSparePartCategoryViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -6,25 +6,12 @@
 
 <h1>Create</h1>
 
-<h4>CreateSparePartViewModel</h4>
+<h4>CreateSparePartCategoryViewModel</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="SparePartCategoryId" class="control-label">Category</label>
-                <select asp-for="SparePartCategoryId" class="form-control" asp-items="ViewBag.Categories">
-                    <option value="">-- Select Category --</option>
-                </select>
-                <span asp-validation-for="SparePartCategoryId" class="text-danger"></span>
-            </div>
-            
-            <div class="form-group">
-                <label asp-for="PartCode" class="control-label"></label>
-                <input asp-for="PartCode" class="form-control" />
-                <span asp-validation-for="PartCode" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -35,7 +22,11 @@
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            
+            <div class="form-group">
+                <label asp-for="notes" class="control-label"></label>
+                <input asp-for="notes" class="form-control" />
+                <span asp-validation-for="notes" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

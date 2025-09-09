@@ -13,5 +13,6 @@ namespace TimeTwoFix.Application.ProviderServices.Dtos
         public string Address { get; set; }
         public string RIB { get; set; }
         public string FiscalId { get; set; }
+        public string? Notes { get; set; }
     }
 }

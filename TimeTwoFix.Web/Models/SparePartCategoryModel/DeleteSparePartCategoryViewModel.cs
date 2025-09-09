@@ -1,8 +1,6 @@
-﻿using TimeTwoFix.Application.Base;
-
-namespace TimeTwoFix.Application.SparePartCategoryServices.Dtos
+﻿namespace TimeTwoFix.Web.Models.SparePartCategoryModel
 {
-    public class ReadSparePartCategoryDto : AuditClass
+    public class DeleteSparePartCategoryViewModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

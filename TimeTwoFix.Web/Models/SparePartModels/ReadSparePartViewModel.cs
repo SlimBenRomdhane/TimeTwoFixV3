@@ -3,6 +3,7 @@
     public class ReadSparePartViewModel
     {
         public int Id { get; set; }
+        public int SparePartCategoryId { get; set; }
         public string PartCode { get; set; }
         public string Name { get; set; }
 

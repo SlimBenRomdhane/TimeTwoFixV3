@@ -11,7 +11,8 @@
         public string Address { get; set; }
         public string RIB { get; set; }
         public string FiscalId { get; set; }
-        public DateTime DeletedAt { get; set; }
+        public string? Notes { get; set; }
+        public DateTime DeletedAt { get; set; } = DateTime.Now;
         string? DeletedBy { get; set; }
     }
 }

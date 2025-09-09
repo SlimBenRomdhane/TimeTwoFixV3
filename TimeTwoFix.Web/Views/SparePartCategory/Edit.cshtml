@@ -1,29 +1,21 @@
-﻿@model TimeTwoFix.Web.Models.SparePartModels.CreateSparePartViewModel
+﻿@model TimeTwoFix.Web.Models.SparePartCategoryModel.UpdateSparePartCategoryViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Edit";
 }
 
-<h1>Create</h1>
+<h1>Edit</h1>
 
-<h4>CreateSparePartViewModel</h4>
+<h4>UpdateSparePartCategoryViewModel</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="SparePartCategoryId" class="control-label">Category</label>
-                <select asp-for="SparePartCategoryId" class="form-control" asp-items="ViewBag.Categories">
-                    <option value="">-- Select Category --</option>
-                </select>
-                <span asp-validation-for="SparePartCategoryId" class="text-danger"></span>
-            </div>
-            
-            <div class="form-group">
-                <label asp-for="PartCode" class="control-label"></label>
-                <input asp-for="PartCode" class="form-control" />
-                <span asp-validation-for="PartCode" class="text-danger"></span>
+                <label asp-for="Id" class="control-label"></label>
+                <input asp-for="Id" class="form-control" />
+                <span asp-validation-for="Id" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -35,9 +27,13 @@
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <label asp-for="Notes" class="control-label"></label>
+                <input asp-for="Notes" class="form-control" />
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>
     </div>

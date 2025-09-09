@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace TimeTwoFix.Web.Models.SparePartModels
 {
     public class CreateSparePartViewModel
     {
+        public int SparePartCategoryId { get; set; }
         [Required]
         [MaxLength(50)]
         public string PartCode { get; set; }
@@ -15,9 +17,5 @@ namespace TimeTwoFix.Web.Models.SparePartModels
         [MaxLength(255)]
         public string Description { get; set; }
 
-        public decimal UnitPrice { get; set; }
-
-        [Range(0, int.MaxValue, ErrorMessage = "Quantity must be a non-negative number.")]
-        public int QuantityInStock { get; set; }
     }
 }

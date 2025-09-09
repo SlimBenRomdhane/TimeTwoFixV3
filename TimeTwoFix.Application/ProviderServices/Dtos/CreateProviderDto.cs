@@ -10,7 +10,8 @@
         public string Address { get; set; }
         public string RIB { get; set; }
         public string FiscalId { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public string? Notes { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         string? CreatedBy { get; set; }
     }
 }

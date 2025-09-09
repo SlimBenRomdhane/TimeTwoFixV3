@@ -7,11 +7,11 @@ namespace TimeTwoFix.Core.Entities.SparePartManagement
     {
         [Required]
         [MaxLength(100)]
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         [Required]
         [MaxLength(255)]
-        public string Description { get; set; }
+        public required string Description { get; set; }
 
         public ICollection<SparePart>? SpareParts { get; set; }
     }
