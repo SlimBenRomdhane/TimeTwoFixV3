@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TimeTwoFix.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using TimeTwoFix.Infrastructure.Persistence;
 namespace TimeTwoFix.Infrastructure.Migrations
 {
     [DbContext(typeof(TimeTwoFixDbContext))]
-    partial class TimeTwoFixDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250910224615_upDateStockIncreaseTable")]
+    partial class upDateStockIncreaseTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

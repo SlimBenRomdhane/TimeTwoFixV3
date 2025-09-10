@@ -1,0 +1,78 @@
+﻿@model TimeTwoFix.Web.Models.ProviderSparePartModels.UpdateProviderSparePartViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>UpdateProviderSparePartViewModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Id" class="control-label"></label>
+                <input asp-for="Id" class="form-control" />
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProviderId" class="control-label"></label>
+                <input asp-for="ProviderId" class="form-control" />
+                <span asp-validation-for="ProviderId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SparePartId" class="control-label"></label>
+                <input asp-for="SparePartId" class="form-control" />
+                <span asp-validation-for="SparePartId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DeliveryReceipt" class="control-label"></label>
+                <input asp-for="DeliveryReceipt" class="form-control" />
+                <span asp-validation-for="DeliveryReceipt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QuantityReceived" class="control-label"></label>
+                <input asp-for="QuantityReceived" class="form-control" />
+                <span asp-validation-for="QuantityReceived" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateReceived" class="control-label"></label>
+                <input asp-for="DateReceived" class="form-control" />
+                <span asp-validation-for="DateReceived" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UnitPriceAtPurchase" class="control-label"></label>
+                <input asp-for="UnitPriceAtPurchase" class="form-control" />
+                <span asp-validation-for="UnitPriceAtPurchase" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Discount" class="control-label"></label>
+                <input asp-for="Discount" class="form-control" />
+                <span asp-validation-for="Discount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VAT" class="control-label"></label>
+                <input asp-for="VAT" class="form-control" />
+                <span asp-validation-for="VAT" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Margin" class="control-label"></label>
+                <input asp-for="Margin" class="form-control" />
+                <span asp-validation-for="Margin" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

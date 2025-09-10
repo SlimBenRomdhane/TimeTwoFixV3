@@ -13,14 +13,14 @@ namespace TimeTwoFix.Application.VehicleServices.Services
         {
         }
 
-        public async Task<ReadVehicleDto> GetVehicleByVin(string vin)
+        public async Task<IEnumerable<ReadVehicleDto>> GetVehicleByVin(string vin)
         {
             var vehicle = await _unitOfWork.Vehicles.GetVehiculeByVinAsync(vin);
             if (vehicle == null)
             {
                 throw new Exception("Vehicle not found");
             }
-            var readVehicleDto = _mapper.Map<ReadVehicleDto>(vehicle);
+            var readVehicleDto = _mapper.Map<IEnumerable<ReadVehicleDto>>(vehicle);
             return readVehicleDto;
         }
 

@@ -18,5 +18,22 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.SparePartManagement
                 .ToListAsync();
             return sparePartCategories;
         }
+
+        public async Task<IEnumerable<SparePartCategoryWithUsage>> GetSparePartCategoryWithUsageAsync()
+        {
+            var categWithUsage = await _context.SparePartCategories
+                .Select(c => new SparePartCategoryWithUsage
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Description = c.Description,
+                    UsageCount = c.SpareParts.Count(sp => !sp.IsDeleted) // Count only non-deleted spare parts
+                })
+                .OrderBy(sp => sp.UsageCount)
+                .ThenBy(sp => sp.Name)
+                .ToListAsync();
+            return categWithUsage;
+
+        }
     }
 }

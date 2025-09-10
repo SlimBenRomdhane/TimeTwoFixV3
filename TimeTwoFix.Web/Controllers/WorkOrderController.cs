@@ -7,6 +7,7 @@ using TimeTwoFix.Application.VehicleServices.Interfaces;
 using TimeTwoFix.Application.WorkOrderService.Dtos;
 using TimeTwoFix.Application.WorkOrderService.Interfaces;
 using TimeTwoFix.Core.Entities.WorkOrderManagement;
+using TimeTwoFix.Web.Models.VehicleModels;
 using TimeTwoFix.Web.Models.WorkOrderModels;
 
 namespace TimeTwoFix.Web.Controllers
@@ -225,6 +226,24 @@ namespace TimeTwoFix.Web.Controllers
             {
                 return View(deleteWorkOrderViewModel);
             }
+        }
+        [HttpGet]
+        public async Task<IActionResult> SearchVehicles(string term)
+        {
+            if (string.IsNullOrWhiteSpace(term) || term.Length < 2)
+                return Json(new List<object>());
+
+            var results = await _vehicleService.GetVehicleByVin(term);
+            var resultViewModel = _mapper.Map<IEnumerable<ReadVehicleViewModel>>(results);
+
+            var response = resultViewModel.Select(v => new
+            {
+                id = v.Id,
+                vin = v.Vin,
+
+            });
+
+            return Json(response);
         }
     }
 }

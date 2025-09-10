@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using TimeTwoFix.Application.SparePartCategoryServices.Dtos;
 using TimeTwoFix.Web.Models.SparePartCategoryModel;
+using TimeTwoFix.Web.Models.SparePartModels;
 
 namespace TimeTwoFix.Web.Mapping
 {
@@ -12,6 +13,7 @@ namespace TimeTwoFix.Web.Mapping
             CreateMap<CreateSparePartCategoryDto, CreateSparePartCategoryViewModel>().ReverseMap();
             CreateMap<UpdateSparePartCategoryDto, UpdateSparePartCategoryViewModel>().ReverseMap();
             CreateMap<DeleteSparePartCategoryDto, DeleteSparePartCategoryViewModel>().ReverseMap();
+            CreateMap<SparePartCategoryWithUsageDto, CategoryDropdownItem>().ReverseMap();
         }
     }
 }

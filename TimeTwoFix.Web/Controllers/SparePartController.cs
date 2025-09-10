@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using TimeTwoFix.Application.SparePartCategoryServices.Dtos;
 using TimeTwoFix.Application.SparePartCategoryServices.Interfaces;
 using TimeTwoFix.Application.SparePartServices.Dtos;
 using TimeTwoFix.Application.SparePartServices.Interfaces;
@@ -22,12 +23,16 @@ namespace TimeTwoFix.Web.Controllers
             _sparePartCategoryService = sparePartCategoryService;
         }
 
+        [HttpGet]
         public override async Task<ActionResult> Create()
         {
-            var sparePartCategories = (await _sparePartCategoryService.GetAllAsyncServiceGeneric()).Where(c => !c.IsDeleted);
-            ViewBag.Categories = new SelectList(sparePartCategories, "Id", "Name");
+            //var sparePartCategories = (await _sparePartCategoryService.GetAllAsyncServiceGeneric()).Where(c => !c.IsDeleted);
+            //ViewBag.Categories = new SelectList(sparePartCategories, "Id", "Name");
             return View();
+
         }
+
+
         [HttpPost]
         public override async Task<IActionResult> Create(CreateSparePartViewModel viewModel)
         {
@@ -60,5 +65,23 @@ namespace TimeTwoFix.Web.Controllers
                 return View(viewModel);
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> SearchCategories(string term)
+        {
+            if (string.IsNullOrWhiteSpace(term) || term.Length < 2)
+            {
+                return Json(new List<object>());
+            }
+            var results = await _sparePartCategoryService.GetSparePartCategoryByNameAsync(term);
+            var resultViewModels = _mapper.Map<IEnumerable<ReadSparePartCategoryDto>>(results);
+            return Json(resultViewModels.Select(c => new
+            {
+                id = c.Id,
+                name = c.Name,
+                description = c.Description
+            }));
+        }
+
     }
 }

@@ -6,5 +6,6 @@ namespace TimeTwoFix.Core.Interfaces.Repositories.SparePartManagement
     public interface ISparePartCategoryRepository : IBaseRepository<SparePartCategory>
     {
         Task<IEnumerable<SparePartCategory>> GetSparePartCategoryByNameAsync(string name);
+        Task<IEnumerable<SparePartCategoryWithUsage>> GetSparePartCategoryWithUsageAsync();
     }
 }

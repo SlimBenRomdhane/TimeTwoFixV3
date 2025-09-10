@@ -7,7 +7,7 @@ namespace TimeTwoFix.Core.Interfaces.Repositories.VehicleManagement
     {
         Task<Vehicle?> GetVehicleByLicensePlateAsync(string licensePlate);
 
-        Task<Vehicle?> GetVehiculeByVinAsync(string vin);
+        Task<IEnumerable<Vehicle?>> GetVehiculeByVinAsync(string vin);
 
         Task<IEnumerable<Vehicle>> GetVehiclesByYearsRangeAsync(int startYear, int endYear);
 

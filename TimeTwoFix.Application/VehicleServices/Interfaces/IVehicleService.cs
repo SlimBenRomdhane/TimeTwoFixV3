@@ -9,6 +9,6 @@ namespace TimeTwoFix.Application.VehicleServices.Interfaces
         Task<IEnumerable<ReadVehicleDto>> GetVehiclesByMultipleParam(string brand, string model,
             string fuelType, string transmissionType);
 
-        Task<ReadVehicleDto> GetVehicleByVin(string vin);
+        Task<IEnumerable<ReadVehicleDto>> GetVehicleByVin(string vin);
     }
 }

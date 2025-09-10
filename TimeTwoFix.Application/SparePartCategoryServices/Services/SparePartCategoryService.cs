@@ -22,5 +22,12 @@ namespace TimeTwoFix.Application.SparePartCategoryServices.Services
             }
             return _mapper.Map<IEnumerable<ReadSparePartCategoryDto>>(categories);
         }
+
+        public async Task<IEnumerable<SparePartCategoryWithUsageDto>> GetSparePartCategoryWithUsageAsync()
+        {
+            var categoriesWithUsage = await _unitOfWork.SparePartCategories.GetSparePartCategoryWithUsageAsync();
+            var dtoList = _mapper.Map<IEnumerable<SparePartCategoryWithUsageDto>>(categoriesWithUsage);
+            return dtoList;
+        }
     }
 }

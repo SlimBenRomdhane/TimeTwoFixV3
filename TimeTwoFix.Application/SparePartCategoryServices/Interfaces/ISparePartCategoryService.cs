@@ -8,5 +8,6 @@ namespace TimeTwoFix.Application.SparePartCategoryServices.Interfaces
     {
         // Additional methods specific to SparePartCategory can be added here
         Task<IEnumerable<ReadSparePartCategoryDto>> GetSparePartCategoryByNameAsync(string categoryName);
+        Task<IEnumerable<SparePartCategoryWithUsageDto>> GetSparePartCategoryWithUsageAsync();
     }
 }

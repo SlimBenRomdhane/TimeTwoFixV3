@@ -11,12 +11,12 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.VehicleManagement
         {
         }
 
-        public async Task<Vehicle?> GetVehiculeByVinAsync(string vin)
-        {
-            var vehicle = await _context.Vehicles
-                .FirstOrDefaultAsync(v => v.Vin == vin);
-            return vehicle;
-        }
+        //public async Task<Vehicle?> GetVehiculeByVinAsync(string vin)
+        //{
+        //    var vehicle = await _context.Vehicles
+        //        .FirstOrDefaultAsync(v => v.Vin == vin);
+        //    return vehicle;
+        //}
 
         public async Task<Vehicle?> GetVehicleByLicensePlateAsync(string licensePlate)
         {
@@ -62,6 +62,14 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.VehicleManagement
                 query = query.Where(v => v.TransmissionType.Contains(transmissionType));
             }
             return await query.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Vehicle?>> GetVehiculeByVinAsync(string vin)
+        {
+            var vehicles = await _context.Vehicles
+                .Where(v => v.Vin.Contains(vin))
+                .ToListAsync();
+            return vehicles;
         }
     }
 }
