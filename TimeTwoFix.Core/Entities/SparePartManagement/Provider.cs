@@ -7,22 +7,30 @@ namespace TimeTwoFix.Core.Entities.SparePartManagement
     {
         [Required]
         [MaxLength(100)]
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         [Required]
         [MaxLength(255)]
         [EmailAddress]
-        public string ContactEmail { get; set; }
+        public required string ContactEmail { get; set; }
 
         [Required]
         [MaxLength(20)]
-        public string MobileContactPhone { get; set; }
+        public required string MobileContactPhone { get; set; }
 
-        public string LandContactPhone { get; set; }
-        public string Fax { get; set; }
-        public string Address { get; set; }
-        public string RIB { get; set; }
-        public string FiscalId { get; set; }
+        public string? LandContactPhone { get; set; }
+        public string? Fax { get; set; }
+        [Required]
+        [MaxLength(255)]
+        public required string Address { get; set; }
+        [Required]
+        [MaxLength(100)]
+        public required string RIB { get; set; }
+        [Required]
+        [MaxLength(100)]
+        public required string FiscalId { get; set; }
+
+        //Alimentation stock
         public ICollection<ProviderSparePart>? ProviderSpareParts { get; set; }
     }
 }

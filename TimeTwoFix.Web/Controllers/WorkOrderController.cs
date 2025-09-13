@@ -29,7 +29,12 @@ namespace TimeTwoFix.Web.Controllers
         // GET: WorkOrderController
         public async Task<ActionResult> Index()
         {
-            var workOrders = await _workOrderService.GetAllWithIncludesAsyncServiceGeneric(wo => wo.Vehicle, wo => wo.Interventions);
+            //var workOrders = await _workOrderService.GetAllWithIncludesAsyncServiceGeneric(wo => wo.Vehicle, wo => wo.Interventions);
+            var workOrders = await _workOrderService.GetAllWithIncludesAsyncServiceGeneric(includeBuilder: query => query
+            .Include(wo => wo.Vehicle)
+            .Include(wo => wo.Interventions).ThenInclude(inter => inter.InterventionSpareParts).ThenInclude(isp => isp.SparePart)
+
+            );
             if (workOrders == null || !workOrders.Any())
             {
                 TempData["WorkOrderError"] = "No WorkOrder found in the database";
@@ -44,6 +49,7 @@ namespace TimeTwoFix.Web.Controllers
             await _workOrderService.SaveChangesServiceGeneric();
             var workOrderDtos = _mapper.Map<IEnumerable<ReadWorkOrderDto>>(workOrders);
             var workOrderViewModels = _mapper.Map<IEnumerable<ReadWorkOrderViewModel>>(workOrderDtos);
+
             return View(workOrderViewModels);
         }
 

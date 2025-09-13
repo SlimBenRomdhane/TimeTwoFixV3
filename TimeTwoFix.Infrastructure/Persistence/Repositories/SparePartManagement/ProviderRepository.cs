@@ -18,5 +18,13 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.SparePartManagement
                 .FirstOrDefaultAsync();
             return provider;
         }
+
+        public async Task<IEnumerable<Provider>> GetProviderByNameAsync(string name)
+        {
+            var providers = await _context.Providers
+                .Where(p => p.Name.Contains(name))
+                .ToListAsync();
+            return providers;
+        }
     }
 }

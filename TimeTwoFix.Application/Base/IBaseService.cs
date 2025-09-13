@@ -24,7 +24,7 @@ namespace TimeTwoFix.Application.Base
 
         Task<int> CountAsyncServiceGeneric();
 
-        Task<IEnumerable<T>> GetAllWithIncludesAsyncServiceGeneric(params Expression<Func<T, object>>[] includeProperties);
+        Task<IEnumerable<T>> GetAllWithIncludesAsyncServiceGeneric(Func<IQueryable<T>, IQueryable<T>>? includeBuilder = null, params Expression<Func<T, object>>[] includeProperties);
 
         Task<IReadOnlyList<GroupCount<TKey>>> GroupCountAsynServiceGeneric<TKey>(Expression<Func<T, TKey>> groupByExpression);
 
@@ -37,5 +37,7 @@ namespace TimeTwoFix.Application.Base
             Expression<Func<T, object>>[] includes = null);
 
         Task<int> GetCountByPredicateAsyncServiceGeneric(Expression<Func<T, bool>> predicate);
+        Task<IEnumerable<T>> GetByTextServiceGeneric(string text);
+
     }
 }

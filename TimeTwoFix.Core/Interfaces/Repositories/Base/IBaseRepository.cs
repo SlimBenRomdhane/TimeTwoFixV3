@@ -19,8 +19,8 @@ namespace TimeTwoFix.Core.Interfaces.Repositories.Base
         Task AttachAsyncGeneric(T entity, EntityState entityState);
 
         Task DetachAsyncGeneric(T entity);
-
-        Task<IEnumerable<T>> GetAllWithIncludesAsyncGeneric(params Expression<Func<T, object>>[] includeProperties);
+        Task<IEnumerable<T>> GetByTextAsyncGeneric(string text);
+        Task<IEnumerable<T>> GetAllWithIncludesAsyncGeneric(Func<IQueryable<T>, IQueryable<T>>? includeBuilder = null, params Expression<Func<T, object>>[] includeProperties);
 
         Task<IReadOnlyList<GroupCount<TKey>>> GroupCountAsynGeneric<TKey>(Expression<Func<T, TKey>> groupByExpression);
 

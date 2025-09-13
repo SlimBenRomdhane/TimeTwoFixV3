@@ -29,7 +29,7 @@ namespace TimeTwoFix.Web.Controllers
         {
             // Example: Fetching all provided services
             //var services = await _providedServiceService.GetAllAsyncServiceGeneric();
-            var services = await _providedServiceService.GetAllWithIncludesAsyncServiceGeneric(s => s.Category);
+            var services = await _providedServiceService.GetAllWithIncludesAsyncServiceGeneric(null, s => s.Category);
 
             var activeServices = services.Where(s => !s.IsDeleted);
             if (activeServices == null || !activeServices.Any())

@@ -84,7 +84,7 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script>
-                let debounceTimer;
+        let debounceTimer;
 
         document.getElementById("categorySearchInput").addEventListener("input", function () {
             clearTimeout(debounceTimer);
@@ -93,11 +93,18 @@
             if (term.length < 2) return;
 
             debounceTimer = setTimeout(async () => {
+                const container = document.getElementById("categoryResults");
+                container.innerHTML = `<div class="text-muted">Searching...</div>`;
+
                 const response = await fetch(`/SparePart/SearchCategories?term=${encodeURIComponent(term)}`);
                 const results = await response.json();
 
-                const container = document.getElementById("categoryResults");
-                container.innerHTML = "";
+                container.innerHTML = ""; // Clear loading message
+
+                if (results.length === 0) {
+                    container.innerHTML = `<div class="alert alert-warning">No categories found matching "<strong>${term}</strong>".</div>`;
+                    return;
+                }
 
                 results.forEach(c => {
                     const btn = document.createElement("button");

@@ -22,7 +22,6 @@ namespace TimeTwoFix.Web.Models.SparePartModels
         [Display(Name = "Description")]
         [MaxLength(255, ErrorMessage = "Description cannot exceed 255 characters")]
         public string Description { get; set; }
-        public List<CategoryDropdownItem> AvailableCategories { get; set; } = new();
 
     }
 }

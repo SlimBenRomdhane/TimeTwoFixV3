@@ -15,14 +15,13 @@ namespace TimeTwoFix.Core.Entities.SparePartManagement
         public int SparePartId { get; set; }
 
         [Required]
-        [Range(1, 10)]
+        [Range(1, int.MaxValue)]
         public int Quantity { get; set; }
 
         //Bon de sortie
         [Required]
         [MaxLength(50)]
-        public string DeliveryNote { get; set; }
-
+        public required string DeliveryNote { get; set; }
         public Intervention Intervention { get; set; }
         public SparePart SparePart { get; set; }
     }

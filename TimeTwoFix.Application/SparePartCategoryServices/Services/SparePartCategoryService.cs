@@ -18,7 +18,8 @@ namespace TimeTwoFix.Application.SparePartCategoryServices.Services
             var categories = await _unitOfWork.SparePartCategories.GetSparePartCategoryByNameAsync(categoryName);
             if (categories == null || !categories.Any())
             {
-                throw new KeyNotFoundException($"No spare part categories found with the name '{categoryName}'.");
+                return new List<ReadSparePartCategoryDto>();
+
             }
             return _mapper.Map<IEnumerable<ReadSparePartCategoryDto>>(categories);
         }

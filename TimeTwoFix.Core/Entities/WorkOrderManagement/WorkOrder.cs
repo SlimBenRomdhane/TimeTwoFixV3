@@ -57,16 +57,16 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
                 {
                     total += intervention.InterventionPrice;
 
-                    //if (intervention.InterventionSpareParts != null)
-                    //{
-                    //    foreach (var part in intervention.InterventionSpareParts)
-                    //    {
-                    //        if (part.SparePart != null)
-                    //        {
-                    //            total += part.Quantity * part.SparePart.Price;
-                    //        }
-                    //    }
-                    //}
+                    if (intervention.InterventionSpareParts != null)
+                    {
+                        foreach (var part in intervention.InterventionSpareParts)
+                        {
+                            if (part.SparePart != null)
+                            {
+                                total += part.Quantity * part.SparePart.UnitPrice;
+                            }
+                        }
+                    }
                 }
             }
 

@@ -1,7 +1,5 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using TimeTwoFix.Application.Base;
 using TimeTwoFix.Application.ProviderServices.Dtos;
 using TimeTwoFix.Application.ProviderServices.Interfaces;
 using TimeTwoFix.Core.Entities.SparePartManagement;
@@ -17,6 +15,25 @@ namespace TimeTwoFix.Web.Controllers
         public ProviderController(IProviderService serviceProvider, IMapper mapper) : base(serviceProvider, mapper)
         {
             _serviceProvider = serviceProvider;
+        }
+        [HttpGet]
+        public async Task<IActionResult> SearchProviders(string term)
+        {
+            if (string.IsNullOrWhiteSpace(term) || term.Length < 2)
+            {
+                return Json(new List<object>());
+            }
+
+            var results = await _serviceProvider.GetProviderByNameAsync(term);
+            var viewModels = _mapper.Map<IEnumerable<ReadProviderViewModel>>(results);
+
+            var response = viewModels.Select(p => new
+            {
+                id = p.Id,
+                name = p.Name
+            });
+
+            return Json(response);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.ComponentModel.DataAnnotations;
+using TimeTwoFix.Web.Models.SparePartCategoryModel;
 
 namespace TimeTwoFix.Web.Models.SparePartModels
 {
@@ -9,6 +11,8 @@ namespace TimeTwoFix.Web.Models.SparePartModels
         [Display(Name = "Category")]
         [Required(ErrorMessage = "Please select a category")]
         public int SparePartCategoryId { get; set; } // ← FIXED: Was missing!
+        [BindNever]
+        public ReadSparePartCategoryViewModel CategoryViewModel { get; set; }
 
         [Display(Name = "Part Code")]
         [Required(ErrorMessage = "Part code is required")]
@@ -22,7 +26,7 @@ namespace TimeTwoFix.Web.Models.SparePartModels
 
         [Display(Name = "Description")]
         [MaxLength(255, ErrorMessage = "Description cannot exceed 255 characters")]
-        public string Description { get; set; }
-        public List<CategoryDropdownItem> AvailableCategories { get; set; } = new();
+        public string? Description { get; set; }
+
     }
 }

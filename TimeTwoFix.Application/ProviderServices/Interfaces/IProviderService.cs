@@ -7,5 +7,6 @@ namespace TimeTwoFix.Application.ProviderServices.Interfaces
     public interface IProviderService : IBaseService<Provider>
     {
         Task<ReadProviderDto> GetProviderByFiscalIdAsync(string fiscalId);
+        Task<IEnumerable<ReadProviderDto>> GetProviderByNameAsync(string name);
     }
 }

@@ -8,10 +8,17 @@ namespace TimeTwoFix.Application.SparePartServices.Mapping
     {
         public SparePartProfileMappingApplication()
         {
-            CreateMap<SparePart, CreateSparePartDto>().ReverseMap();
-            CreateMap<SparePart, ReadSparePartDto>().ReverseMap();
-            CreateMap<SparePart, UpdateSparePartDto>().ReverseMap();
-            CreateMap<SparePart, DeleteSparePartDto>().ReverseMap();
+            CreateMap<SparePart, CreateSparePartDto>()
+                .ReverseMap();
+            CreateMap<SparePart, ReadSparePartDto>()
+                .ForMember(dest => dest.CategoryDto, opt => opt.MapFrom(src => src.SparePartCategory))
+                .ReverseMap();
+            CreateMap<SparePart, UpdateSparePartDto>()
+                .ForMember(dest => dest.CategoryDto, opt => opt.MapFrom(src => src.SparePartCategory))
+                .ReverseMap();
+            CreateMap<SparePart, DeleteSparePartDto>()
+                .ForMember(dest => dest.CategoryDto, opt => opt.MapFrom(src => src.SparePartCategory))
+                .ReverseMap();
         }
     }
 }

@@ -43,12 +43,16 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.Base
             return await _dbSet.ToListAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAllWithIncludesAsyncGeneric(params Expression<Func<T, object>>[] includeProperties)
+        public async Task<IEnumerable<T>> GetAllWithIncludesAsyncGeneric(Func<IQueryable<T>, IQueryable<T>>? includeBuilder = null, params Expression<Func<T, object>>[] includeProperties)
         {
             IQueryable<T> query = _dbSet;
             foreach (var includeProperty in includeProperties)
             {
                 query = query.Include(includeProperty);
+            }
+            if (includeBuilder != null)
+            {
+                query = includeBuilder(query);
             }
             return await query.ToListAsync();
         }
@@ -70,6 +74,17 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.Base
 
             var res = await query.AsNoTracking().FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
             return res;
+        }
+
+        public async Task<IEnumerable<T>> GetByTextAsyncGeneric(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return Enumerable.Empty<T>();
+
+            return await _context.Set<T>()
+                .AsNoTracking()
+                .Where(e => EF.Property<string>(e, "Name").Contains(text))
+                .ToListAsync();
         }
 
         public Task<int> GetCountByPredicateAsync(Expression<Func<T, bool>> predicate)

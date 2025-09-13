@@ -95,14 +95,14 @@ namespace TimeTwoFix.Application.Base
         public async Task<IEnumerable<T>> GetAllWithDynamicIncludesGeneric()
         {
             var includes = EntityIncludeHelper.GetIncludes<T>();
-            var entities = await _baseRepository.GetAllWithIncludesAsyncGeneric(includes);
+            var entities = await _baseRepository.GetAllWithIncludesAsyncGeneric(null, includes);
             return entities ?? Enumerable.Empty<T>();
         }
 
         // Retrieves all entities with included related properties
-        public async Task<IEnumerable<T>> GetAllWithIncludesAsyncServiceGeneric(params Expression<Func<T, object>>[] includeProperties)
+        public async Task<IEnumerable<T>> GetAllWithIncludesAsyncServiceGeneric(Func<IQueryable<T>, IQueryable<T>>? includeBuilder = null, params Expression<Func<T, object>>[] includeProperties)
         {
-            var entities = await _baseRepository.GetAllWithIncludesAsyncGeneric(includeProperties);
+            var entities = await _baseRepository.GetAllWithIncludesAsyncGeneric(includeBuilder, includeProperties);
             return entities ?? Enumerable.Empty<T>();
         }
 
@@ -110,6 +110,12 @@ namespace TimeTwoFix.Application.Base
         public async Task<T?> GetByIdAsyncServiceGeneric(int id, Func<IQueryable<T>, IQueryable<T>>? includeBuilder = null, params Expression<Func<T, object>>[] includeProperties)
         {
             return await _baseRepository.GetByIdAsyncGeneric(id, includeBuilder, includeProperties);
+        }
+
+        public async Task<IEnumerable<T>> GetByTextServiceGeneric(string text)
+        {
+            var res = await _baseRepository.GetByTextAsyncGeneric(text);
+            return res;
         }
 
         public Task<int> GetCountByPredicateAsyncServiceGeneric(Expression<Func<T, bool>> predicate)

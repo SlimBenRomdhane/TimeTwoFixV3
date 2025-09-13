@@ -37,6 +37,13 @@
                 <h5 class="text-secondary fw-semibold mb-3">
                     <i class="bi bi-truck me-2"></i> Owned Vehicles
                 </h5>
+                <a asp-controller="Vehicle"
+                   asp-action="CreateByClientId"
+                   asp-route-clientId="@Model.Id"
+                   class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-plus-circle me-1"></i> Add Vehicle
+                </a>
+
                 @if (Model.Vehicles != null && Model.Vehicles.Any())
                 {
                     <table class="table table-hover align-middle mb-0">
@@ -86,6 +93,8 @@
                     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-warning btn-lg">
                         <i class="bi bi-pencil-square me-2"></i> Edit Client
                     </a>
+                    
+
                 </div>
             </div>
         </div>

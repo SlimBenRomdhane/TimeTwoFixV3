@@ -6,5 +6,6 @@ namespace TimeTwoFix.Core.Interfaces.Repositories.SparePartManagement
     public interface IProviderRepository : IBaseRepository<Provider>
     {
         Task<Provider> GetProviderByFiscalIdAsync(string fiscalId);
+        Task<IEnumerable<Provider>> GetProviderByNameAsync(string name);
     }
 }

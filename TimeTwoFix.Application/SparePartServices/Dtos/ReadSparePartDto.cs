@@ -1,9 +1,12 @@
-﻿namespace TimeTwoFix.Application.SparePartServices.Dtos
+﻿using TimeTwoFix.Application.SparePartCategoryServices.Dtos;
+
+namespace TimeTwoFix.Application.SparePartServices.Dtos
 {
     public class ReadSparePartDto
     {
         public int Id { get; set; }
         public int SparePartCategoryId { get; set; }
+        public ReadSparePartCategoryDto CategoryDto { get; set; }
         public string PartCode { get; set; }
         public string Name { get; set; }
 

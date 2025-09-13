@@ -23,5 +23,15 @@ namespace TimeTwoFix.Application.ProviderServices.Services
             var readProviderDto = _mapper.Map<ReadProviderDto>(provider);
             return readProviderDto;
         }
+
+        public async Task<IEnumerable<ReadProviderDto>> GetProviderByNameAsync(string name)
+        {
+            var providers = await _unitOfWork.Providers.GetProviderByNameAsync(name);
+            if (providers == null)
+            {
+                return Enumerable.Empty<ReadProviderDto>();
+            }
+            return _mapper.Map<IEnumerable<ReadProviderDto>>(providers);
+        }
     }
 }

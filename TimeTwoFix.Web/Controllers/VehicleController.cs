@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Linq;
 using TimeTwoFix.Application.ClientServices.Interfaces;
 using TimeTwoFix.Application.VehicleServices.Dtos;
 using TimeTwoFix.Application.VehicleServices.Interfaces;
@@ -42,12 +43,12 @@ namespace TimeTwoFix.Web.Controllers
                     return View(Enumerable.Empty<ReadVehicleViewModel>());
                 }
 
-                var viewModel = _mapper.Map<ReadVehicleViewModel>(vehicleDto);
+                var viewModel = _mapper.Map<IEnumerable<ReadVehicleViewModel>>(vehicleDto);
                 ViewBag.TotalPages = 1;
                 ViewBag.CurrentPage = 1;
                 ViewBag.CountVehicle = 1;
 
-                return View(new List<ReadVehicleViewModel> { viewModel });
+                return View(viewModel);
             }
             else
             {
@@ -141,6 +142,10 @@ namespace TimeTwoFix.Web.Controllers
                 {
                     await _vehicleService.AddAsyncServiceGeneric(vehicle);
                     await _vehicleService.SaveChangesServiceGeneric();
+                    if ((createVehicleViewModel.ClientId > 0))
+                    {
+                        return RedirectToAction("Details", "Client", new { id = createVehicleViewModel.ClientId });
+                    }
                     return RedirectToAction(nameof(Index));
                 }
                 catch
@@ -181,7 +186,6 @@ namespace TimeTwoFix.Web.Controllers
             }, "Value", "Text");
             var vehicleDto = _mapper.Map<UpdateVehicleDto>(vehicle);
             var vehicleViewModel = _mapper.Map<UpdateVehicleViewModel>(vehicleDto);
-
             return View(vehicleViewModel);
         }
 
@@ -253,5 +257,26 @@ namespace TimeTwoFix.Web.Controllers
                 return View();
             }
         }
+
+        [HttpGet]
+        public IActionResult CreateByClientId(int clientId)
+        {
+            var model = new CreateVehicleViewModel { ClientId = clientId };
+
+            ViewBag.FuelTypes = new SelectList(new[]
+            {
+                new { Value = "Gasoline", Text = "Gasoline" },
+                new { Value = "Diesel", Text = "Diesel" },
+                new { Value = "Diesel50", Text = "Diesel 50" },
+            }, "Value", "Text");
+
+            ViewBag.TransmissionTypes = new SelectList(new[]
+            {
+                new { Value = "Manual", Text = "Manual" },
+                new { Value = "Automatic", Text = "Automatic" },
+            }, "Value", "Text");
+            return View("CreateByClientId", model);
+        }
+
     }
 }

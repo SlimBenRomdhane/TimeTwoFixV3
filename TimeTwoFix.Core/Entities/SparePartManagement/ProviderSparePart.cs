@@ -14,7 +14,7 @@ namespace TimeTwoFix.Core.Entities.SparePartManagement
         public int SparePartId { get; set; }
 
         [Required]
-        public string DeliveryReceipt { get; set; }
+        public required string DeliveryReceipt { get; set; }
 
         public int QuantityReceived { get; set; }
         public DateTime DateReceived { get; set; }

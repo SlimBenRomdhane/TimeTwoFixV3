@@ -9,9 +9,16 @@ namespace TimeTwoFix.Web.Mapping
         public SparePartProfileMapping()
         {
             CreateMap<CreateSparePartDto, CreateSparePartViewModel>().ReverseMap();
-            CreateMap<ReadSparePartDto, ReadSparePartViewModel>().ReverseMap();
-            CreateMap<UpdateSparePartDto, UpdateSparePartViewModel>().ReverseMap();
-            CreateMap<DeleteSparePartDto, DeleteSparePartViewModel>().ReverseMap();
+            CreateMap<ReadSparePartDto, ReadSparePartViewModel>()
+
+                .ForMember(dest => dest.CategoryViewModel, opt => opt.MapFrom(src => src.CategoryDto))
+                .ReverseMap();
+            CreateMap<UpdateSparePartDto, UpdateSparePartViewModel>()
+                .ForMember(dest => dest.CategoryViewModel, opt => opt.MapFrom(src => src.CategoryDto))
+                .ReverseMap();
+            CreateMap<DeleteSparePartDto, DeleteSparePartViewModel>()
+                .ForMember(dest => dest.CategoryViewModel, opt => opt.MapFrom(src => src.CategoryDto))
+                .ReverseMap();
         }
     }
 }
