@@ -148,7 +148,8 @@ namespace TimeTwoFix.Web.Controllers
                 var addedElement = await _clientServices.AddAsyncServiceGeneric(client);
                 TempData["SuccessMessage"] = $"Client '{client.FirstName}' '{client.LastName}' created successfully.";
 
-                return RedirectToAction(nameof(Index));
+                //return RedirectToAction(nameof(Index));
+                return RedirectToAction("CreateByClientId", "Vehicle", new { clientId = addedElement.Id });
             }
             catch (Exception ex)
             {

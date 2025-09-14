@@ -1,6 +1,167 @@
-﻿@{
+﻿@* @{
     ViewData["Title"] = "Privacy Policy";
 }
 <h1>@ViewData["Title"]</h1>
 
 <p>Use this page to detail your site's privacy policy.</p>
+ *@
+@* Work Order Summary *@
+<div class="container mt-4">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Work Order Summary</h2>
+        <p class="text-muted">WO-2025-0042</p>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <p><strong>Client:</strong> Ahmed Ben Salah</p>
+            <p><strong>Vehicle:</strong> Renault Clio – VF1ABC12345678901</p>
+        </div>
+        <div class="col-md-6 text-md-end">
+            <p><strong>Date Opened:</strong> 12 Sep 2025</p>
+            <p><strong>Date Closed:</strong> 14 Sep 2025</p>
+        </div>
+    </div>
+
+    <hr />
+
+    <!-- Intervention #56 -->
+    <div class="mb-4">
+        <h4 class="text-primary">Intervention #56 – Mehdi Trabelsi</h4>
+
+        <h6 class="mt-3">Services Performed</h6>
+        <table class="table table-bordered table-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>Description</th>
+                    <th>Duration (hrs)</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Brake Pad Replacement</td>
+                    <td>1.5</td>
+                    <td>60.00 TND</td>
+                    <td>90.00 TND</td>
+                </tr>
+                <tr>
+                    <td>Suspension Inspection</td>
+                    <td>1.0</td>
+                    <td>45.00 TND</td>
+                    <td>45.00 TND</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="fw-semibold text-end">Subtotal (Services): 135.00 TND</p>
+
+        <h6 class="mt-4">Spare Parts Used</h6>
+        <table class="table table-bordered table-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>Part Name</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Front Brake Pads</td>
+                    <td>1 set</td>
+                    <td>80.00 TND</td>
+                    <td>80.00 TND</td>
+                </tr>
+                <tr>
+                    <td>Suspension Bushing</td>
+                    <td>2</td>
+                    <td>18.00 TND</td>
+                    <td>36.00 TND</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="fw-semibold text-end">Subtotal (Spare Parts): 116.00 TND</p>
+
+        <p class="fw-bold text-end text-success">Intervention Total: 251.00 TND</p>
+    </div>
+
+    <!-- Intervention #57 -->
+    <div class="mb-4">
+        <h4 class="text-primary">Intervention #57 – Yassine Gharbi</h4>
+
+        <h6 class="mt-3">Services Performed</h6>
+        <table class="table table-bordered table-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>Description</th>
+                    <th>Duration (hrs)</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Oil Change</td>
+                    <td>0.5</td>
+                    <td>30.00 TND</td>
+                    <td>15.00 TND</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="fw-semibold text-end">Subtotal (Services): 15.00 TND</p>
+
+        <h6 class="mt-4">Spare Parts Used</h6>
+        <table class="table table-bordered table-sm">
+            <thead class="table-light">
+                <tr>
+                    <th>Part Name</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Oil Filter</td>
+                    <td>1</td>
+                    <td>25.00 TND</td>
+                    <td>25.00 TND</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="fw-semibold text-end">Subtotal (Spare Parts): 25.00 TND</p>
+
+        <p class="fw-bold text-end text-success">Intervention Total: 40.00 TND</p>
+    </div>
+
+    <hr />
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h6>Notes</h6>
+            <p>Client requested inspection of rear suspension due to noise. Brake pads replaced due to wear sensor alert. All parts OEM-grade.</p>
+        </div>
+        <div class="col-md-6 text-end">
+            <h6>Totals</h6>
+            <p><strong>Services:</strong> 150.00 TND</p>
+            <p><strong>Spare Parts:</strong> 141.00 TND</p>
+            <p class="fs-5 fw-bold text-success">Grand Total: 291.00 TND</p>
+        </div>
+    </div>
+
+    <hr />
+    <hr />
+
+    <hr />
+
+    <div class="row mt-5">
+        <div class="col-md-6">
+            <p><strong>Workshop Manager Signature:</strong> ____________________</p>
+        </div>
+    </div>
+
+    <div class="text-center mt-4 text-muted">
+        <small>All parts carry a 6-month warranty. Labor guaranteed for 30 days.</small>
+    </div>
+</div>

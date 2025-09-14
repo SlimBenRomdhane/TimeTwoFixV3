@@ -205,5 +205,23 @@ namespace TimeTwoFix.Web.Controllers
                 return View(deleteProvidedServiceViewModel);
             }
         }
+        public async Task<IActionResult> SearchProvidedServices(string searchTerm)
+        {
+            var services = (await _providedServiceService.GetAllWithIncludesAsyncServiceGeneric(null, inc => inc.Category)).Where(x => x.IsDeleted == false);
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                services = services
+                    .Where(s => s.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                             || s.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            ViewData["CurrentFilter"] = searchTerm;
+
+            var modelsDto = _mapper.Map<List<ReadProvidedServiceDto>>(services);
+            var viewModels = _mapper.Map<List<ReadProvidedServiceViewModel>>(modelsDto);
+            return View("Index", viewModels);
+        }
     }
 }

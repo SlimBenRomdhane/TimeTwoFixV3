@@ -945,7 +945,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 9, 12, 12, 15, 54, 139, DateTimeKind.Utc).AddTicks(893),
+                            CreatedAt = new DateTime(2025, 9, 13, 17, 54, 23, 45, DateTimeKind.Utc).AddTicks(3860),
                             Description = "Mechanic role with access to work orders and interventions.",
                             IsActive = true,
                             Name = "Mechanic",
@@ -955,7 +955,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 9, 12, 12, 15, 54, 139, DateTimeKind.Utc).AddTicks(899),
+                            CreatedAt = new DateTime(2025, 9, 13, 17, 54, 23, 45, DateTimeKind.Utc).AddTicks(3866),
                             Description = "Front Desk Assistant role with access to client management and appointments.",
                             IsActive = true,
                             Name = "FrontDeskAssistant",
@@ -965,7 +965,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2025, 9, 12, 12, 15, 54, 139, DateTimeKind.Utc).AddTicks(900),
+                            CreatedAt = new DateTime(2025, 9, 13, 17, 54, 23, 45, DateTimeKind.Utc).AddTicks(3867),
                             Description = "Warehouse Manager role with access to spare parts and inventory management.",
                             IsActive = true,
                             Name = "WareHouseManager",
@@ -975,7 +975,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2025, 9, 12, 12, 15, 54, 139, DateTimeKind.Utc).AddTicks(901),
+                            CreatedAt = new DateTime(2025, 9, 13, 17, 54, 23, 45, DateTimeKind.Utc).AddTicks(3868),
                             Description = "Workshop Manager role with access to workshop operations and team management.",
                             IsActive = true,
                             Name = "WorkshopManager",
@@ -985,7 +985,7 @@ namespace TimeTwoFix.Infrastructure.Migrations
                         new
                         {
                             Id = 5,
-                            CreatedAt = new DateTime(2025, 9, 12, 12, 15, 54, 139, DateTimeKind.Utc).AddTicks(903),
+                            CreatedAt = new DateTime(2025, 9, 13, 17, 54, 23, 45, DateTimeKind.Utc).AddTicks(3869),
                             Description = "General Manager role with access to all operations and management.",
                             IsActive = true,
                             Name = "GeneralManager",
@@ -1448,8 +1448,8 @@ namespace TimeTwoFix.Infrastructure.Migrations
                             Id = 1,
                             Address = "admin",
                             City = "admin",
-                            ConcurrencyStamp = "1f8375b7-63a0-4a48-b669-7ffa7d479b8c",
-                            CreatedAt = new DateTime(2025, 9, 12, 12, 15, 54, 139, DateTimeKind.Utc).AddTicks(1279),
+                            ConcurrencyStamp = "14f1dc93-3ff3-43a7-bd9c-ff0f6af9be6b",
+                            CreatedAt = new DateTime(2025, 9, 13, 17, 54, 23, 45, DateTimeKind.Utc).AddTicks(4239),
                             Email = "admin@admin.com",
                             EmailConfirmed = false,
                             FirstName = "admin",
@@ -1460,11 +1460,11 @@ namespace TimeTwoFix.Infrastructure.Migrations
                             LastName = "admin",
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEN5/bu+sldhFq06dJy9ZaanZl9mXYqtld/YNAq4PKfNNd0I0hXAkklwbynm6yXtwGQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPK95e/E1bmqF99hEPlPkLTRpm1BhTWN+BPw7zWGDFDarc5tV66YXBZOI+phC/l0CA==",
                             PhoneNumber = "99999999",
                             SecurityStamp = "00000000-0000-0000-0000-000000000000",
                             Status = "Active",
-                            UpdatedAt = new DateTime(2025, 9, 12, 12, 15, 54, 139, DateTimeKind.Utc).AddTicks(1280),
+                            UpdatedAt = new DateTime(2025, 9, 13, 17, 54, 23, 45, DateTimeKind.Utc).AddTicks(4240),
                             UserName = "admin",
                             UserType = "GeneralManager",
                             YearsOfExperience = 0,

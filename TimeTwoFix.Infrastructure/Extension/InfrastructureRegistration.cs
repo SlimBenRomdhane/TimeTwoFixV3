@@ -15,7 +15,8 @@ namespace TimeTwoFix.Infrastructure.Extension
             //DbContext Registration
             services.AddDbContext<TimeTwoFixDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-
+            //AzureStorage
+            //DefaultConnection
             //Identity Registration
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                 .AddEntityFrameworkStores<TimeTwoFixDbContext>()

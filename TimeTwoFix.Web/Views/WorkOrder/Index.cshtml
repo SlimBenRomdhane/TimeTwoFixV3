@@ -75,7 +75,10 @@
                                             <th>End</th>
                                             <th>Labor Cost</th>
                                             <th>Status</th>
+                                            <th>Paid</th>
+                                            <th>Payment Date</th>
                                             <th>Notes</th>
+
                                             <th class="text-center">Actions</th>
                                         </tr>
                                     </thead>
@@ -100,6 +103,30 @@
                                                 </td>
                                                 <td>@($"{item.TolalLaborCost:N3} TND")</td>
                                                 <td><span class="badge bg-secondary">@item.Status</span></td>
+                                                <td>
+                                                    @if (item.Paid == true)
+                                                    {
+                                                        <span class="badge bg-success">Yes</span>
+                                                    }
+                                                    else if (item.Paid == false)
+                                                    {
+                                                        <span class="badge bg-danger">No</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="badge bg-secondary">Unknown</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @if (item.PaymentDate.HasValue)
+                                                    {
+                                                        <span class="text-nowrap">@item.PaymentDate.Value.ToString("yyyy-MM-dd")</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">—</span>
+                                                    }
+                                                </td>
                                                 <td>@item.Notes</td>
                                                 <td class="text-center">
                                                     <div class="btn-group btn-group-sm" role="group" aria-label="Actions">

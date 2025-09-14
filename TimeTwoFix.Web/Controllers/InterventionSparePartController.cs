@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using TimeTwoFix.Application.InterventionService.Interfaces;
 using TimeTwoFix.Application.InterventionSparePartServices.Dtos;
 using TimeTwoFix.Application.InterventionSparePartServices.Interfaces;
 using TimeTwoFix.Application.SparePartServices.Interfaces;
 using TimeTwoFix.Application.WorkOrderService.Interfaces;
 using TimeTwoFix.Core.Common;
+using TimeTwoFix.Core.Entities.ClientManagement;
 using TimeTwoFix.Core.Entities.SparePartManagement;
 using TimeTwoFix.Web.Models.InterventionSparePartModel;
 
@@ -22,20 +25,31 @@ namespace TimeTwoFix.Web.Controllers
     {
         private readonly IInterventionSparePartService _interventionSparePartService;
         private readonly ISparePartService _sparePartService;
+        private readonly IInterventionService _interventionService;
         private readonly IWorkOrderService _workOrderService;
 
         public InterventionSparePartController(IInterventionSparePartService baseService
             , ISparePartService sparePartService
             , IWorkOrderService workOrderService
+            , IInterventionService interventionService
             , IMapper mapper) : base(baseService, mapper)
         {
             _interventionSparePartService = baseService;
             _sparePartService = sparePartService;
             _workOrderService = workOrderService;
+            _interventionService = interventionService;
         }
 
         public override async Task<ActionResult> Create()
         {
+            var interventions = await _interventionService.GetAllAsyncServiceGeneric();
+            var res = interventions.Where(c => c.IsDeleted == false && c.Status != "Completed");
+            ViewBag.ActiveIntervention = new SelectList(res.Select(c => new
+            {
+                c.Id,
+                Display = $"WO#{c.WorkOrderId} - Intervention#{c.Id}"
+
+            }), "Id", "Display");
             return await base.Create();
         }
 
