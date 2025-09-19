@@ -151,10 +151,29 @@ namespace TimeTwoFix.Web.Controllers
             var response = viewModels.Select(sp => new
             {
                 id = sp.Id,
-                name = sp.Name
+                name = sp.Name,
+                code = sp.PartCode
             });
 
             return Json(response);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> SparePartList(string searchTerm)
+        {
+            var spareParts = (await _sparePartService.GetAllAsyncServiceGeneric()).Where(sp => !sp.IsDeleted);
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                spareParts = spareParts.Where(sp =>
+                    sp.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    sp.PartCode.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                ).ToList();
+            }
+            var sparePartDtos = _mapper.Map<IEnumerable<ReadSparePartDto>>(spareParts);
+            var sparePartViewModels = _mapper.Map<IEnumerable<ReadSparePartViewModel>>(sparePartDtos);
+            ViewData["CurrentFilter"] = searchTerm;
+            return View("Index", sparePartViewModels);
         }
 
     }

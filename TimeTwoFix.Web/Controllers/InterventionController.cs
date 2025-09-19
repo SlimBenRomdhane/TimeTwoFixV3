@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using TimeTwoFix.Application.Base.BaseDtos;
 using TimeTwoFix.Application.InterventionService.Dtos;
 using TimeTwoFix.Application.InterventionService.Interfaces;
+using TimeTwoFix.Application.InterventionSparePartServices.Interfaces;
 using TimeTwoFix.Application.LiftingBridgeServices.Interfaces;
 using TimeTwoFix.Application.PauseRecordService.Interfaces;
 using TimeTwoFix.Application.ProvidedServicesService.Interfaces;
@@ -17,7 +18,8 @@ using TimeTwoFix.Web.Models.PauseRecordModel;
 
 namespace TimeTwoFix.Web.Controllers
 {
-    public class InterventionController : BaseController<Intervention, CreateInterventionDto, ReadInterventionDto, UpdateInterventionDto, DeleteInterventionDto,
+    public class InterventionController : BaseController<Intervention
+        , CreateInterventionDto, ReadInterventionDto, UpdateInterventionDto, DeleteInterventionDto,
         CreateInterventionViewModel, ReadInterventionViewModel, UpdateInterventionViewModel, DeleteInterventionViewModel>
 
     {
@@ -27,10 +29,13 @@ namespace TimeTwoFix.Web.Controllers
         private readonly IUserService _userService;
         private readonly ILiftingBridgeServices _liftingBridgeServices;
         private readonly IPauseRecordService _pauseRecordService;
+        private readonly IInterventionSparePartService _interventionSparePartService;
         private readonly IUnitOfWork _unitOfWork;
 
-        public InterventionController(IInterventionService interventionService, IMapper mapper, IWorkOrderService workOrderService, IProvidedServiceService providedServiceService,
-            IUserService userService, ILiftingBridgeServices liftingBridgeServices, IUnitOfWork unitOfWork, IPauseRecordService pauseRecordService) : base(interventionService, mapper)
+        public InterventionController(IInterventionService interventionService
+            , IMapper mapper, IWorkOrderService workOrderService, IProvidedServiceService providedServiceService,
+            IUserService userService, ILiftingBridgeServices liftingBridgeServices, IUnitOfWork unitOfWork
+            , IPauseRecordService pauseRecordService, IInterventionSparePartService interventionSparePartService) : base(interventionService, mapper)
         {
             _interventionService = interventionService;
             _workOrderService = workOrderService;
@@ -38,6 +43,7 @@ namespace TimeTwoFix.Web.Controllers
             _providedServiceService = providedServiceService;
             _liftingBridgeServices = liftingBridgeServices;
             _pauseRecordService = pauseRecordService;
+            _interventionSparePartService = interventionSparePartService;
             _unitOfWork = unitOfWork;
         }
 
@@ -104,11 +110,14 @@ namespace TimeTwoFix.Web.Controllers
         {
             try
             {
-                var activeWorkOrders = (await _workOrderService.GetAllAsyncServiceGeneric()).Where(w => !w.IsDeleted && w.Status != "Completed"
-            && w.Status != "Canceled");
-                var activeProvidedServices = (await _providedServiceService.GetAllAsyncServiceGeneric()).Where(ps => !ps.IsDeleted);
-                var activeMechanics = (await _userService.GetAllApplicationUsers()).Where(u => u.UserType.Equals("Mechanic"));
-                var activeLiftingBridges = (await _liftingBridgeServices.GetAllAsyncServiceGeneric()).Where(lb => !lb.IsDeleted);
+                var activeWorkOrders = (await _workOrderService.GetAllAsyncServiceGeneric())
+                    .Where(w => !w.IsDeleted && w.Status != "Completed" && w.Status != "Canceled" && w.Paid == false);
+                var activeProvidedServices = (await _providedServiceService.GetAllAsyncServiceGeneric())
+                    .Where(ps => !ps.IsDeleted);
+                var activeMechanics = (await _userService.GetAllApplicationUsers())
+                    .Where(u => u.UserType.Equals("Mechanic") && u.Status == "Active");
+                var activeLiftingBridges = (await _liftingBridgeServices.GetAllAsyncServiceGeneric())
+                    .Where(lb => !lb.IsDeleted && lb.Status == "Idle");
                 // Check for missing dependencies
                 if (!activeWorkOrders.Any() || !activeProvidedServices.Any() || !activeMechanics.Any() || !activeLiftingBridges.Any())
                 {
@@ -152,10 +161,14 @@ namespace TimeTwoFix.Web.Controllers
         [HttpPost]
         public override async Task<IActionResult> Create(CreateInterventionViewModel viewModel)
         {
-            var activeWorkOrders = (await _workOrderService.GetAllAsyncServiceGeneric()).Where(w => !w.IsDeleted);
-            var activeProvidedServices = (await _providedServiceService.GetAllAsyncServiceGeneric()).Where(ps => !ps.IsDeleted);
-            var activeMechanics = (await _userService.GetAllApplicationUsers()).Where(u => u.UserType.Equals("Mechanic"));
-            var activeLiftingBridges = (await _liftingBridgeServices.GetAllAsyncServiceGeneric()).Where(lb => !lb.IsDeleted);
+            var activeWorkOrders = (await _workOrderService.GetAllAsyncServiceGeneric())
+                    .Where(w => !w.IsDeleted && w.Status != "Completed" && w.Status != "Canceled" && w.Paid == false);
+            var activeProvidedServices = (await _providedServiceService.GetAllAsyncServiceGeneric())
+                .Where(ps => !ps.IsDeleted);
+            var activeMechanics = (await _userService.GetAllApplicationUsers())
+                .Where(u => u.UserType.Equals("Mechanic") && u.Status == "Active");
+            var activeLiftingBridges = (await _liftingBridgeServices.GetAllAsyncServiceGeneric())
+                .Where(lb => !lb.IsDeleted && lb.Status == "Idle");
             ViewBag.WorkOrder = activeWorkOrders.Select(c => new SelectListItem
             {
                 Value = c.Id.ToString(),
@@ -188,6 +201,9 @@ namespace TimeTwoFix.Web.Controllers
                 dto.CreatedAt = DateTime.Now; // Set the creation date
 
                 var entity = _mapper.Map<Intervention>(dto);
+
+                //entity.Mechanic.Status = "Unavailable";
+
                 if (DateTime.Now < entity.StartDate)
                 {
                     entity.Status = "Planned";
@@ -197,7 +213,9 @@ namespace TimeTwoFix.Web.Controllers
                     entity.Status = "In Progress"; // Set default status
                 }
 
+
                 await _interventionService.AddAsyncServiceGeneric(entity);
+
                 TempData["SuccessMessage"] = "Intervention created successfully";
                 return RedirectToAction(nameof(Index));
             }
@@ -209,9 +227,22 @@ namespace TimeTwoFix.Web.Controllers
         }
 
         [HttpGet]
-        public override Task<IActionResult> Edit(int id)
+        public override async Task<IActionResult> Edit(int id)
         {
-            return base.Edit(id);
+            var intervention = await _interventionService.GetByIdAsyncServiceGeneric(id);
+            if (intervention == null)
+            {
+                TempData["ErrorMessage"] = "Intervention not found";
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (intervention.Status == "Completed")
+            {
+                TempData["ErrorMessage"] = "Completed interventions cannot be modified.";
+                return RedirectToAction("Details", "Intervention", new { id = id });
+            }
+
+            return await base.Edit(id);
         }
 
         [HttpPost]
@@ -225,6 +256,11 @@ namespace TimeTwoFix.Web.Controllers
                 TempData["ErrorMessage"] = "Intervention not found";
                 return RedirectToAction(nameof(Index));
                 //return NotFound();
+            }
+            if (intervention.Status == "Completed")
+            {
+                TempData["ErrorMessage"] = "Completed interventions cannot be modified.";
+                return RedirectToAction("Details", "Intervention", new { id = id });
             }
 
             try
@@ -333,9 +369,17 @@ namespace TimeTwoFix.Web.Controllers
 
         public async Task<ActionResult> CreateById(int workOrderId)
         {
+            var workOrder = await _workOrderService.GetByIdAsyncServiceGeneric(workOrderId);
+            if (workOrder.Paid == true)
+            {
+                TempData["WorkOrderError"] = "Paid work orders cannot be modified.";
+                return RedirectToAction("Index", "WorkOrder");
+            }
             var activeProvidedServices = (await _providedServiceService.GetAllAsyncServiceGeneric()).Where(ps => !ps.IsDeleted);
-            var activeMechanics = (await _userService.GetAllApplicationUsers()).Where(u => u.UserType.Equals("Mechanic"));
-            var activeLiftingBridges = (await _liftingBridgeServices.GetAllAsyncServiceGeneric()).Where(lb => !lb.IsDeleted);
+            var activeMechanics = (await _userService.GetAllApplicationUsers())
+                .Where(u => u.UserType.Equals("Mechanic") && u.Status == "Active");
+            var activeLiftingBridges = (await _liftingBridgeServices.GetAllAsyncServiceGeneric())
+                .Where(lb => !lb.IsDeleted && lb.Status == "Idle");
 
             ViewBag.ProvidedService = activeProvidedServices.Select(c => new SelectListItem
             {
@@ -359,9 +403,17 @@ namespace TimeTwoFix.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> CreateById(CreateInterventionViewModel createInterventionViewModel)
         {
+            var workOrder = await _workOrderService.GetByIdAsyncServiceGeneric(createInterventionViewModel.WorkOrderId);
+            if (workOrder.Paid == true)
+            {
+                TempData["WorkOrderError"] = "Paid work orders cannot be modified.";
+                return RedirectToAction("Index");
+            }
             var activeProvidedServices = (await _providedServiceService.GetAllAsyncServiceGeneric()).Where(ps => !ps.IsDeleted);
-            var activeMechanics = (await _userService.GetAllApplicationUsers()).Where(u => u.UserType.Equals("Mechanic"));
-            var activeLiftingBridges = (await _liftingBridgeServices.GetAllAsyncServiceGeneric()).Where(lb => !lb.IsDeleted);
+            var activeMechanics = (await _userService.GetAllApplicationUsers())
+                .Where(u => u.UserType.Equals("Mechanic") && u.Status == "Active");
+            var activeLiftingBridges = (await _liftingBridgeServices.GetAllAsyncServiceGeneric())
+                .Where(lb => !lb.IsDeleted && lb.Status == "Idle");
 
             ViewBag.ProvidedService = activeProvidedServices.Select(c => new SelectListItem
             {
@@ -402,6 +454,41 @@ namespace TimeTwoFix.Web.Controllers
             {
                 TempData["WorkOrderError"] = $"An error occurred while creating the Work Order: {ex.Message}";
                 return View(createInterventionViewModel);
+            }
+        }
+
+        [HttpGet]
+        public override async Task<IActionResult> Details(int id)
+        {
+            var includes = EntityIncludeHelper.GetIncludes<Intervention>();
+            try
+            {
+                var entity = await _interventionService.GetByIdAsyncServiceGeneric(id, null, includes);
+                var interventionSpareParts = await _interventionSparePartService
+                    .GetAllWithIncludesAsyncServiceGeneric(null, spi => spi.SparePart);
+                var partsUsed = interventionSpareParts
+                    .Where(sp => sp.InterventionId == id)
+                    .Select(sp => new InterventionSparePartDisplayViewModel
+                    {
+                        SparePartName = sp.SparePart?.Name,
+                        Quantity = sp.Quantity,
+                        UnitPrice = sp.SparePart?.UnitPrice ?? 0
+                    }).ToList();
+
+                if (entity == null)
+                {
+                    TempData["ErrorMessage"] = $"{EntityName} Entity not found";
+                    return NotFound();
+                }
+                var dto = _mapper.Map<ReadInterventionDto>(entity);
+                var viewModel = _mapper.Map<ReadInterventionViewModel>(dto);
+                viewModel.SparePartsUsed = partsUsed;
+                return View(viewModel);
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An error occured while loading data";
+                return RedirectToAction(nameof(Index));
             }
         }
     }

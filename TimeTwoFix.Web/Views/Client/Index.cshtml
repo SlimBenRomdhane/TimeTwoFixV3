@@ -62,36 +62,38 @@
         </div>
     </div>
 
-    <!-- TempData Alert -->
-    @* @if (TempData["ClientError"] != null)
-    {
-        <div class="alert alert-warning d-flex align-items-center mb-4">
-            <i class="bi bi-exclamation-triangle me-2"></i>
-            <span>@TempData["ClientError"]</span>
-        </div>
-    } *@
-
-    <!-- Clients Cards -->
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+    <!-- Clients Cards Responsive Grid -->
+    <div class="row g-4">
         @foreach (var item in Model)
         {
-            <div class="col">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title text-primary fw-bold">
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title mb-1 text-primary">
                             <i class="bi bi-person-circle me-1"></i> @item.FirstName @item.LastName
                         </h5>
-                        <p class="card-text mb-2">
-                            <span class="fw-semibold text-muted">Phone:</span> <span class="text-info">@item.PhoneNumber</span><br />
-                            <span class="fw-semibold text-muted">Email:</span> <span class="text-info">@item.Email</span><br />
-                            <span class="fw-semibold text-muted">City:</span> @item.City
-                        </p>
-                        <div class="d-flex justify-content-end gap-2 mt-3">
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm">Details</a>
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning btn-sm">Edit</a>
+                        <div class="mb-2 small text-muted">ID: @item.Id</div>
+                        <div class="mb-2">
+                            <i class="bi bi-telephone me-1"></i> <span class="fw-semibold">@item.PhoneNumber</span>
+                        </div>
+                        <div class="mb-2">
+                            <i class="bi bi-envelope me-1"></i> <span class="fw-semibold">@item.Email</span>
+                        </div>
+                        <div class="mb-2">
+                            <i class="bi bi-geo-alt me-1"></i> <span class="fw-semibold">@item.City</span>
+                        </div>
+                        <div class="mt-auto pt-2 d-flex gap-2">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info btn-sm flex-fill">
+                                <i class="bi bi-eye"></i> Details
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning btn-sm flex-fill">
+                                <i class="bi bi-pencil"></i> Edit
+                            </a>
                             @if (User.IsInRole("GeneralManager"))
                             {
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm">Delete</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm flex-fill">
+                                    <i class="bi bi-trash"></i> Delete
+                                </a>
                             }
                         </div>
                     </div>
@@ -99,6 +101,7 @@
             </div>
         }
     </div>
+
     <!-- Pagination Controls -->
     @{
         int currentPage = (ViewBag.CurrentPage as int?) ?? 1;

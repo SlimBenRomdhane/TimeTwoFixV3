@@ -20,5 +20,14 @@ namespace TimeTwoFix.Web.Models.InterventionModels
         public DateTime? EndDate { get; set; }
         public TimeSpan ActualTimeSpent { get; set; }
         public decimal InterventionPrice { get; set; }
+        public List<InterventionSparePartDisplayViewModel> SparePartsUsed { get; set; }
+
     }
+    public class InterventionSparePartDisplayViewModel
+    {
+        public string SparePartName { get; set; }
+        public int Quantity { get; set; }
+        public decimal UnitPrice { get; set; }
+    }
+
 }

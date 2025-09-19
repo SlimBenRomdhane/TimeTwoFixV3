@@ -162,12 +162,37 @@
                 </div>
             }
         </div>
+        <div id="signalr-toast-container" class="toast-container position-fixed top-0 end-0 p-3 z-3"></div>
     </div>
 
     
     <script src="~/lib/jquery/dist/jquery.min.js" asp-append-version="true"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    @* <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script> *@
+    <script src="~/lib/signalr/signalr.min.js" asp-append-version="true"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/interventionHub")
+            .build();
+
+               connection.on("ReceiveInterventionUpdate", (id, status) => {
+            const toastHtml = `
+                <div class="toast align-items-center text-bg-info border-0 show mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            Intervention <strong>#${id}</strong> is now <strong>${status}</strong>.
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            `;
+            document.getElementById("signalr-toast-container").insertAdjacentHTML("beforeend", toastHtml);
+        });
+
+        connection.start().catch(err => console.error(err));
+    </script>
     
     @await RenderSectionAsync("Scripts", required: false)
     

@@ -35,19 +35,6 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
 
         public Intervention Intervention { get; set; }
         public TimeSpan? PauseDuration { get; set; }
-        //public TimeSpan? PauseDuration
-        //{
-        //    get
-        //    {
-        //        if (EndTime.HasValue)
-        //        {
-        //            return EndTime.Value - StartTime;
-        //        }
-        //        else
-        //        {
-        //            return null;
-        //        }
-        //    }
-        //}
+       
     }
 }

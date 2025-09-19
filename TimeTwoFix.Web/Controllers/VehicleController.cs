@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Linq;
 using TimeTwoFix.Application.ClientServices.Interfaces;
 using TimeTwoFix.Application.VehicleServices.Dtos;
 using TimeTwoFix.Application.VehicleServices.Interfaces;
@@ -132,6 +131,12 @@ namespace TimeTwoFix.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateVehicleViewModel createVehicleViewModel)
         {
+            if (await VinExistsAsync(createVehicleViewModel.Vin))
+            {
+                ModelState.AddModelError("Vin", "A vehicle with this VIN already exists.");
+                return View(createVehicleViewModel);
+            }
+
             var vehicleDto = _mapper.Map<CreateVehicleDto>(createVehicleViewModel);
             var vehicle = _mapper.Map<Vehicle>(vehicleDto);
             vehicle.CreatedAt = DateTime.Now;
@@ -278,5 +283,16 @@ namespace TimeTwoFix.Web.Controllers
             return View("CreateByClientId", model);
         }
 
+        private async Task<bool> VinExistsAsync(string vin)
+        {
+            var existingVehicle = await _vehicleService.GetVehicleByVin(vin);
+            return existingVehicle?.Any() == true;
+        }
+        [HttpGet]
+        public async Task<IActionResult> CheckVinExistence(string vin)
+        {
+            bool exists = await VinExistsAsync(vin);
+            return Json(exists);
+        }
     }
 }

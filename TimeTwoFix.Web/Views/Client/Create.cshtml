@@ -1,79 +1,84 @@
 ﻿@model TimeTwoFix.Web.Models.ClientModels.CreateClientViewModel
-
 @{
-    ViewData["Title"] = "Register New Client";
+    ViewData["Title"] = "Create Client";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container my-5">
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-4">
-            <!-- Section Header -->
-            <h2 class="section-title text-primary fw-bold mb-4">
-                <i class="bi bi-person-plus me-2"></i> @ViewData["Title"]
-            </h2>
-            <form asp-action="Create">
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        @Html.LabelFor(m => m.FirstName, new { @class = "form-label fw-semibold text-secondary" })
-                        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger small" })
-                    </div>
-                    <div class="col-md-6">
-                        @Html.LabelFor(m => m.LastName, new { @class = "form-label fw-semibold text-secondary" })
-                        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger small" })
-                    </div>
-                    <div class="col-md-6">
-                        @Html.LabelFor(m => m.PhoneNumber, new { @class = "form-label fw-semibold text-secondary" })
-                        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger small" })
-                    </div>
-                    <div class="col-md-6">
-                        @Html.LabelFor(m => m.Email, new { @class = "form-label fw-semibold text-secondary" })
-                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger small" })
-                    </div>
-                    <div class="col-md-12">
-                        @Html.LabelFor(m => m.Address, new { @class = "form-label fw-semibold text-secondary" })
-                        @Html.TextBoxFor(m => m.Address, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.Address, "", new { @class = "text-danger small" })
-                    </div>
-                    <div class="col-md-6">
-                        @Html.LabelFor(m => m.City, new { @class = "form-label fw-semibold text-secondary" })
-                        @Html.TextBoxFor(m => m.City, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.City, "", new { @class = "text-danger small" })
-                    </div>
-                    <div class="col-md-12">
-                        @Html.LabelFor(m => m.Notes, new { @class = "form-label fw-semibold text-secondary" })
-                        @Html.TextAreaFor(m => m.Notes, 4, 50, new { @class = "form-control", id = "notesTextarea" })
-                        @Html.ValidationMessageFor(m => m.Notes, "", new { @class = "text-danger small" })
+    <!-- Header -->
+    <h2 class="section-title text-primary fw-bold mb-2">
+        <i class="bi bi-person-plus me-2"></i> Create Client
+    </h2>
+    <p class="text-muted mb-4">
+        Please fill in the client details. Fields marked with <span class="text-danger">*</span> are required.
+    </p>
+    <!-- Form Card -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form asp-action="Create" class="needs-validation" novalidate>
+                <!-- Validation Summary -->
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                <!-- Section: Client Info -->
+                <div class="form-section mb-5">
+                    <h5 class="form-section-header text-secondary mb-3">
+                        <i class="bi bi-person-lines-fill me-2"></i> Client Details
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="FirstName" class="form-label">First Name <span class="text-danger">*</span></label>
+                            <input asp-for="FirstName" class="form-control" />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="LastName" class="form-label">Last Name <span class="text-danger">*</span></label>
+                            <input asp-for="LastName" class="form-control" />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="PhoneNumber" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                            <input asp-for="PhoneNumber" class="form-control" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label">Email</label>
+                            <input asp-for="Email" class="form-control" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-12">
+                            <label asp-for="Address" class="form-label">Address</label>
+                            <input asp-for="Address" class="form-control" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="City" class="form-label">City <span class="text-danger">*</span></label>
+                            <input asp-for="City" class="form-control" />
+                            <span asp-validation-for="City" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-12">
+                            <label asp-for="Notes" class="form-label">Notes</label>
+                            <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Extra notes or hints (optional)"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
                     </div>
                 </div>
-                <div class="d-grid mt-4">
+                <!-- Submit Button -->
+                <div class="d-grid">
                     <button type="submit" class="btn btn-success btn-lg">
-                        <i class="bi bi-check-circle me-1"></i> Register Client
+                        <i class="bi bi-check-circle me-1"></i> Create Client
                     </button>
                 </div>
             </form>
-            <div class="d-grid mt-4">
-                <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
-                    <i class="bi bi-arrow-left-circle me-2"></i> Back to Client List
-                </a>
-            </div>
         </div>
     </div>
+    <!-- Back Link -->
+    <div class="mt-4 text-center">
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Back to Client List
+        </a>
+    </div>
 </div>
-
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    <script>
-        document.getElementById("notesTextarea")?.addEventListener("input", function () {
-            this.style.height = "auto";
-            this.style.height = (this.scrollHeight) + "px";
-        });
-    </script>
 }

@@ -1,71 +1,74 @@
 ﻿@model TimeTwoFix.Web.Models.ProviderModels.UpdateProviderViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Edit Provider";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
-
-<h4>UpdateProviderViewModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
+<div class="container my-5">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <h2 class="text-primary fw-bold mb-4">
+                <i class="bi bi-pencil-square me-2"></i> Edit Provider
+            </h2>
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                <input asp-for="Id" type="hidden" />
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Name" class="form-label">Name</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="ContactEmail" class="form-label">Contact Email</label>
+                        <input asp-for="ContactEmail" class="form-control" />
+                        <span asp-validation-for="ContactEmail" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="MobileContactPhone" class="form-label">Mobile Contact Phone</label>
+                        <input asp-for="MobileContactPhone" class="form-control" />
+                        <span asp-validation-for="MobileContactPhone" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="LandContactPhone" class="form-label">Land Contact Phone</label>
+                        <input asp-for="LandContactPhone" class="form-control" />
+                        <span asp-validation-for="LandContactPhone" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Fax" class="form-label">Fax</label>
+                        <input asp-for="Fax" class="form-control" />
+                        <span asp-validation-for="Fax" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Address" class="form-label">Address</label>
+                        <input asp-for="Address" class="form-control" />
+                        <span asp-validation-for="Address" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="RIB" class="form-label">RIB</label>
+                        <input asp-for="RIB" class="form-control" />
+                        <span asp-validation-for="RIB" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="FiscalId" class="form-label">Fiscal ID</label>
+                        <input asp-for="FiscalId" class="form-control" />
+                        <span asp-validation-for="FiscalId" class="text-danger small"></span>
+                    </div>
+                </div>
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-save me-1"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+            <div class="d-grid mt-4">
+                <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                    <i class="bi bi-arrow-left-circle me-2"></i> Back to List
+                </a>
             </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ContactEmail" class="control-label"></label>
-                <input asp-for="ContactEmail" class="form-control" />
-                <span asp-validation-for="ContactEmail" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MobileContactPhone" class="control-label"></label>
-                <input asp-for="MobileContactPhone" class="form-control" />
-                <span asp-validation-for="MobileContactPhone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LandContactPhone" class="control-label"></label>
-                <input asp-for="LandContactPhone" class="form-control" />
-                <span asp-validation-for="LandContactPhone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Fax" class="control-label"></label>
-                <input asp-for="Fax" class="form-control" />
-                <span asp-validation-for="Fax" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RIB" class="control-label"></label>
-                <input asp-for="RIB" class="form-control" />
-                <span asp-validation-for="RIB" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FiscalId" class="control-label"></label>
-                <input asp-for="FiscalId" class="form-control" />
-                <span asp-validation-for="FiscalId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

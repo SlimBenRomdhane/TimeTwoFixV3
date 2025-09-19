@@ -1,68 +1,89 @@
 ﻿@model TimeTwoFix.Web.Models.ProviderModels.CreateProviderViewModel
-
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Provider";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create</h1>
-
-<h4>CreateProviderViewModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ContactEmail" class="control-label"></label>
-                <input asp-for="ContactEmail" class="form-control" />
-                <span asp-validation-for="ContactEmail" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MobileContactPhone" class="control-label"></label>
-                <input asp-for="MobileContactPhone" class="form-control" />
-                <span asp-validation-for="MobileContactPhone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="LandContactPhone" class="control-label"></label>
-                <input asp-for="LandContactPhone" class="form-control" />
-                <span asp-validation-for="LandContactPhone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Fax" class="control-label"></label>
-                <input asp-for="Fax" class="form-control" />
-                <span asp-validation-for="Fax" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RIB" class="control-label"></label>
-                <input asp-for="RIB" class="form-control" />
-                <span asp-validation-for="RIB" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="FiscalId" class="control-label"></label>
-                <input asp-for="FiscalId" class="form-control" />
-                <span asp-validation-for="FiscalId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="container my-5">
+    <!-- Header -->
+    <h2 class="section-title text-primary fw-bold mb-2">
+        <i class="bi bi-truck me-2"></i> Create Provider
+    </h2>
+    <p class="text-muted mb-4">
+        Please fill in the provider details. Fields marked with <span class="text-danger">*</span> are required.
+    </p>
+    <!-- Form Card -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form asp-action="Create" class="needs-validation" novalidate>
+                <!-- Validation Summary -->
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                <!-- Section: Provider Info -->
+                <div class="form-section mb-5">
+                    <h5 class="form-section-header text-secondary mb-3">
+                        <i class="bi bi-person-badge me-2"></i> Provider Details
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="Name" class="form-label">Name <span class="text-danger">*</span></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ContactEmail" class="form-label">Contact Email <span class="text-danger">*</span></label>
+                            <input asp-for="ContactEmail" class="form-control" />
+                            <span asp-validation-for="ContactEmail" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="MobileContactPhone" class="form-label">Mobile Phone <span class="text-danger">*</span></label>
+                            <input asp-for="MobileContactPhone" class="form-control" />
+                            <span asp-validation-for="MobileContactPhone" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="LandContactPhone" class="form-label">Landline</label>
+                            <input asp-for="LandContactPhone" class="form-control" />
+                            <span asp-validation-for="LandContactPhone" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Fax" class="form-label">Fax</label>
+                            <input asp-for="Fax" class="form-control" />
+                            <span asp-validation-for="Fax" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Address" class="form-label">Address <span class="text-danger">*</span></label>
+                            <input asp-for="Address" class="form-control" />
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="RIB" class="form-label">RIB <span class="text-danger">*</span></label>
+                            <input asp-for="RIB" class="form-control" />
+                            <span asp-validation-for="RIB" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="FiscalId" class="form-label">Fiscal ID <span class="text-danger">*</span></label>
+                            <input asp-for="FiscalId" class="form-control" />
+                            <span asp-validation-for="FiscalId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Submit Button -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="bi bi-check-circle me-1"></i> Create Provider
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Back Link -->
+    <div class="mt-4 text-center">
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Back to Provider List
+        </a>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

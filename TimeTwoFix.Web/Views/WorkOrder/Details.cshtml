@@ -106,7 +106,21 @@
                                 @foreach (var iv in Model.InterventionViewModels)
                                 {
                                     <tr>
-                                        <td>@iv.Id</td>
+                                        @if (iv.Status != "Completed")
+                                        {
+                                            <td>
+                                                <a asp-controller="Intervention"
+                                                   asp-action="Edit"
+                                                   asp-route-id="@iv.Id"
+                                                   class="text-decoration-none fw-semibold">
+                                                    @iv.Id
+                                                </a>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td>@iv.Id</td>
+                                        }                                        
 
                                         <td>
                                             @if (!string.IsNullOrEmpty(iv.ProvidedService?.Name))

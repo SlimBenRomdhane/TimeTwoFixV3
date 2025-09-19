@@ -3,11 +3,11 @@
 @{
     ViewData["Title"] = "Work Orders";
 
-    // Group the work orders by Status for navigation
     var groupedByStatus = Model?
         .GroupBy(w => w.Status)
-        .OrderBy(g => g.Key) // You can replace with a custom order array if needed
+        .OrderBy(g => g.Key)
         .ToList();
+    var paidFilter = ViewBag.PaidFilter as string;
 }
 
 <div class="container my-5">
@@ -32,6 +32,19 @@
                     <span>@TempData["WorkOrderError"]</span>
                 </div>
             }
+
+            <!-- Payment Filter Toggle -->
+            <div class="btn-group mb-3" role="group">
+                <a asp-action="FilterByPaymentStatus" asp-route-paid="true" class="btn @(paidFilter == "true" ? "btn-success" : "btn-outline-success")">
+                    <i class="bi bi-check-circle me-1"></i> Paid
+                </a>
+                <a asp-action="FilterByPaymentStatus" asp-route-paid="false" class="btn @(paidFilter == "false" ? "btn-danger" : "btn-outline-danger")">
+                    <i class="bi bi-x-circle me-1"></i> Unpaid
+                </a>
+                <a asp-action="FilterByPaymentStatus" class="btn @(string.IsNullOrEmpty(paidFilter) ? "btn-secondary" : "btn-outline-secondary")">
+                    <i class="bi bi-list-ul me-1"></i> All
+                </a>
+            </div>
 
             <!-- Status Tabs -->
             @if (groupedByStatus != null && groupedByStatus.Any())
@@ -70,15 +83,14 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Vehicle</th>
-                                            <th>Mileage</th>
-                                            <th>Start</th>
-                                            <th>End</th>
+                                            @* <th>Mileage</th> *@
+                                            @* <th>Start</th>
+                                            <th>End</th> *@
                                             <th>Labor Cost</th>
                                             <th>Status</th>
                                             <th>Paid</th>
                                             <th>Payment Date</th>
-                                            <th>Notes</th>
-
+                                            @* <th>Notes</th> *@
                                             <th class="text-center">Actions</th>
                                         </tr>
                                     </thead>
@@ -88,8 +100,8 @@
                                             <tr>
                                                 <td>@item.Id</td>
                                                 <td>@item.VehicleViewModel.Vin</td>
-                                                <td>@item.Mileage</td>
-                                                <td>
+                                                @* <td>@item.Mileage</td> *@
+                                                @* <td>
                                                     <span class="text-nowrap">
                                                         @item.StartDate.ToString("yyyy-MM-dd")<br />
                                                         <small class="text-muted">@item.StartTime.ToString("hh\\:mm")</small>
@@ -100,21 +112,27 @@
                                                         @item.EndDate.ToString("yyyy-MM-dd")<br />
                                                         <small class="text-muted">@item.EndTime.ToString("hh\\:mm")</small>
                                                     </span>
-                                                </td>
+                                                </td> *@
                                                 <td>@($"{item.TolalLaborCost:N3} TND")</td>
                                                 <td><span class="badge bg-secondary">@item.Status</span></td>
                                                 <td>
                                                     @if (item.Paid == true)
                                                     {
-                                                        <span class="badge bg-success">Yes</span>
+                                                        <span class="badge bg-success">
+                                                            <i class="bi bi-check-circle me-1"></i> Paid
+                                                        </span>
                                                     }
                                                     else if (item.Paid == false)
                                                     {
-                                                        <span class="badge bg-danger">No</span>
+                                                        <span class="badge bg-danger">
+                                                            <i class="bi bi-x-circle me-1"></i> Unpaid
+                                                        </span>
                                                     }
                                                     else
                                                     {
-                                                        <span class="badge bg-secondary">Unknown</span>
+                                                        <span class="badge bg-secondary">
+                                                            <i class="bi bi-question-circle me-1"></i> Unknown
+                                                        </span>
                                                     }
                                                 </td>
                                                 <td>
@@ -127,19 +145,27 @@
                                                         <span class="text-muted">—</span>
                                                     }
                                                 </td>
-                                                <td>@item.Notes</td>
+                                                @* <td>@item.Notes</td> *@
                                                 <td class="text-center">
                                                     <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
-                                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning text-white">
-                                                            <i class="bi bi-pencil-square me-1"></i> Edit
-                                                        </a>
+                                                        @if (item.Paid == false)
+                                                        {
+                                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning text-white">
+                                                                <i class="bi bi-pencil-square me-1"></i> Edit
+                                                            </a>
+                                                        }
+                                                        
                                                         <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info text-white">
                                                             <i class="bi bi-eye me-1"></i> View
                                                         </a>
                                                         <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger text-white">
                                                             <i class="bi bi-trash me-1"></i> Delete
                                                         </a>
-                                                        <a asp-action="CreateById" asp-controller="Intervention" asp-route-workOrderId="@item.Id" class="btn btn-outline-success">Add Intervention</a>
+                                                        @if (item.Paid == false)
+                                                        {
+                                                            <a asp-action="CreateById" asp-controller="Intervention" asp-route-workOrderId="@item.Id" class="btn btn-outline-success">Add Intervention</a>
+                                                        }
+                                                        
                                                     </div>
                                                 </td>
                                             </tr>
@@ -150,10 +176,6 @@
                         </div>
                     }
                 </div>
-                <hr />
-
-               
-                
             }
             else
             {

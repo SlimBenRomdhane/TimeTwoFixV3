@@ -1,56 +1,64 @@
 ﻿@model TimeTwoFix.Web.Models.WorkOrderModels.CreateWorkOrderViewModel
-
 @{
     ViewData["Title"] = "Create Work Order";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container my-5">
-    <div class="card border-0 shadow-sm">
+    <!-- Header -->
+    <h2 class="section-title text-primary fw-bold mb-2">
+        <i class="bi bi-file-earmark-plus me-2"></i> Create Work Order
+    </h2>
+    <p class="text-muted mb-4">
+        Please fill in the work order details. Fields marked with <span class="text-danger">*</span> are required.
+    </p>
+    <!-- Form Card -->
+    <div class="card shadow-sm border-0">
         <div class="card-body">
-
-            <!-- 🧭 Header -->
-            <h2 class="text-primary fw-bold mb-4">
-                <i class="bi bi-file-earmark-plus me-2"></i> Create Work Order
-            </h2>
-
-            <form asp-action="Create">
-                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-                <!-- Vehicle Selection -->
-                <div class="mb-3">
-                    <label class="form-label">Vehicle</label>
-                    <div class="input-group">
-                        <input type="text" id="SelectedVehicleVin" class="form-control" placeholder="No vehicle selected" readonly />
-                        <input type="hidden" asp-for="VehicleId" id="VehicleId" />
-                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#vehicleModal">
-                            🔍 Search Vehicle
-                        </button>
+            <form asp-action="Create" class="needs-validation" novalidate>
+                <!-- Validation Summary -->
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                <!-- Section: Work Order Info -->
+                <div class="form-section mb-5">
+                    <h5 class="form-section-header text-secondary mb-3">
+                        <i class="bi bi-clipboard2-plus me-2"></i> Work Order Details
+                    </h5>
+                    <div class="mb-3">
+                        <label class="form-label">Vehicle <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input type="text" id="SelectedVehicleVin" class="form-control" placeholder="No vehicle selected" readonly />
+                            <input type="hidden" asp-for="VehicleId" id="VehicleId" />
+                            <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#vehicleModal">
+                                🔍 Search Vehicle
+                            </button>
+                        </div>
+                        <span asp-validation-for="VehicleId" class="text-danger"></span>
                     </div>
-                    <span asp-validation-for="VehicleId" class="text-danger"></span>
+                    <div class="mb-3">
+                        <label asp-for="Mileage" class="form-label">Mileage <span class="text-danger">*</span></label>
+                        <input asp-for="Mileage" class="form-control" />
+                        <span asp-validation-for="Mileage" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Notes" class="form-label">Notes</label>
+                        <textarea asp-for="Notes" class="form-control" rows="3" placeholder="Extra notes or hints (optional)"></textarea>
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
                 </div>
-
-                <!-- Mileage -->
-                <div class="mb-3">
-                    <label asp-for="Mileage" class="form-label"></label>
-                    <input asp-for="Mileage" class="form-control" />
-                    <span asp-validation-for="Mileage" class="text-danger"></span>
-                </div>
-
-                <!-- Notes -->
-                <div class="mb-3">
-                    <label asp-for="Notes" class="form-label"></label>
-                    <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
-                    <span asp-validation-for="Notes" class="text-danger"></span>
-                </div>
-
-                <!-- Submit -->
-                <div class="d-flex justify-content-start gap-2 mt-4">
-                    <input type="submit" value="Create" class="btn btn-primary" />
-                    <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+                <!-- Submit Button -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="bi bi-check-circle me-1"></i> Create Work Order
+                    </button>
                 </div>
             </form>
-
         </div>
+    </div>
+    <!-- Back Link -->
+    <div class="mt-4 text-center">
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Back to Work Order List
+        </a>
     </div>
 </div>
 <!-- Vehicle Search Modal -->
@@ -72,31 +80,22 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
     <script>
-            
         let vehicleSearchTimer;
-
         document.getElementById("vehicleSearchInput").addEventListener("input", function () {
             clearTimeout(vehicleSearchTimer);
-
             const term = this.value;
             if (term.length < 2) return;
-
             vehicleSearchTimer = setTimeout(async () => {
                 const container = document.getElementById("vehicleResults");
                 container.innerHTML = `<div class="text-muted">Searching...</div>`;
-
                 const response = await fetch(`/WorkOrder/SearchVehicles?term=${encodeURIComponent(term)}`);
                 const results = await response.json();
-
-                container.innerHTML = ""; // Clear loading message
-
+                container.innerHTML = "";
                 if (results.length === 0) {
                     container.innerHTML = `<div class="alert alert-warning">No vehicles found matching "<strong>${term}</strong>".</div>`;
                     return;
                 }
-
                 results.forEach(v => {
                     const btn = document.createElement("button");
                     btn.className = "btn btn-outline-primary mb-2 w-100 text-start";
@@ -110,6 +109,5 @@
                 });
             }, 300);
         });
-    
     </script>
 }

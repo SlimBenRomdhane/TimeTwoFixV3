@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using TimeTwoFix.Application.Extension;
 using TimeTwoFix.Infrastructure.Extension;
+using TimeTwoFix.Web.Hubs;
+using TimeTwoFix.Web.OtherTools;
 
 namespace TimeTwoFix.Web
 {
@@ -39,7 +42,17 @@ namespace TimeTwoFix.Web
                     options.LoginPath = "/User/Login";
                     options.AccessDeniedPath = "/Shared/AccessDenied";
                 });
+            //builder.Services.AddAuthorization(options =>
+            //{
+            //    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+            //        .RequireAuthenticatedUser()
+            //        .Build();
+            //}
+            //    );
 
+            //Configuring SignalR
+            builder.Services.AddSignalR();
+            builder.Services.AddHostedService<InterventionStatusUpdater>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -62,6 +75,7 @@ namespace TimeTwoFix.Web
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+            app.MapHub<InterventionHub>("/interventionHub");
 
             app.Run();
         }

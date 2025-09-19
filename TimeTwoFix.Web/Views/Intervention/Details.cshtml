@@ -1,103 +1,114 @@
 ﻿@model TimeTwoFix.Web.Models.InterventionModels.ReadInterventionViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Intervention Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<div class="row mt-5 justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h2 class="card-title text-center text-primary fw-bold">
+                    <i class="bi bi-clipboard2-check me-2"></i> @ViewData["Title"]
+                </h2>
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-3">Work Order</dt>
+                    <dd class="col-sm-9">@Model.WorkOrderId</dd>
 
-<div>
-    <h4>ReadInterventionViewModel</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.WorkOrderId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.WorkOrderId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MechanicId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MechanicId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ServiceId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ServiceId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LiftingBridgeId)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LiftingBridgeId)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EndDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EndDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ActualTimeSpent)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ActualTimeSpent)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.InterventionPrice)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.InterventionPrice)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedBy)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedBy)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UpdatedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UpdatedAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UpdatedBy)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UpdatedBy)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DeletedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DeletedAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DeletedBy)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DeletedBy)
-        </dd>
-    </dl>
-</div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
-</div>
+                    <dt class="col-sm-3">Mechanic</dt>
+                    <dd class="col-sm-9">@Model.UserViewModel.LastName</dd>
 
+                    <dt class="col-sm-3">Service</dt>
+                    <dd class="col-sm-9">@Model.ProvidedService.Name</dd>
+
+                    <dt class="col-sm-3">Lifting Bridge</dt>
+                    <dd class="col-sm-9">@Model.LiftingBridge.Name</dd>
+
+                    <dt class="col-sm-3">Start Date</dt>
+                    <dd class="col-sm-9">@Model.StartDate</dd>
+
+                    <dt class="col-sm-3">End Date</dt>
+                    <dd class="col-sm-9">@Model.EndDate</dd>
+
+                    <dt class="col-sm-3">Actual Time Spent</dt>
+                    <dd class="col-sm-9">@Model.ActualTimeSpent</dd>
+
+                    <dt class="col-sm-3">Intervention Price</dt>
+                    <dd class="col-sm-9">@Model.InterventionPrice</dd>
+
+                    @if (User.IsInRole("GeneralManager"))
+                    {
+                        <dt class="col-sm-3">Created At</dt>
+                        <dd class="col-sm-9">@Model.CreatedAt</dd>
+
+                        <dt class="col-sm-3">Created By</dt>
+                        <dd class="col-sm-9">@Model.CreatedBy</dd>
+
+                        <dt class="col-sm-3">Updated At</dt>
+                        <dd class="col-sm-9">@Model.UpdatedAt</dd>
+
+                        <dt class="col-sm-3">Updated By</dt>
+                        <dd class="col-sm-9">@Model.UpdatedBy</dd>
+
+                        <dt class="col-sm-3">Deleted At</dt>
+                        <dd class="col-sm-9">@Model.DeletedAt</dd>
+
+                        <dt class="col-sm-3">Deleted By</dt>
+                        <dd class="col-sm-9">@Model.DeletedBy</dd>
+                    }
+                </dl>
+
+                <h5 class="text-secondary fw-semibold mb-3">
+                    <i class="bi bi-box-seam me-2"></i> Spare Parts Used
+                </h5>
+
+                <a asp-controller="InterventionSparePart"
+                   asp-action="CreateByInterventionId"
+                   asp-route-interventionId="@Model.Id"
+                   class="btn btn-sm btn-outline-primary mb-3">
+                    <i class="bi bi-plus-circle me-1"></i> Add Spare Part
+                </a>
+
+                @if (Model.SparePartsUsed != null && Model.SparePartsUsed.Any())
+                {
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr class="fw-semibold text-secondary">
+                                <th><i class="bi bi-nut me-1"></i> Part Name</th>
+                                <th>Quantity</th>
+                                <th>Unit Price</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var part in Model.SparePartsUsed)
+                            {
+                                <tr>
+                                    <td>@part.SparePartName</td>
+                                    <td>@part.Quantity</td>
+                                    <td>@($"{part.UnitPrice:N3} TND")</td>
+                                    <td>@($"{(part.UnitPrice * part.Quantity):N3} TND")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="text-muted fst-italic">No spare parts have been added to this intervention.</div>
+                }
+
+                <div class="d-grid mt-4">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-warning btn-lg">
+                        <i class="bi bi-pencil-square me-2"></i> Edit Intervention
+                    </a>
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                        <i class="bi bi-arrow-left-circle me-2"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

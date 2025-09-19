@@ -1,43 +1,62 @@
 ﻿@model TimeTwoFix.Web.Models.SparePartCategoryModel.CreateSparePartCategoryViewModel
-
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Spare Part Category";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create</h1>
-
-<h4>CreateSparePartCategoryViewModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="notes" class="control-label"></label>
-                <input asp-for="notes" class="form-control" />
-                <span asp-validation-for="notes" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="container my-5">
+    <!-- Header -->
+    <h2 class="section-title text-primary fw-bold mb-2">
+        <i class="bi bi-tags me-2"></i> Create Spare Part Category
+    </h2>
+    <p class="text-muted mb-4">
+        Please fill in the category details. Fields marked with <span class="text-danger">*</span> are required.
+    </p>
+    <!-- Form Card -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form asp-action="Create" class="needs-validation" novalidate>
+                <!-- Validation Summary -->
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                <!-- Section: Category Info -->
+                <div class="form-section mb-5">
+                    <h5 class="form-section-header text-secondary mb-3">
+                        <i class="bi bi-journals me-2"></i> Category Details
+                    </h5>
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Name <span class="text-danger">*</span></label>
+                        <input asp-for="Name" class="form-control" placeholder="e.g. Brakes, Engine, Electrical" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Description <span class="text-danger">*</span></label>
+                        <input asp-for="Description" class="form-control" placeholder="Brief description" />
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Notes" class="form-label">Notes</label>
+                        <input asp-for="Notes" class="form-control" placeholder="Extra notes or hints (optional)" />
+                        <span asp-validation-for="Notes" class="text-danger"></span>
+                    </div>
+                </div>
+                <!-- Submit Button -->
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-success btn-lg">
+                        <i class="bi bi-check-circle me-1"></i> Create Category
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Back Link -->
+    <div class="mt-4 text-center">
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left-circle"></i> Back to Category List
+        </a>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

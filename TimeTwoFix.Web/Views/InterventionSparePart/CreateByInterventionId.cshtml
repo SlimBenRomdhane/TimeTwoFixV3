@@ -26,13 +26,7 @@
                         <i class="bi bi-journals me-2"></i> Intervention Spare Part Details
                     </h5>
                     <div class="row g-3">
-                        <div class="col-md-6">
-                            <label asp-for="InterventionId" class="form-label">Intervention <span class="text-danger">*</span></label>
-                            <select asp-for="InterventionId" class="form-select" asp-items="ViewBag.ActiveIntervention">
-                                <option value="">-- Select Intervention --</option>
-                            </select>
-                            <span asp-validation-for="InterventionId" class="text-danger"></span>
-                        </div>
+                        <input type="hidden" asp-for="InterventionId" />
 
                         <div class="col-md-6">
                             <label for="SelectedSparePartName" class="form-label">Spare Part <span class="text-danger">*</span></label>

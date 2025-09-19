@@ -12,6 +12,6 @@ namespace TimeTwoFix.Web.Models.SparePartCategoryModel
         public required string Description { get; set; }
 
         [MaxLength(255)]
-        public string? notes { get; set; }
+        public string? Notes { get; set; }
     }
 }

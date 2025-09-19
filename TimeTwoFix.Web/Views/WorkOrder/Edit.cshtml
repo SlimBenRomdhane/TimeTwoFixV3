@@ -2,80 +2,73 @@
 
 @{
     ViewData["Title"] = "Edit Work Order";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="row mt-5 justify-content-center">
-    <div class="col-md-8">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h2 class="card-title text-center">
-                    <i class="fas fa-tools me-2"></i> Edit Work Order
-                </h2>
-
-                <form asp-action="Edit">
-                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-                    <input type="hidden" asp-for="Id" />
-                    
-
-                    <div class="mb-3">
-                        <label asp-for="VehicleId" class="form-label"></label>
+<div class="container my-5">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <h2 class="text-primary fw-bold mb-4">
+                <i class="bi bi-pencil-square me-2"></i> Edit Work Order
+            </h2>
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="VehicleId" class="form-label">Vehicle</label>
                         <select asp-for="VehicleId" class="form-select" asp-items="ViewBag.VehicleList">
                             <option value="">-- Select Vehicle --</option>
                         </select>
-                        <span asp-validation-for="VehicleId" class="text-danger"></span>
+                        <span asp-validation-for="VehicleId" class="text-danger small"></span>
                     </div>
-
-                    <div class="mb-3">
-                        <label asp-for="Mileage" class="form-label"></label>
+                    <div class="col-md-6">
+                        <label asp-for="Mileage" class="form-label">Mileage</label>
                         <input asp-for="Mileage" class="form-control" />
-                        <span asp-validation-for="Mileage" class="text-danger"></span>
+                        <span asp-validation-for="Mileage" class="text-danger small"></span>
                     </div>
-
-                    <div class="mb-3">
-                        <label asp-for="TolalLaborCost" class="form-label"></label>
+                    <div class="col-md-6">
+                        <label asp-for="TolalLaborCost" class="form-label">Total Labor Cost</label>
                         <input asp-for="TolalLaborCost" class="form-control" type="number" />
-                        <span asp-validation-for="TolalLaborCost" class="text-danger"></span>
+                        <span asp-validation-for="TolalLaborCost" class="text-danger small"></span>
                     </div>
-
-                    <div class="mb-3">
-                        <label asp-for="Status" class="form-label"></label>
+                    <div class="col-md-6">
+                        <label asp-for="Status" class="form-label">Status</label>
                         <select asp-for="Status" class="form-select" asp-items="ViewBag.WorkOrderStatusList">
                             <option value="">-- Select Status --</option>
                         </select>
-                        <span asp-validation-for="Status" class="text-danger"></span>
+                        <span asp-validation-for="Status" class="text-danger small"></span>
                     </div>
-                    <div class="mb-3">
-                        <label asp-for="Paid" class="form-label"></label>
+                    <div class="col-md-6">
+                        <label asp-for="Paid" class="form-label">Payment Status</label>
                         <select asp-for="Paid" class="form-select">
                             <option value="">-- Select Payment Status --</option>
                             <option value="true">Paid</option>
                             <option value="false">Unpaid</option>
                         </select>
-                        <span asp-validation-for="Paid" class="text-danger"></span>
+                        <span asp-validation-for="Paid" class="text-danger small"></span>
                     </div>
-
-                    <div class="mb-3">
-                        <label asp-for="PaymentDate" class="form-label"></label>
+                   
+                    <div class="col-md-6">
+                        <label asp-for="PaymentDate" class="form-label">Payment Date</label>
                         <input asp-for="PaymentDate" class="form-control" type="datetime-local" />
-                        <span asp-validation-for="PaymentDate" class="text-danger"></span>
+                        <span asp-validation-for="PaymentDate" class="text-danger small"></span>
                     </div>
-
-                    <div class="mb-3">
-                        <label asp-for="Notes" class="form-label"></label>
+                    <div class="col-12">
+                        <label asp-for="Notes" class="form-label">Notes</label>
                         <input asp-for="Notes" class="form-control" />
-                        <span asp-validation-for="Notes" class="text-danger"></span>
+                        <span asp-validation-for="Notes" class="text-danger small"></span>
                     </div>
-
-                    <div class="text-center mt-4">
-                        <button type="submit" class="btn btn-general btn-sm me-2" title="Save changes">
-                            <i class="fas fa-save"></i> Save
-                        </button>
-                        <a asp-action="Index" class="btn btn-secondary btn-sm" title="Return to work order list">
-                            <i class="fas fa-arrow-left"></i> Back to List
-                        </a>
-                    </div>
-                </form>
-            </div>
+                </div>
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-save me-1"></i> Save Changes
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                        <i class="bi bi-arrow-left-circle me-2"></i> Back to Work Order List
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -84,4 +77,27 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const paidSelect = document.querySelector('[name="Paid"]');
+            const paymentDateInput = document.querySelector('[name="PaymentDate"]');
+
+            function togglePaymentDateRequired() {
+                const isPaid = paidSelect.value === "true";
+                paymentDateInput.required = isPaid;
+
+                // Optional: add visual cue
+                const label = document.querySelector('label[for="PaymentDate"]');
+                if (label) {
+                    label.innerHTML = isPaid
+                        ? 'Payment Date <span class="text-danger">*</span>'
+                        : 'Payment Date';
+                }
+            }
+
+            paidSelect.addEventListener("change", togglePaymentDateRequired);
+            togglePaymentDateRequired(); // run on initial load
+        });
+    </script>
+
 }

@@ -34,7 +34,7 @@ namespace TimeTwoFix.Application.Base
             int take,
             Expression<Func<T, TOrderKey>> orderBy,
             bool descending = true,
-            Expression<Func<T, object>>[] includes = null);
+            Expression<Func<T, object>>[]? includes = null);
 
         Task<int> GetCountByPredicateAsyncServiceGeneric(Expression<Func<T, bool>> predicate);
         Task<IEnumerable<T>> GetByTextServiceGeneric(string text);

@@ -1,78 +1,65 @@
 ﻿@model TimeTwoFix.Web.Models.SparePartCategoryModel.ReadSparePartCategoryViewModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Spare Part Category Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
-
-<div>
-    <h4>ReadSparePartCategoryViewModel</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Notes)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Notes)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedBy)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CreatedBy)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UpdatedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UpdatedAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.UpdatedBy)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.UpdatedBy)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DeletedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DeletedAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DeletedBy)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DeletedBy)
-        </dd>
-    </dl>
-</div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
-    <a asp-action="Index">Back to List</a>
+<div class="container my-5">
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <h2 class="text-primary fw-bold mb-4">
+                <i class="bi bi-tags me-2"></i> Spare Part Category Details
+            </h2>
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label class="text-muted">Name</label>
+                    <div class="fw-semibold">@Model.Name</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="text-muted">Description</label>
+                    <div>@Model.Description</div>
+                </div>
+                <div class="col-md-12">
+                    <label class="text-muted">Notes</label>
+                    <div>@Model.Notes</div>
+                </div>
+            </div>
+            <hr />
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label class="text-muted">Created At</label>
+                    <div>@Model.CreatedAt</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="text-muted">Created By</label>
+                    <div>@Model.CreatedBy</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="text-muted">Updated At</label>
+                    <div>@Model.UpdatedAt</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="text-muted">Updated By</label>
+                    <div>@Model.UpdatedBy</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="text-muted">Deleted At</label>
+                    <div>@Model.DeletedAt</div>
+                </div>
+                <div class="col-md-6">
+                    <label class="text-muted">Deleted By</label>
+                    <div>@Model.DeletedBy</div>
+                </div>
+            </div>
+            <div class="d-grid mt-4">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-warning btn-lg">
+                    <i class="bi bi-pencil-square me-2"></i> Edit Category
+                </a>
+                <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                    <i class="bi bi-arrow-left-circle me-2"></i> Back to List
+                </a>
+            </div>
+        </div>
+    </div>
 </div>

@@ -13,7 +13,8 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.SparePartManagement
 
         public async Task<IEnumerable<SparePart>> GetSparePartsByNameAsync(string name)
         {
-            var spareParts = await _context.SpareParts.Where(s => s.Name.Contains(name))
+            var spareParts = await _context.SpareParts
+                .Where(s => s.Name.Contains(name) || s.PartCode.Contains(name))
                 .ToListAsync();
             return spareParts;
         }

@@ -7,7 +7,6 @@ using TimeTwoFix.Application.InterventionSparePartServices.Interfaces;
 using TimeTwoFix.Application.SparePartServices.Interfaces;
 using TimeTwoFix.Application.WorkOrderService.Interfaces;
 using TimeTwoFix.Core.Common;
-using TimeTwoFix.Core.Entities.ClientManagement;
 using TimeTwoFix.Core.Entities.SparePartManagement;
 using TimeTwoFix.Web.Models.InterventionSparePartModel;
 
@@ -100,6 +99,26 @@ namespace TimeTwoFix.Web.Controllers
                 TempData["ErrorMessage"] = "Insufficient stock for the requested quantity.";
                 return View(viewModel);
             }
+        }
+
+
+        [HttpGet]
+        public async Task<ActionResult> CreateByInterventionId(int interventionId)
+        {
+            var intervention = await _interventionService.GetByIdAsyncServiceGeneric(interventionId);
+            if (intervention == null || intervention.IsDeleted)
+            {
+                TempData["ErrorMessage"] = "Intervention not found.";
+                return RedirectToAction("Index", "Intervention");
+            }
+            if (intervention.Status == "Completed")
+            {
+                TempData["ErrorMessage"] = "Cannot add spare parts to an intervention that is  completed.";
+                return RedirectToAction("Details", "Intervention", new { id = interventionId });
+            }
+
+            return await base.Create();
+
         }
     }
 }

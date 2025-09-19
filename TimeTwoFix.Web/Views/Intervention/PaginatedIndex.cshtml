@@ -10,204 +10,203 @@
     var pageSize = ViewBag.PageSize as int? ?? 10;
     var isShowingSpecificStatus = !string.IsNullOrEmpty(currentStatus);
 }
-
-<h1>Interventions</h1>
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
-</p>
-
-<!-- Navigation Tabs -->
-<ul class="nav nav-tabs" id="interventionStatusTabs" role="tablist">
-    <li class="nav-item" role="presentation">
-        <a class="nav-link @(!isShowingSpecificStatus ? "active" : "")"
-           asp-action="PaginatedIndex"
-           asp-route-page="1"
-           asp-route-pageSize="@pageSize">
-            All (@(statusCounts?.Sum(s => s.Count) ?? 0))
+<div class="container my-5">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="section-title text-primary fw-bold mb-0">
+            <i class="bi bi-tools me-2"></i> Interventions
+        </h2>
+        <a asp-action="Create" class="btn btn-success btn-lg">
+            <i class="bi bi-plus-circle me-1"></i> Create New
         </a>
-    </li>
-    @if (statusCounts != null)
-    {
-        foreach (var statusCount in statusCounts)
+    </div>
+    <!-- Status Tabs -->
+    <ul class="nav nav-tabs mb-3" id="interventionStatusTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <a class="nav-link @(!isShowingSpecificStatus ? "active" : "")"
+               asp-action="PaginatedIndex"
+               asp-route-page="1"
+               asp-route-pageSize="@pageSize">
+                All (@(statusCounts?.Sum(s => s.Count) ?? 0))
+            </a>
+        </li>
+        @if (statusCounts != null)
         {
-            var isActive = statusCount.Status == currentStatus;
-            <li class="nav-item" role="presentation">
-                <a class="nav-link @(isActive ? "active" : "")"
-                   asp-action="PaginatedIndex"
-                   asp-route-status="@statusCount.Status"
-                   asp-route-page="1"
-                   asp-route-pageSize="@pageSize">
-                    @statusCount.Status (@statusCount.Count)
-                </a>
-            </li>
+            foreach (var statusCount in statusCounts)
+            {
+                var isActive = statusCount.Status == currentStatus;
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link @(isActive ? "active" : "")"
+                       asp-action="PaginatedIndex"
+                       asp-route-status="@statusCount.Status"
+                       asp-route-page="1"
+                       asp-route-pageSize="@pageSize">
+                        @statusCount.Status (@statusCount.Count)
+                    </a>
+                </li>
+            }
         }
-    }
-</ul>
-
-<!-- Tab Content -->
-<div class="tab-content mt-3" id="interventionStatusTabsContent">
-    <div class="tab-pane fade show active">
-        @if (!string.IsNullOrEmpty(currentStatus))
-        {
-            <h5>@currentStatus (@totalCount)</h5>
-        }
-
-        @if (Model.Any())
-        {
-            <table class="table table-bordered table-sm">
-                <thead class="table-light">
-                    <tr>
-                        <th>@Html.DisplayNameFor(model => model.Id)</th>
-                        <th>@Html.DisplayNameFor(model => model.WorkOrderId)</th>
-                        <th>@Html.DisplayNameFor(model => model.MechanicId)</th>
-                        <th>@Html.DisplayNameFor(model => model.ServiceId)</th>
-                        <th>@Html.DisplayNameFor(model => model.LiftingBridgeId)</th>
-                        <th>@Html.DisplayNameFor(model => model.StartDate)</th>
-                        <th>@Html.DisplayNameFor(model => model.EndDate)</th>
-                        <th>@Html.DisplayNameFor(model => model.ActualTimeSpent)</th>
-                        <th>@Html.DisplayNameFor(model => model.InterventionPrice)</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td>@item.Id</td>
-                            <td>@item.WorkOrderId</td>
-                            <td>@item.UserViewModel.FirstName</td>
-                            <td>@item.ProvidedService.Name</td>
-                            <td>@item.LiftingBridge.Name</td>
-                            <td>@item.StartDate</td>
-                            <td>@item.EndDate</td>
-                            @* <td>@item.ActualTimeSpent</td> *@
-                            <td>@item.ActualTimeSpent.ToString(@"hh\:mm\:ss")</td>
-
-                            <td>@($"{item.InterventionPrice:N3} TND")</td>
-                            <td>
-                                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                                @Html.ActionLink("Delete", "Delete", new { id = item.Id }) |
-                                @if(System.DateTime.Now >= item.StartDate)
-                                {
-                                    @if (item.Status == "In Progress")
-                                    {
-                                        <details class="mt-2">
-                                            <summary class="btn btn-outline-danger btn-sm">Pause</summary>
-                                            <form asp-action="PauseIntervention" method="post" class="mt-2">
-                                                <input type="hidden" name="InterventionId" value="@item.Id" />
-                                                <select name="Reason" class="form-select form-select-sm mb-2">
-                                                    <option value="">-- Select Reason --</option>
-                                                    <option>Waiting for Parts</option>
-                                                    <option>Technician Break</option>
-                                                    <option>Client Decision Pending</option>
-                                                    <option>Equipment Issue</option>
-                                                </select>
-
-                                                <button type="submit" class="btn btn-danger btn-sm w-100">Confirm Pause</button>
-                                            </form>
-                                        </details>
-                                    }
-
-                                    @if (item.Status == "Paused")
-                                    {
-                                        <form asp-action="ResumeIntervention" method="post" class="mt-2">
-                                            <input type="hidden" name="interventionId" value="@item.Id" />
-                                            <button type="submit" class="btn btn-outline-success btn-sm w-100">Resume</button>
-                                        </form>
-                                    }
-                                }
-                                
-
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-
-            <!-- Pagination -->
-            
+    </ul>
+    <!-- Tab Content -->
+    <div class="tab-content" id="interventionStatusTabsContent">
+        <div class="tab-pane fade show active">
+            @if (!string.IsNullOrEmpty(currentStatus))
+            {
+                <h5 class="mb-3">@currentStatus (@totalCount)</h5>
+            }
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle table-bordered table-striped">
+                        <thead class="table-light">
+                            <tr>
+                                <th>@Html.DisplayNameFor(model => model.Id)</th>
+                                <th>@Html.DisplayNameFor(model => model.WorkOrderId)</th>
+                                <th>@Html.DisplayNameFor(model => model.MechanicId)</th>
+                                <th>@Html.DisplayNameFor(model => model.ServiceId)</th>
+                                <th>@Html.DisplayNameFor(model => model.LiftingBridgeId)</th>
+                                <th>@Html.DisplayNameFor(model => model.StartDate)</th>
+                                <th>@Html.DisplayNameFor(model => model.EndDate)</th>
+                                <th>@Html.DisplayNameFor(model => model.ActualTimeSpent)</th>
+                                <th>@Html.DisplayNameFor(model => model.InterventionPrice)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.Id</td>
+                                    <td>@item.WorkOrderId</td>
+                                    <td>@item.UserViewModel.FirstName</td>
+                                    <td>@item.ProvidedService.Name</td>
+                                    <td>@item.LiftingBridge.Name</td>
+                                    <td>@item.StartDate</td>
+                                    <td>@item.EndDate</td>
+                                    <td>@item.ActualTimeSpent.ToString(@"hh\:mm\:ss")</td>
+                                    <td>@($"{item.InterventionPrice:N3} TND")</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-primary" })
+                                            @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-outline-info" })
+                                            @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger" })
+                                            <a asp-action="CreateByInterventionId"
+                                               asp-controller="InterventionSparePart"
+                                               asp-route-interventionId="@item.Id"
+                                               class="btn btn-outline-success">
+                                                Get Part
+                                            </a>
+                                        </div>
+                                        @if(System.DateTime.Now >= item.StartDate)
+                                        {
+                                            if (item.Status == "In Progress")
+                                            {
+                                                <details class="mt-2">
+                                                    <summary class="btn btn-outline-danger btn-sm">Pause</summary>
+                                                    <form asp-action="PauseIntervention" method="post" class="mt-2">
+                                                        <input type="hidden" name="InterventionId" value="@item.Id" />
+                                                        <select name="Reason" class="form-select form-select-sm mb-2">
+                                                            <option value="">-- Select Reason --</option>
+                                                            <option>Waiting for Parts</option>
+                                                            <option>Technician Break</option>
+                                                            <option>Client Decision Pending</option>
+                                                            <option>Equipment Issue</option>
+                                                        </select>
+                                                        <button type="submit" class="btn btn-danger btn-sm w-100">Confirm Pause</button>
+                                                    </form>
+                                                </details>
+                                            }
+                                            if (item.Status == "Paused")
+                                            {
+                                                <form asp-action="ResumeIntervention" method="post" class="mt-2">
+                                                    <input type="hidden" name="interventionId" value="@item.Id" />
+                                                    <button type="submit" class="btn btn-outline-success btn-sm w-100">Resume</button>
+                                                </form>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <!-- Pagination -->
+            }
+            @* Pagination and summary code block outside markup *@
+            @if (Model.Any())
+            {
                 int startPage = Math.Max(1, currentPage - 2);
                 int endPage = Math.Min(totalPages, currentPage + 2);
-            
-
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-
-                    <!-- Previous -->
-                    <li class="page-item @(currentPage <= 1 ? "disabled" : "")">
-                        <a class="page-link"
-                           asp-action="PaginatedIndex"
-                           asp-route-status="@currentStatus"
-                           asp-route-page="@(currentPage - 1)"
-                           asp-route-pageSize="@pageSize">Previous</a>
-                    </li>
-
-                    <!-- First page + ellipsis -->
-                    @if (startPage > 1)
-                    {
-                        <li class="page-item">
-                            <a class="page-link"
-                               asp-action="PaginatedIndex"
-                               asp-route-status="@currentStatus"
-                               asp-route-page="1"
-                               asp-route-pageSize="@pageSize">1</a>
-                        </li>
-                        <li class="page-item disabled"><span class="page-link">…</span></li>
-                    }
-
-                    <!-- Page range -->
-                    @for (int i = startPage; i <= endPage; i++)
-                    {
-                        <li class="page-item @(i == currentPage ? "active" : "")">
-                            <a class="page-link"
-                               asp-action="PaginatedIndex"
-                               asp-route-status="@currentStatus"
-                               asp-route-page="@i"
-                               asp-route-pageSize="@pageSize">@i</a>
-                        </li>
-                    }
-
-                    <!-- Ellipsis + last page -->
-                    @if (endPage < totalPages)
-                    {
-                        <li class="page-item disabled"><span class="page-link">…</span></li>
-                        <li class="page-item">
-                            <a class="page-link"
-                               asp-action="PaginatedIndex"
-                               asp-route-status="@currentStatus"
-                               asp-route-page="@totalPages"
-                               asp-route-pageSize="@pageSize">@totalPages</a>
-                        </li>
-                    }
-
-                    <!-- Next -->
-                    <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
-                        <a class="page-link"
-                           asp-action="PaginatedIndex"
-                           asp-route-status="@currentStatus"
-                           asp-route-page="@(currentPage + 1)"
-                           asp-route-pageSize="@pageSize">Next</a>
-                    </li>
-                </ul>
-            </nav>
-
-            <!-- Results Summary -->
-           
                 int skip = (currentPage - 1) * pageSize;
                 int showingTo = Math.Min(skip + pageSize, totalCount);
-            
-            <div class="text-center mt-2">
-                <small class="text-muted">
-                    Showing @skip+1–@showingTo of @totalCount interventions
-                </small>
-            </div>
-        }
-        else
-        {
-            <div class="alert alert-info">
-                No interventions found for status "@currentStatus".
-            </div>
-        }
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <!-- Previous -->
+                        <li class="page-item @(currentPage <= 1 ? "disabled" : "")">
+                            <a class="page-link"
+                               asp-action="PaginatedIndex"
+                               asp-route-status="@currentStatus"
+                               asp-route-page="@(currentPage - 1)"
+                               asp-route-pageSize="@pageSize">Previous</a>
+                        </li>
+                        <!-- First page + ellipsis -->
+                        @if (startPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link"
+                                   asp-action="PaginatedIndex"
+                                   asp-route-status="@currentStatus"
+                                   asp-route-page="1"
+                                   asp-route-pageSize="@pageSize">1</a>
+                            </li>
+                            <li class="page-item disabled"><span class="page-link">…</span></li>
+                        }
+                        <!-- Page range -->
+                        @for (int i = startPage; i <= endPage; i++)
+                        {
+                            <li class="page-item @(i == currentPage ? "active" : "")">
+                                <a class="page-link"
+                                   asp-action="PaginatedIndex"
+                                   asp-route-status="@currentStatus"
+                                   asp-route-page="@i"
+                                   asp-route-pageSize="@pageSize">@i</a>
+                            </li>
+                        }
+                        <!-- Ellipsis + last page -->
+                        @if (endPage < totalPages)
+                        {
+                            <li class="page-item disabled"><span class="page-link">…</span></li>
+                            <li class="page-item">
+                                <a class="page-link"
+                                   asp-action="PaginatedIndex"
+                                   asp-route-status="@currentStatus"
+                                   asp-route-page="@totalPages"
+                                   asp-route-pageSize="@pageSize">@totalPages</a>
+                            </li>
+                        }
+                        <!-- Next -->
+                        <li class="page-item @(currentPage >= totalPages ? "disabled" : "")">
+                            <a class="page-link"
+                               asp-action="PaginatedIndex"
+                               asp-route-status="@currentStatus"
+                               asp-route-page="@(currentPage + 1)"
+                               asp-route-pageSize="@pageSize">Next</a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- Results Summary -->
+                <div class="text-center mt-2">
+                    <small class="text-muted">
+                        Showing @skip+1–@showingTo of @totalCount interventions
+                    </small>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    No interventions found for status "@currentStatus".
+                </div>
+            }
+        </div>
     </div>
 </div>
