@@ -10,7 +10,9 @@ namespace TimeTwoFix.Web.Mapping
         public VehicleProfileMapping()
         {
             CreateMap<ReadVehicleViewModel, ReadVehicleDto>()
-                .ForMember(dest => dest.ReadClientDto, opt => opt.MapFrom(src => src.ReadClientViewModel)).ReverseMap();
+                .ForMember(dest => dest.ReadClientDto, opt => opt.MapFrom(src => src.ReadClientViewModel))
+                .ForMember(dest => dest.WorkOrders, opt => opt.MapFrom(src => src.WorkOrders)) // ✅ Add this
+                .ReverseMap();
             CreateMap<CreateVehicleViewModel, CreateVehicleDto>().ReverseMap();
             CreateMap<UpdateVehicleViewModel, UpdateVehicleDto>().ReverseMap();
             CreateMap<DeleteVehicleViewModel, DeleteVehicleDto>().ReverseMap();

@@ -9,5 +9,8 @@
 
         //Bon de sortie
         public string DeliveryNote { get; set; }
+        public string SparePartName { get; set; }
+        public decimal UnitPrice { get; set; }
+
     }
 }

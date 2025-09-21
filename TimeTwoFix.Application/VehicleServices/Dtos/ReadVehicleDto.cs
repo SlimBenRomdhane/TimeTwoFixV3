@@ -1,4 +1,5 @@
 ﻿using TimeTwoFix.Application.ClientServices.Dtos;
+using TimeTwoFix.Application.WorkOrderService.Dtos;
 
 namespace TimeTwoFix.Application.VehicleServices.Dtos
 {
@@ -15,5 +16,7 @@ namespace TimeTwoFix.Application.VehicleServices.Dtos
         public string TransmissionType { get; set; }
         public int Year { get; set; }
         public int Mileage { get; set; }
+        public List<ReadWorkOrderDto> WorkOrders { get; set; }
+        public string Notes { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using TimeTwoFix.Application.Base;
+using TimeTwoFix.Application.InterventionSparePartServices.Dtos;
 using TimeTwoFix.Application.LiftingBridgeServices.Dtos;
 using TimeTwoFix.Application.ProvidedServicesService.Dtos;
 using TimeTwoFix.Application.UserServices.Dtos.Users;
@@ -20,5 +21,6 @@ namespace TimeTwoFix.Application.InterventionService.Dtos
         public DateTime? EndDate { get; set; }
         public TimeSpan? ActualTimeSpent { get; set; }
         public decimal InterventionPrice { get; set; }
+        public List<ReadInterventionSparePartDto>? InterventionSparePartsDto { get; set; }
     }
 }

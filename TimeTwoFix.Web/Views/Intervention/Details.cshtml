@@ -92,6 +92,15 @@
                                     <td>@($"{(part.UnitPrice * part.Quantity):N3} TND")</td>
                                 </tr>
                             }
+
+                            @* Grand Total Row *@
+                            @{
+                                var grandTotal = Model.SparePartsUsed.Sum(p => p.UnitPrice * p.Quantity);
+                            }
+                            <tr class="table-secondary fw-bold">
+                                <td colspan="3" class="text-end">Total</td>
+                                <td>@($"{grandTotal:N3} TND")</td>
+                            </tr>
                         </tbody>
                     </table>
                 }

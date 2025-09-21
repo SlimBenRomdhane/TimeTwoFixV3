@@ -1,4 +1,5 @@
 ﻿using TimeTwoFix.Web.Models.ClientModels;
+using TimeTwoFix.Web.Models.WorkOrderModels;
 
 namespace TimeTwoFix.Web.Models.VehicleModels
 {
@@ -15,6 +16,7 @@ namespace TimeTwoFix.Web.Models.VehicleModels
         public string TransmissionType { get; set; }
         public int Year { get; set; }
         public int Mileage { get; set; }
+        public List<ReadWorkOrderViewModel> WorkOrders { get; set; }
         public string Notes { get; set; }
     }
 }

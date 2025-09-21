@@ -11,6 +11,8 @@
             <div class="card-body">
                 <h2 class="card-title text-center">@ViewData["Title"]</h2>
                 <hr />
+
+                <!-- Client Info -->
                 <h5 class="mb-3 text-secondary"><i class="bi bi-person-fill"></i> Client Info</h5>
                 <dl class="row">
                     <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ReadClientViewModel.FirstName)</dt>
@@ -20,7 +22,10 @@
                     <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ReadClientViewModel.PhoneNumber)</dt>
                     <dd class="col-sm-9">@Model.ReadClientViewModel?.PhoneNumber</dd>
                 </dl>
+
                 <hr />
+
+                <!-- Vehicle Specs -->
                 <h5 class="mb-3 text-secondary"><i class="bi bi-car-front"></i> Vehicle Specifications</h5>
                 <dl class="row">
                     <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Vin)</dt>
@@ -42,6 +47,41 @@
                     <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Notes)</dt>
                     <dd class="col-sm-9">@Html.DisplayFor(model => model.Notes)</dd>
                 </dl>
+
+                <hr />
+
+                <!-- Vehicle History -->
+                <h5 class="mb-3 text-secondary"><i class="bi bi-clock-history"></i> Vehicle History</h5>
+
+                @if (Model.WorkOrders?.Any() == true)
+                {
+                    foreach (var wo in Model.WorkOrders.OrderByDescending(w => w.Id))
+                    {
+                        <div class="border rounded p-3 mb-4">
+                            <h6 class="fw-bold">Work Order #@wo.Id</h6>
+                            <p><strong>Start:</strong> @wo.StartDate.ToString("yyyy-MM-dd")</p>
+                            <p><strong>End:</strong> @wo.EndDate.ToString("yyyy-MM-dd")</p>
+                            <p><strong>Mileage:</strong> @wo.Mileage</p>
+                            @* <p><strong>Labor Cost:</strong> @wo.TolalLaborCost.ToString("N3") TND</p> *@
+                            <p><strong>Notes:</strong> @wo.Notes</p>
+
+                            <p class="fw-bold mb-1">Interventions:</p>
+                            <ul>
+                                @foreach (var iv in wo.InterventionViewModels)
+                                {
+                                    <li>@iv.ProvidedService?.Name </li>
+                                    @* <li> @iv.InterventionPrice.ToString("N3") TND </li> *@
+                                }
+                            </ul>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <p class="text-muted">No work orders found for this vehicle.</p>
+                }
+
+                <!-- Actions -->
                 <div class="d-grid mt-4">
                     <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
                         <i class="bi bi-arrow-left-circle me-2"></i> Back to Vehicle List

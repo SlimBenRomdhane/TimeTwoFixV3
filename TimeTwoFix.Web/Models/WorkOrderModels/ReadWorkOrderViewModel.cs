@@ -19,5 +19,12 @@ namespace TimeTwoFix.Web.Models.WorkOrderModels
         public DateTime? PaymentDate { get; set; }
         public string Notes { get; set; }
         public ICollection<ReadInterventionViewModel> InterventionViewModels { get; set; }
+
+        //Info about the customer
+        public string CustomerName { get; set; }
+        public string CustomerLastName { get; set; }
+        public string CustomerPhone { get; set; }
+        public string CustomerEmail { get; set; }
+
     }
 }

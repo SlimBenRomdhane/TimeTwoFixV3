@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using TimeTwoFix.Application.ClientServices.Interfaces;
 using TimeTwoFix.Application.VehicleServices.Dtos;
 using TimeTwoFix.Application.VehicleServices.Interfaces;
 using TimeTwoFix.Core.Entities.VehicleManagement;
+using TimeTwoFix.Infrastructure.Persistence.Includes;
 using TimeTwoFix.Web.Models.VehicleModels;
 
 namespace TimeTwoFix.Web.Controllers
@@ -90,7 +92,13 @@ namespace TimeTwoFix.Web.Controllers
         // GET: VehicleController/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            var vehicle = await _vehicleService.GetByIdAsyncServiceGeneric(id, null, c => c.Client);
+            var includes = EntityIncludeHelper.GetIncludes<Vehicle>();
+            var vehicle = await _vehicleService.GetByIdAsyncServiceGeneric(id,
+                includeBuilder: query => query
+                .Include(vi => vi.WorkOrders)
+                    .ThenInclude(wo => wo.Interventions)
+                        .ThenInclude(inter => inter.Service)
+                .Include(vi => vi.Client));
             if (vehicle == null)
             {
                 return NotFound();

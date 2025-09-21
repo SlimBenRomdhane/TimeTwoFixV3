@@ -3,10 +3,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 using TimeTwoFix.Application.VehicleServices.Interfaces;
 using TimeTwoFix.Application.WorkOrderService.Dtos;
 using TimeTwoFix.Application.WorkOrderService.Interfaces;
 using TimeTwoFix.Core.Entities.WorkOrderManagement;
+using TimeTwoFix.Infrastructure.Persistence.Includes;
+using TimeTwoFix.Web.Models.InterventionModels;
 using TimeTwoFix.Web.Models.VehicleModels;
 using TimeTwoFix.Web.Models.WorkOrderModels;
 
@@ -99,6 +102,9 @@ namespace TimeTwoFix.Web.Controllers
             var workOrder = await _workOrderService.GetByIdAsyncServiceGeneric(id, includeBuilder: query => query
             .Include(wo => wo.Vehicle)
             .Include(wo => wo.Interventions)
+                .ThenInclude(inter => inter.InterventionSpareParts)
+                    .ThenInclude(isp => isp.SparePart)
+            .Include(wo => wo.Interventions)
                 .ThenInclude(inter => inter.Service)
             .Include(wo => wo.Interventions)
                 .ThenInclude(inter => inter.Mechanic));
@@ -107,7 +113,18 @@ namespace TimeTwoFix.Web.Controllers
                 TempData["WorkOrderError"] = "WorkOrder not found";
                 return RedirectToAction(nameof(Index));
             }
+            foreach (var intervention in workOrder.Interventions)
+            {
+                var spareParts = intervention.InterventionSpareParts
+                    .Where(isp => !isp.IsDeleted)
+                    .Select(sp => new InterventionSparePartDisplayViewModel
+                    {
+                        SparePartName = sp.SparePart.Name,
+                        Quantity = sp.Quantity,
+                        UnitPrice = sp.SparePart?.UnitPrice ?? 0
+                    }).ToList();
 
+            }
             var workOrderDto = _mapper.Map<ReadWorkOrderDto>(workOrder);
             var workOrderViewModel = _mapper.Map<ReadWorkOrderViewModel>(workOrderDto);
             return View(workOrderViewModel);
@@ -315,6 +332,53 @@ namespace TimeTwoFix.Web.Controllers
             });
 
             return Json(response);
+        }
+        public async Task<IActionResult> ExportToPdf(int id)
+        {
+            //var includes = EntityIncludeHelper.GetIncludes<WorkOrder>();
+            var workOrder = await _workOrderService.GetByIdAsyncServiceGeneric(id, includeBuilder: query => query
+            .Include(wo => wo.Vehicle)
+                .ThenInclude(v => v.Client)
+            .Include(wo => wo.Interventions)
+                .ThenInclude(inter => inter.InterventionSpareParts)
+                    .ThenInclude(isp => isp.SparePart)
+            .Include(wo => wo.Interventions)
+                .ThenInclude(inter => inter.Service)
+            .Include(wo => wo.Interventions)
+                .ThenInclude(inter => inter.Mechanic));
+
+            var exportModel = new WorkOrderExportViewModel
+            {
+                WorkOrderId = workOrder.Id,
+                // Pull customer info from Vehicle
+                CustomerName = workOrder.Vehicle?.Client?.FirstName,
+                CustomerLastName = workOrder.Vehicle?.Client?.LastName,
+                CustomerPhone = workOrder.Vehicle?.Client?.PhoneNumber,
+                CustomerEmail = workOrder.Vehicle?.Client?.Email,
+
+                LicensePlate = workOrder.Vehicle.LicensePlate,
+                Brand = workOrder.Vehicle.Brand,
+                Model = workOrder.Vehicle.Model,
+                Vin = workOrder.Vehicle.Vin,
+                Mileage = workOrder.Mileage,
+                LaborCost = workOrder.TolalLaborCost,
+                Notes = workOrder.Notes,
+                Interventions = workOrder.Interventions.Select(iv => new ExportInterventionViewModel
+                {
+                    ServiceName = iv.Service.Name,
+                    ServiceCost = iv.InterventionPrice,
+                    SpareParts = iv.InterventionSpareParts.Select(sp => new ExportSparePartViewModel
+                    {
+                        Name = sp.SparePart.Name,
+                        Quantity = sp.Quantity,
+                        UnitPrice = sp.SparePart.UnitPrice
+                    }).ToList()
+                }).ToList()
+            };
+            //var workOrderDto = _mapper.Map<ReadWorkOrderDto>(workOrder);
+            var workOrderViewModel = _mapper.Map<ReadWorkOrderViewModel>(exportModel);
+            var pdfBytes = WorkOrderPdfGenerator.Generate(workOrderViewModel);
+            return File(pdfBytes, "application/pdf", $"WorkOrder_{id}.pdf");
         }
     }
 }

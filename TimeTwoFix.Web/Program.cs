@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using QuestPDF.Infrastructure;
 using TimeTwoFix.Application.Extension;
 using TimeTwoFix.Infrastructure.Extension;
 using TimeTwoFix.Web.Hubs;
@@ -53,6 +54,7 @@ namespace TimeTwoFix.Web
             //Configuring SignalR
             builder.Services.AddSignalR();
             builder.Services.AddHostedService<InterventionStatusUpdater>();
+            QuestPDF.Settings.License = LicenseType.Community;
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

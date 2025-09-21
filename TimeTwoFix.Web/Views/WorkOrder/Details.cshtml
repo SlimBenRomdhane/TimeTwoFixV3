@@ -1,7 +1,15 @@
-﻿@model TimeTwoFix.Web.Models.WorkOrderModels.ReadWorkOrderViewModel
+﻿@using TimeTwoFix.Web.Models.InterventionModels
+@model TimeTwoFix.Web.Models.WorkOrderModels.ReadWorkOrderViewModel
 
 @{
     ViewData["Title"] = "Work Order Details";
+
+    var totalSpareParts = Model.InterventionViewModels
+        .SelectMany(iv => iv.SparePartsUsed ?? new List<InterventionSparePartDisplayViewModel>())
+        .Sum(sp => sp.UnitPrice * sp.Quantity);
+
+    var totalServices = Model.InterventionViewModels.Sum(iv => iv.InterventionPrice);
+    var grandTotal = totalSpareParts + totalServices;
 }
 
 <div class="row mt-5 justify-content-center">
@@ -75,9 +83,7 @@
                 <div class="row gy-2 mb-4">
                     <div class="col-md-6">
                         <label class="text-muted">Status</label>
-                        <span class="badge badge-status rounded-pill px-3 py-2" title="Work order status">
-                            @Model.Status
-                        </span>
+                        <span class="badge badge-status rounded-pill px-3 py-2">@Model.Status</span>
                     </div>
                 </div>
 
@@ -95,9 +101,6 @@
                                 <tr class="align-middle">
                                     <th scope="col">#</th>
                                     <th scope="col">Service</th>
-                                    <th scope="col">Technician</th>
-                                    <th scope="col">Start</th>
-                                    <th scope="col">End</th>
                                     <th scope="col">Cost</th>
                                     <th scope="col">Status</th>
                                 </tr>
@@ -106,76 +109,74 @@
                                 @foreach (var iv in Model.InterventionViewModels)
                                 {
                                     <tr>
-                                        @if (iv.Status != "Completed")
-                                        {
-                                            <td>
+                                        <td>
+                                            @if (iv.Status != "Completed")
+                                            {
                                                 <a asp-controller="Intervention"
                                                    asp-action="Edit"
                                                    asp-route-id="@iv.Id"
-                                                   class="text-decoration-none fw-semibold">
-                                                    @iv.Id
-                                                </a>
-                                            </td>
-                                        }
-                                        else
-                                        {
-                                            <td>@iv.Id</td>
-                                        }                                        
-
-                                        <td>
-                                            @if (!string.IsNullOrEmpty(iv.ProvidedService?.Name))
-                                            {
-                                                <span>@iv.ProvidedService.Name</span>
+                                                   class="text-decoration-none fw-semibold">@iv.Id</a>
                                             }
                                             else
                                             {
-                                                <span class="text-muted">[no service]</span>
+                                                @iv.Id
                                             }
                                         </td>
-
-                                        <td>
-                                            @if (!string.IsNullOrEmpty(iv.UserViewModel?.FirstName))
-                                            {
-                                                <span>@iv.UserViewModel.FirstName</span>
-                                            }
-                                            else
-                                            {
-                                                <span class="text-muted">[no tech]</span>
-                                            }
-                                        </td>
-
-                                        <td>
-                                            <span class="text-nowrap" title="Start time">
-                                                @iv.StartDate.ToString("yyyy-MM-dd")<br />
-                                                <small class="text-muted">@iv.StartDate.ToString("HH:mm")</small>
-                                            </span>
-                                        </td>
-
-                                        <td>
-                                            @if (iv.EndDate.HasValue)
-                                            {
-                                                <span class="text-nowrap" title="End time">
-                                                    @iv.EndDate.Value.ToString("yyyy-MM-dd")<br />
-                                                    <small class="text-muted">@iv.EndDate.Value.ToString("HH:mm")</small>
-                                                </span>
-                                            }
-                                            else
-                                            {
-                                                <span class="text-muted">Not completed</span>
-                                            }
-                                        </td>
-
-                                        <td>
-                                            <span class="fw-semibold">@($"{iv.InterventionPrice:N3} TND")</span>
-                                        </td>
-
-                                        <td>
-                                            <span class="badge bg-secondary text-light rounded-pill px-3 py-2" title="Intervention status">
-                                                @iv.Status
-                                            </span>
-                                        </td>
+                                        <td>@iv.ProvidedService?.Name ?? "<span class=\"text-muted\">[no service]</span>"</td>
+                                        <td><span class="fw-semibold">@($"{iv.InterventionPrice:N3} TND")</span></td>
+                                        <td><span class="badge bg-secondary text-light rounded-pill px-3 py-2">@iv.Status</span></td>
                                     </tr>
+
+                                    @if (iv.SparePartsUsed != null && iv.SparePartsUsed.Any())
+                                    {
+                                        var subtotal = iv.SparePartsUsed.Sum(sp => sp.UnitPrice * sp.Quantity);
+                                        <tr>
+                                            <td colspan="4" class="bg-light">
+                                                <div class="text-start px-3 py-2">
+                                                    <strong><i class="bi bi-box-seam me-1"></i> Spare Parts Used:</strong>
+                                                    <table class="table table-sm table-bordered mt-2 mb-0">
+                                                        <thead class="table-light">
+                                                            <tr>
+                                                                <th>Part Name</th>
+                                                                <th>Quantity</th>
+                                                                <th>Unit Price</th>
+                                                                <th>Total</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var part in iv.SparePartsUsed)
+                                                            {
+                                                                <tr>
+                                                                    <td>@part.SparePartName</td>
+                                                                    <td>@part.Quantity</td>
+                                                                    <td>@($"{part.UnitPrice:N3} TND")</td>
+                                                                    <td>@($"{(part.UnitPrice * part.Quantity):N3} TND")</td>
+                                                                </tr>
+                                                            }
+                                                            <tr class="table-secondary fw-bold">
+                                                                <td colspan="3" class="text-end">Subtotal</td>
+                                                                <td>@($"{subtotal:N3} TND")</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
                                 }
+
+                                <tr class="table-secondary fw-bold">
+                                    <td colspan="3" class="text-end">Total Services</td>
+                                    <td>@($"{totalServices:N3} TND")</td>
+                                </tr>
+                                <tr class="table-secondary fw-bold">
+                                    <td colspan="3" class="text-end">Total Spare Parts</td>
+                                    <td>@($"{totalSpareParts:N3} TND")</td>
+                                </tr>
+                                <tr class="table-dark fw-bold">
+                                    <td colspan="3" class="text-end">Grand Total</td>
+                                    <td>@($"{grandTotal:N3} TND")</td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -189,11 +190,14 @@
 
                 <!-- Actions -->
                 <div class="text-center mt-4">
-                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-general btn-sm me-2" title="Edit this work order">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-general btn-sm me-2">
                         <i class="fas fa-edit"></i> Edit Work Order
                     </a>
-                    <a asp-action="Index" class="btn btn-secondary btn-sm" title="Return to work order list">
+                    <a asp-action="Index" class="btn btn-secondary btn-sm">
                         <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                    <a asp-action="ExportToPdf" asp-route-id="@Model.Id" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-arrow-left"></i> Export as PDF
                     </a>
                 </div>
             </div>
