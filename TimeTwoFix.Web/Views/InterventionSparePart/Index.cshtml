@@ -23,6 +23,9 @@
                     @Html.DisplayNameFor(model => model.SparePartId)
                 </th>
                 <th>
+                    @Html.DisplayNameFor(model => model.SparePartName)
+                </th>
+                <th>
                     @Html.DisplayNameFor(model => model.Quantity)
                 </th>
                 <th>
@@ -43,6 +46,10 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.SparePartId)
                 </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SparePartName)
+                </td>
+
                 <td>
                     @Html.DisplayFor(modelItem => item.Quantity)
                 </td>

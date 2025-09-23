@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TimeTwoFix.Application.Base.BaseDtos;
@@ -18,6 +19,7 @@ using TimeTwoFix.Web.Models.PauseRecordModel;
 
 namespace TimeTwoFix.Web.Controllers
 {
+    [Authorize(Roles = "GeneralManager,WorkshopManager")]
     public class InterventionController : BaseController<Intervention
         , CreateInterventionDto, ReadInterventionDto, UpdateInterventionDto, DeleteInterventionDto,
         CreateInterventionViewModel, ReadInterventionViewModel, UpdateInterventionViewModel, DeleteInterventionViewModel>
@@ -51,7 +53,7 @@ namespace TimeTwoFix.Web.Controllers
         public override async Task<IActionResult> Index()
         {
             // Redirect to PaginatedIndex to handle the status and pagination logic
-            return RedirectToAction("PaginatedIndex", "Intervention");
+            return await Task.FromResult(RedirectToAction("PaginatedIndex", "Intervention"));
         }
 
         [HttpGet]
@@ -118,15 +120,29 @@ namespace TimeTwoFix.Web.Controllers
                     .Where(u => u.UserType.Equals("Mechanic") && u.Status == "Active");
                 var activeLiftingBridges = (await _liftingBridgeServices.GetAllAsyncServiceGeneric())
                     .Where(lb => !lb.IsDeleted && lb.Status == "Idle");
-                // Check for missing dependencies
-                if (!activeWorkOrders.Any() || !activeProvidedServices.Any() || !activeMechanics.Any() || !activeLiftingBridges.Any())
+
+                var errorMessages = new List<string>();
+
+                if (!activeWorkOrders.Any())
+                    errorMessages.Add("No active work orders available.");
+
+                if (!activeProvidedServices.Any())
+                    errorMessages.Add("No services available.");
+
+                if (!activeMechanics.Any())
+                    errorMessages.Add("No active mechanics available.");
+
+                if (!activeLiftingBridges.Any())
+                    errorMessages.Add("No idle lifting bridges available.");
+                if (errorMessages.Any())
                 {
-                    TempData["ErrorMessage"] = "Some required data is missing. Please check work orders, services, mechanics, or lifting bridges.";
+                    TempData["ErrorMessage"] = string.Join(" ", errorMessages);
                 }
                 else
                 {
                     TempData["SuccessMessage"] = "All dependencies loaded successfully.";
                 }
+
 
                 ViewBag.WorkOrder = activeWorkOrders.Select(c => new SelectListItem
                 {
@@ -169,6 +185,25 @@ namespace TimeTwoFix.Web.Controllers
                 .Where(u => u.UserType.Equals("Mechanic") && u.Status == "Active");
             var activeLiftingBridges = (await _liftingBridgeServices.GetAllAsyncServiceGeneric())
                 .Where(lb => !lb.IsDeleted && lb.Status == "Idle");
+            var errorMessages = new List<string>();
+
+            if (!activeWorkOrders.Any(w => w.Id == viewModel.WorkOrderId))
+                errorMessages.Add("Selected work order is no longer available.");
+
+            if (!activeProvidedServices.Any())
+                errorMessages.Add("Selected service is no longer available.");
+
+            if (!activeMechanics.Any(m => m.Id == viewModel.MechanicId))
+                errorMessages.Add("Selected mechanic is no longer active.");
+
+            if (!activeLiftingBridges.Any(lb => lb.Id == viewModel.LiftingBridgeId))
+                errorMessages.Add("Selected lifting bridge is not idle or has been removed.");
+
+            if (errorMessages.Any())
+            {
+                TempData["ErrorMessage"] = string.Join(" ", errorMessages);
+
+            }
             ViewBag.WorkOrder = activeWorkOrders.Select(c => new SelectListItem
             {
                 Value = c.Id.ToString(),
@@ -189,6 +224,11 @@ namespace TimeTwoFix.Web.Controllers
                 Value = c.Id.ToString(),
                 Text = c.Name
             }).ToList();
+            if (errorMessages.Any())
+            {
+                TempData["ErrorMessage"] = string.Join(" ", errorMessages);
+                return View(viewModel);
+            }
             if (!ModelState.IsValid)
             {
                 TempData["ErrorMessage"] = "Invalid data provided";
@@ -236,7 +276,7 @@ namespace TimeTwoFix.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            if (intervention.Status == "Completed")
+            if (intervention.Status == "Completed" && !User.IsInRole("GeneralManager"))
             {
                 TempData["ErrorMessage"] = "Completed interventions cannot be modified.";
                 return RedirectToAction("Details", "Intervention", new { id = id });
@@ -257,7 +297,7 @@ namespace TimeTwoFix.Web.Controllers
                 return RedirectToAction(nameof(Index));
                 //return NotFound();
             }
-            if (intervention.Status == "Completed")
+            if (intervention.Status == "Completed" && !User.IsInRole("GeneralManager"))
             {
                 TempData["ErrorMessage"] = "Completed interventions cannot be modified.";
                 return RedirectToAction("Details", "Intervention", new { id = id });
@@ -300,11 +340,13 @@ namespace TimeTwoFix.Web.Controllers
             var intervention = await _interventionService.GetByIdAsyncServiceGeneric(createPauseRecordViewModel.InterventionId, null, includes);
             if (intervention == null)
             {
-                return NotFound(new { message = "Intervention not found" });
+                TempData["ErrorMessage"] = "Intervention not found.";
+                return RedirectToAction("PaginatedIndex");
             }
             if (intervention.Status != "In Progress")
             {
-                return BadRequest(new { message = "Only interventions that are 'In Progress' can be paused." });
+                TempData["ErrorMessage"] = "Only interventions that are 'In Progress' can be paused.";
+                return RedirectToAction("PaginatedIndex");
             }
             try
             {
@@ -321,12 +363,13 @@ namespace TimeTwoFix.Web.Controllers
                 await _pauseRecordService.AddAsyncServiceGeneric(pauseRecord);
                 await _interventionService.UpdateAsyncServiceGeneric(intervention);
 
-                //return Ok(new { message = "Intervention paused successfully." });
+                TempData["SuccessMessage"] = $"Intervention #{intervention.Id} has been paused successfully.";
                 return RedirectToAction("PaginatedIndex");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = $"An error occurred while pausing the intervention: {ex.Message}" });
+                TempData["ErrorMessage"] = $"An error occurred while pausing the intervention: {ex.Message}";
+                return RedirectToAction("PaginatedIndex");
             }
         }
 
@@ -337,17 +380,21 @@ namespace TimeTwoFix.Web.Controllers
             var intervention = await _interventionService.GetByIdAsyncServiceGeneric(interventionId, null, includes);
 
             if (intervention == null)
-                return NotFound(new { message = "Intervention not found" });
-
+            {
+                TempData["ErrorMessage"] = "Intervention not found.";
+                return RedirectToAction("PaginatedIndex");
+            }
             if (intervention.Status != "Paused")
-                return BadRequest(new { message = "Only paused interventions can be resumed." });
-
-            var activePause = intervention.PauseRecords
-                .FirstOrDefault(p => p.EndTime == null);
-
+            {
+                TempData["ErrorMessage"] = "Only paused interventions can be resumed.";
+                return RedirectToAction("PaginatedIndex");
+            }
+            var activePause = intervention.PauseRecords.FirstOrDefault(p => p.EndTime == null);
             if (activePause == null)
-                return BadRequest(new { message = "No active pause found for this intervention." });
-
+            {
+                TempData["ErrorMessage"] = "No active pause found for this intervention.";
+                return RedirectToAction("PaginatedIndex");
+            }
             try
             {
                 activePause.EndTime = DateTime.Now;
@@ -358,28 +405,54 @@ namespace TimeTwoFix.Web.Controllers
                 await _pauseRecordService.UpdateAsyncServiceGeneric(activePause);
                 await _interventionService.UpdateAsyncServiceGeneric(intervention);
 
-                //return Ok(new { message = "Intervention resumed successfully." });
+                TempData["SuccessMessage"] = $"Intervention #{intervention.Id} has been resumed.";
                 return RedirectToAction("PaginatedIndex");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = $"An error occurred while resuming the intervention: {ex.Message}" });
+                TempData["ErrorMessage"] = $"An error occurred while resuming the intervention: {ex.Message}";
+                return RedirectToAction("PaginatedIndex");
             }
         }
 
         public async Task<ActionResult> CreateById(int workOrderId)
         {
             var workOrder = await _workOrderService.GetByIdAsyncServiceGeneric(workOrderId);
-            if (workOrder.Paid == true)
+            if (workOrder == null)
+            {
+                TempData["WorkOrderError"] = "Work Order not found.";
+                return RedirectToAction("Index", "WorkOrder");
+            }
+            if (workOrder.Paid == true && !User.IsInRole("GeneralManager"))
             {
                 TempData["WorkOrderError"] = "Paid work orders cannot be modified.";
                 return RedirectToAction("Index", "WorkOrder");
             }
-            var activeProvidedServices = (await _providedServiceService.GetAllAsyncServiceGeneric()).Where(ps => !ps.IsDeleted);
+            var activeProvidedServices = (await _providedServiceService.GetAllAsyncServiceGeneric())
+                .Where(ps => !ps.IsDeleted);
             var activeMechanics = (await _userService.GetAllApplicationUsers())
                 .Where(u => u.UserType.Equals("Mechanic") && u.Status == "Active");
             var activeLiftingBridges = (await _liftingBridgeServices.GetAllAsyncServiceGeneric())
                 .Where(lb => !lb.IsDeleted && lb.Status == "Idle");
+            var errorMessages = new List<string>();
+
+
+            if (!activeProvidedServices.Any())
+                errorMessages.Add("No services available.");
+
+            if (!activeMechanics.Any())
+                errorMessages.Add("No active mechanics available.");
+
+            if (!activeLiftingBridges.Any())
+                errorMessages.Add("No idle lifting bridges available.");
+            if (errorMessages.Any())
+            {
+                TempData["ErrorMessage"] = string.Join(" ", errorMessages);
+            }
+            else
+            {
+                TempData["SuccessMessage"] = "All dependencies loaded successfully.";
+            }
 
             ViewBag.ProvidedService = activeProvidedServices.Select(c => new SelectListItem
             {
@@ -414,7 +487,25 @@ namespace TimeTwoFix.Web.Controllers
                 .Where(u => u.UserType.Equals("Mechanic") && u.Status == "Active");
             var activeLiftingBridges = (await _liftingBridgeServices.GetAllAsyncServiceGeneric())
                 .Where(lb => !lb.IsDeleted && lb.Status == "Idle");
+            var errorMessages = new List<string>();
 
+
+            if (!activeProvidedServices.Any())
+                errorMessages.Add("No services available.");
+
+            if (!activeMechanics.Any())
+                errorMessages.Add("No active mechanics available.");
+
+            if (!activeLiftingBridges.Any())
+                errorMessages.Add("No idle lifting bridges available.");
+            if (errorMessages.Any())
+            {
+                TempData["ErrorMessage"] = string.Join(" ", errorMessages);
+            }
+            else
+            {
+                TempData["SuccessMessage"] = "All dependencies loaded successfully.";
+            }
             ViewBag.ProvidedService = activeProvidedServices.Select(c => new SelectListItem
             {
                 Value = c.Id.ToString(),

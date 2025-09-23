@@ -13,14 +13,11 @@ namespace TimeTwoFix.Web.Controllers
     [Authorize(Roles = "FrontDeskAssistant,GeneralManager")]
     public class ClientController : Controller
     {
-        //private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-
         private readonly IClientServices _clientServices;
 
         public ClientController(IUnitOfWork unitOfWork, IMapper mapper, IClientServices clientServices)
         {
-            //_unitOfWork = unitOfWork;
             _mapper = mapper;
             _clientServices = clientServices;
         }

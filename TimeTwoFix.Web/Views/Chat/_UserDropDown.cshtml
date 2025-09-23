@@ -1,0 +1,12 @@
+﻿@model IEnumerable<SelectListItem>
+
+<div class="input-group input-group-sm">
+    <select id="receiverSelect" class="form-select">
+        <option disabled selected>Select a user...</option>
+        @foreach (var user in Model)
+        {
+            <option value="@user.Value">@user.Text</option>
+        }
+    </select>
+    <button class="btn btn-primary" onclick="openSelectedChat()">Start Chat</button>
+</div>

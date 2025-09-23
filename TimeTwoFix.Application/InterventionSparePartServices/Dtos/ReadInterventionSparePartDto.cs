@@ -1,10 +1,13 @@
-﻿namespace TimeTwoFix.Application.InterventionSparePartServices.Dtos
+﻿using TimeTwoFix.Application.SparePartServices.Dtos;
+
+namespace TimeTwoFix.Application.InterventionSparePartServices.Dtos
 {
     public class ReadInterventionSparePartDto
     {
         public int Id { get; set; }
         public int InterventionId { get; set; }
         public int SparePartId { get; set; }
+        public ReadSparePartDto? ReadSparePart { get; set; }
         public int Quantity { get; set; }
 
         //Bon de sortie

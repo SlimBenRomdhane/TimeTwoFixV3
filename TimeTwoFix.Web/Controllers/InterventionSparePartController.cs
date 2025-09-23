@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using TimeTwoFix.Application.InterventionService.Interfaces;
@@ -8,10 +9,12 @@ using TimeTwoFix.Application.SparePartServices.Interfaces;
 using TimeTwoFix.Application.WorkOrderService.Interfaces;
 using TimeTwoFix.Core.Common;
 using TimeTwoFix.Core.Entities.SparePartManagement;
+using TimeTwoFix.Infrastructure.Persistence.Includes;
 using TimeTwoFix.Web.Models.InterventionSparePartModel;
 
 namespace TimeTwoFix.Web.Controllers
 {
+    [Authorize(Roles = "WareHouseManager, GeneralManager")]
     public class InterventionSparePartController : BaseController<InterventionSparePart
         , CreateInterventionSparePartDto
         , ReadInterventionSparePartDto
@@ -37,6 +40,33 @@ namespace TimeTwoFix.Web.Controllers
             _sparePartService = sparePartService;
             _workOrderService = workOrderService;
             _interventionService = interventionService;
+        }
+
+        public override async Task<IActionResult> Index()
+        {
+            try
+            {
+                var includes = EntityIncludeHelper.GetIncludes<InterventionSparePart>(); // or manually define includes
+                var entities = await _interventionSparePartService.GetAllWithIncludesAsyncServiceGeneric(null, includes);
+                var activeEntities = entities.Where(isp => isp.IsDeleted == false);
+
+                if (!activeEntities.Any())
+                {
+                    TempData["ErrorMessage"] = "No spare parts found for interventions.";
+                    return View(Enumerable.Empty<ReadInterventionSparePartViewModel>());
+                }
+
+                var dtos = _mapper.Map<IEnumerable<ReadInterventionSparePartDto>>(activeEntities);
+                var viewModels = _mapper.Map<IEnumerable<ReadInterventionSparePartViewModel>>(dtos);
+
+                TempData["SuccessMessage"] = $"Loaded {viewModels.Count()} items.";
+                return View(viewModels);
+            }
+            catch (Exception)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading intervention spare parts.";
+                return View(Enumerable.Empty<ReadInterventionSparePartViewModel>());
+            }
         }
 
         public override async Task<ActionResult> Create()
@@ -111,7 +141,7 @@ namespace TimeTwoFix.Web.Controllers
                 TempData["ErrorMessage"] = "Intervention not found.";
                 return RedirectToAction("Index", "Intervention");
             }
-            if (intervention.Status == "Completed")
+            if (intervention.Status == "Completed" && !User.IsInRole("GeneralManager"))
             {
                 TempData["ErrorMessage"] = "Cannot add spare parts to an intervention that is  completed.";
                 return RedirectToAction("Details", "Intervention", new { id = interventionId });

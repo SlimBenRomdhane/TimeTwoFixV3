@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using TimeTwoFix.Application.Base;
 using TimeTwoFix.Application.ClientServices.Dtos;
+using TimeTwoFix.Application.ClientServices.Interfaces;
 using TimeTwoFix.Core.Entities.ClientManagement;
 using TimeTwoFix.Core.Interfaces;
 
 namespace TimeTwoFix.Application.ClientServices.Services
 {
-    public class ClientService : BaseService<Client>, TimeTwoFix.Application.ClientServices.Interfaces.IClientServices
+    public class ClientService : BaseService<Client>, IClientServices
     {
         public ClientService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {

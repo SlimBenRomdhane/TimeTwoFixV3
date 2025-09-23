@@ -9,7 +9,8 @@ using TimeTwoFix.Web.Models.CategoryModels;
 namespace TimeTwoFix.Web.Controllers
 {
     [Authorize(Roles = "GeneralManager,WorkshopManager")]
-    public class CategoryController : BaseController<Category, CreateCategoryDto, ReadCategoryDto, UpdateCategoryDto, DeleteCategoryDto,
+    public class CategoryController : BaseController<Category
+        , CreateCategoryDto, ReadCategoryDto, UpdateCategoryDto, DeleteCategoryDto,
         CreateCategoryViewModel, ReadCategoryViewModel, UpdateCategoryViewModel, DeleteCategoryViewModel>
 
     {
@@ -21,7 +22,8 @@ namespace TimeTwoFix.Web.Controllers
         }
         public async Task<IActionResult> SearchCategories(string searchTerm)
         {
-            var categories = (await _categoryService.GetAllAsyncServiceGeneric()).Where(x => x.IsDeleted == false);
+            var categories = (await _categoryService.GetAllAsyncServiceGeneric())
+                .Where(x => x.IsDeleted == false);
 
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
@@ -37,18 +39,6 @@ namespace TimeTwoFix.Web.Controllers
             var viewModels = _mapper.Map<List<ReadCategoryViewModel>>(modelsDto);
             return View("Index", viewModels);
         }
-        [HttpGet]
-        [Authorize(Roles = "GeneralManager")]
-        public override async Task<IActionResult> Delete(int id)
-        {
-            return await base.Delete(id);
-        }
 
-        [HttpPost]
-        [Authorize(Roles = "GeneralManager")]
-        public override async Task<IActionResult> Delete(int id, DeleteCategoryViewModel viewModel)
-        {
-            return await base.Delete(id, viewModel);
-        }
     }
 }

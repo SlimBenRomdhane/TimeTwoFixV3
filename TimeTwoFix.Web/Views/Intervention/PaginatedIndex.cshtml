@@ -89,13 +89,18 @@
                                         <div class="btn-group btn-group-sm" role="group">
                                             @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-outline-primary" })
                                             @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-outline-info" })
-                                            @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger" })
+                                            @if (User.IsInRole("GeneralManager"))
+                                            {
+                                                @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-outline-danger" })
+                                            
+                                            
                                             <a asp-action="CreateByInterventionId"
                                                asp-controller="InterventionSparePart"
                                                asp-route-interventionId="@item.Id"
                                                class="btn btn-outline-success">
                                                 Get Part
                                             </a>
+                                            }
                                         </div>
                                         @if(System.DateTime.Now >= item.StartDate)
                                         {

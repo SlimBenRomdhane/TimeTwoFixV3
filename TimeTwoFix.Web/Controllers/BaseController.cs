@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TimeTwoFix.Application.Base;
 using TimeTwoFix.Core.Common;
@@ -174,6 +175,7 @@ namespace TimeTwoFix.Web.Controllers
             }
         }
 
+        [Authorize(Roles = "GeneralManager")]
         public virtual async Task<IActionResult> Delete(int id)
         {
             try
@@ -194,7 +196,7 @@ namespace TimeTwoFix.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-
+        [Authorize(Roles = "GeneralManager")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public virtual async Task<IActionResult> Delete(int id, TDeleteViewModel viewModel)

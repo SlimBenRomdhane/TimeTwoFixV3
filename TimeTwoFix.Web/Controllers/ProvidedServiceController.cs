@@ -10,7 +10,7 @@ using TimeTwoFix.Web.Models.ProvidedServiceModels;
 
 namespace TimeTwoFix.Web.Controllers
 {
-    [Authorize(Roles = "GeneralManager,WorkshopManager")]
+    [Authorize(Roles = "GeneralManager")]
     public class ProvidedServiceController : Controller
     {
         private readonly IMapper _mapper;
@@ -50,7 +50,8 @@ namespace TimeTwoFix.Web.Controllers
             var service = await _providedServiceService.GetByIdAsyncServiceGeneric(id, null, cat => cat.Category);
             if (service == null)
             {
-                return NotFound($"Provided service with ID {id} not found.");
+                TempData["ErrorMessage"] = $"Provided service with ID {id} not found.";
+                return RedirectToAction("Index");
             }
             var serviceDto = _mapper.Map<ReadProvidedServiceDto>(service);
             var serviceViewModel = _mapper.Map<ReadProvidedServiceViewModel>(serviceDto);
@@ -68,6 +69,8 @@ namespace TimeTwoFix.Web.Controllers
                 Value = c.Id.ToString(),
                 Text = c.Name
             }).ToList();
+            TempData["SuccessMessage"] = "You're creating a new service. Select a category and fill in the details below.";
+
 
             return View();
         }
@@ -120,8 +123,10 @@ namespace TimeTwoFix.Web.Controllers
             var service = await _providedServiceService.GetByIdAsyncServiceGeneric(id);
             if (service == null)
             {
-                return NotFound($"Provided service with ID {id} not found.");
+                TempData["ErrorMessage"] = $"Provided service with ID {id} not found.";
+                return RedirectToAction("Index");
             }
+
             var serviceDto = _mapper.Map<UpdateProvidedServiceDto>(service);
             var serviceViewModel = _mapper.Map<UpdateProvidedServiceViewModel>(serviceDto);
 
@@ -147,8 +152,9 @@ namespace TimeTwoFix.Web.Controllers
                 if (service == null)
                 {
                     TempData["ProvidedServiceError"] = "Service not found";
-                    return NotFound();
+                    return RedirectToAction(nameof(Index));
                 }
+
                 if (!ModelState.IsValid)
                 {
                     return View(updateProvidedServiceViewModel);
@@ -156,13 +162,21 @@ namespace TimeTwoFix.Web.Controllers
                 var serviceDto = _mapper.Map<UpdateProvidedServiceDto>(updateProvidedServiceViewModel);
                 serviceDto.UpdatedBy = User.Identity?.Name;
                 var updatedService = _mapper.Map(serviceDto, service);
+                if (updatedService == null)
+                {
+                    TempData["ErrorMessage"] = "Failed to apply updates to the service.";
+                    return View(updateProvidedServiceViewModel);
+                }
+
                 await _providedServiceService.UpdateAsyncServiceGeneric(updatedService);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
+                TempData["ErrorMessage"] = $"An error occurred while updating the service: {ex.Message}";
                 return View();
             }
+
         }
 
         // GET: ProvidedServiceController/Delete/5
@@ -205,6 +219,7 @@ namespace TimeTwoFix.Web.Controllers
                 return View(deleteProvidedServiceViewModel);
             }
         }
+        [Authorize]
         public async Task<IActionResult> SearchProvidedServices(string searchTerm)
         {
             var services = (await _providedServiceService.GetAllWithIncludesAsyncServiceGeneric(null, inc => inc.Category)).Where(x => x.IsDeleted == false);

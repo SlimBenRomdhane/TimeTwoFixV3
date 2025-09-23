@@ -233,13 +233,16 @@ namespace TimeTwoFix.Web.Controllers
 
         // GET: AppointmentController/Delete/5
         [Authorize(Roles = "GeneralManager")]
+        [HttpGet]
         public async Task<ActionResult> Delete(int id)
         {
             var appointment = await _appointmentService.GetByIdAsyncServiceGeneric(id);
             if (appointment == null)
             {
-                return NotFound();
+                TempData["ErrorMessage"] = $"No appointment found with ID {id}. It may have been deleted or never existed.";
+                return RedirectToAction("Index");
             }
+
             var appointmentDto = _mapper.Map<DeleteAppointmentDto>(appointment);
             var appointmentViewModel = _mapper.Map<DeleteAppointmentViewModel>(appointmentDto);
             return View(appointmentViewModel);
@@ -256,17 +259,23 @@ namespace TimeTwoFix.Web.Controllers
                 var appointment = await _appointmentService.GetByIdAsyncServiceGeneric(deleteAppointmentViewModel.Id);
                 if (appointment == null)
                 {
-                    return NotFound();
+                    TempData["ErrorMessage"] = $"Appointment with ID {deleteAppointmentViewModel.Id} was not found. It may have been deleted or never existed.";
+                    return RedirectToAction(nameof(Index));
                 }
+
                 appointment.IsDeleted = true;
                 appointment.DeletedBy = User.Identity?.Name;
                 appointment.DeletedAt = DateTime.Now;
+
                 await _appointmentService.UpdateAsyncServiceGeneric(appointment);
+
+                TempData["SuccessMessage"] = $"Appointment ID {appointment.Id} was successfully deleted.";
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                TempData["ErrorMessage"] = "An error occurred while trying to delete the appointment. Please try again or contact support.";
+                return RedirectToAction(nameof(Index));
             }
         }
     }

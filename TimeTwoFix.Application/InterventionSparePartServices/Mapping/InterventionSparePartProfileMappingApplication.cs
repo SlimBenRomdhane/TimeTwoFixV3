@@ -8,7 +8,9 @@ namespace TimeTwoFix.Application.InterventionSparePartServices.Mapping
     {
         public InterventionSparePartProfileMappingApplication()
         {
-            CreateMap<InterventionSparePart, ReadInterventionSparePartDto>().ReverseMap();
+            CreateMap<InterventionSparePart, ReadInterventionSparePartDto>()
+                .ForMember(dest => dest.ReadSparePart, opt => opt.MapFrom(src => src.SparePart))
+                .ReverseMap();
             CreateMap<InterventionSparePart, UpdateInterventionSparePartDto>().ReverseMap();
             CreateMap<InterventionSparePart, CreateInterventionSparePartDto>().ReverseMap();
             CreateMap<InterventionSparePart, DeleteInterventionSparePartDto>().ReverseMap();

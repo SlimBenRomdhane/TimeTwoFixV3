@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using QuestPDF.Infrastructure;
 using TimeTwoFix.Application.Extension;
 using TimeTwoFix.Infrastructure.Extension;
@@ -53,7 +54,9 @@ namespace TimeTwoFix.Web
 
             //Configuring SignalR
             builder.Services.AddSignalR();
+            builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
             builder.Services.AddHostedService<InterventionStatusUpdater>();
+            builder.Services.AddHostedService<StockChecker>();
             QuestPDF.Settings.License = LicenseType.Community;
             var app = builder.Build();
 
@@ -78,6 +81,9 @@ namespace TimeTwoFix.Web
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
             app.MapHub<InterventionHub>("/interventionHub");
+            app.MapHub<SparePartHub>("/sparePartHub"); // frontend connection
+            app.MapHub<ChatHub>("/chathub");
+
 
             app.Run();
         }
