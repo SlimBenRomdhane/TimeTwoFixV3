@@ -1,0 +1,50 @@
+﻿@model IEnumerable<TimeTwoFix.Application.ReportingServices.Dtos.MechanicPerformanceDto>
+
+
+<h2>Mechanic Performance</h2>
+
+<form asp-action="MechanicPerformance" method="get" class="row g-3 mb-3">
+    <div class="col-auto">
+        <label for="from" class="form-label">From</label>
+        <input type="date" id="from" name="from" class="form-control"
+               value="@ViewData["From"]" />
+    </div>
+    <div class="col-auto">
+        <label for="to" class="form-label">To</label>
+        <input type="date" id="to" name="to" class="form-control"
+               value="@ViewData["To"]" />
+    </div>
+    <div class="col-auto align-self-end">
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+</form>
+
+
+@if (Model != null && Model.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Mechanic</th>
+                <th>Jobs Completed</th>
+                <th>Avg. Hours</th>
+                <th>Total Revenue</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var m in Model)
+        {
+            <tr>
+                <td>@m.MechanicName</td>
+                <td>@m.JobsCompleted</td>
+                <td>@m.AverageCompletionHours.ToString("N2")</td>
+                <td>@m.TotalRevenue.ToString("C")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No data available for the selected range.</p>
+}

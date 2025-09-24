@@ -32,6 +32,9 @@
                             <li class="nav-item">
                                 <a class="nav-link text-light" asp-controller="Home" asp-action="Privacy"><i class="fas fa-shield-alt"></i> Privacy</a>
                             </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" asp-controller="Reporting" asp-action="MechanicPerformance"><i class="fas fa-home"></i> Reporting</a>
+                                </li>
                                 @if (User.IsInRole("GeneralManager"))
                                 {
                                     <li class="nav-item dropdown">
@@ -65,22 +68,24 @@
                                 </ul>
                             </li>
                                 }
+                                @if ((User.IsInRole("GeneralManager")) || (User.IsInRole("WareHouseManager")) || (User.IsInRole("WorkshopManager")))
+                                {
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle text-light" data-bs-toggle="dropdown">
+                                            <i class="fas fa-tools"></i> Stock Management
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li><a class="dropdown-item" asp-controller="Provider" asp-action="Index"><i class="fas fa-calendar-check"></i>Providers</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" asp-controller="SparePartCategory" asp-action="Index"><i class="fas fa-calendar-check"></i> Spare Part Categories</a></li>
+                                            <li><a class="dropdown-item" asp-controller="SparePart" asp-action="Index"><i class="fas fa-calendar-check"></i>Spare Parts</a></li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li><a class="dropdown-item" asp-controller="ProviderSparePart" asp-action="Index"><i class="fas fa-calendar-check"></i>Stock Supplies</a></li>
+                                            <li><a class="dropdown-item" asp-controller="InterventionSparePart" asp-action="Index"><i class="fas fa-calendar-check"></i>Stock Withdrawals</a></li>
+                                        </ul>
+                                    </li>
+                                }
                                 
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle text-light" data-bs-toggle="dropdown">
-                                        <i class="fas fa-tools"></i> Stock Management
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" asp-controller="Provider" asp-action="Index"><i class="fas fa-calendar-check"></i>Providers</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li><a class="dropdown-item" asp-controller="SparePartCategory" asp-action="Index"><i class="fas fa-calendar-check"></i> Spare Part Categories</a></li>
-                                        <li><a class="dropdown-item" asp-controller="SparePart" asp-action="Index"><i class="fas fa-calendar-check"></i>Spare Parts</a></li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        
-                                        <li><a class="dropdown-item" asp-controller="ProviderSparePart" asp-action="Index"><i class="fas fa-calendar-check"></i>Stock Supplies</a></li>
-                                        <li><a class="dropdown-item" asp-controller="InterventionSparePart" asp-action="Index"><i class="fas fa-calendar-check"></i>Stock Withdrawals</a></li>
-                                    </ul>
-                                </li>
                            
                         </ul>
                         <ul class="navbar-nav">
@@ -115,9 +120,6 @@
         <main class="main-content">
             @RenderBody()
         </main>
-       
-       
-
         <!-- Container for dynamic chat popups -->
         <div id="chatContainer"
              class="position-fixed bottom-0 end-0 p-3 d-flex flex-row-reverse gap-2 align-items-end"
@@ -127,15 +129,16 @@
                 Loading users...
             </div>
         </div>
-
-
-
         <footer class="site-footer">
+           
+
             <div class="footer-inner">
                 &copy; @DateTime.Now.Year - TimeTwoFix.Web -
                 <a asp-controller="Home" asp-action="Privacy">Privacy</a>
             </div>
+           
         </footer>
+       
     </div>
     <!-- Toast Container -->
     <button id="clear-toasts-btn"

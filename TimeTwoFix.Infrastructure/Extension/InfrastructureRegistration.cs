@@ -4,7 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TimeTwoFix.Core.Entities.UserManagement;
 using TimeTwoFix.Core.Interfaces;
+using TimeTwoFix.Core.Interfaces.Repositories.ReportingManagement;
 using TimeTwoFix.Infrastructure.Persistence;
+using TimeTwoFix.Infrastructure.Persistence.Repositories.ReportingManagement;
 
 namespace TimeTwoFix.Infrastructure.Extension
 {
@@ -26,6 +28,7 @@ namespace TimeTwoFix.Infrastructure.Extension
             services.AddHttpContextAccessor();
 
             //Unit of Work Registration
+            services.AddScoped<IReportingRepository, ReportingRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             // Add other infrastructure services here
             //services.AddScoped<IClientRepository, ClientRepository>();

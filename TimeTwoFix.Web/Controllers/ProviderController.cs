@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TimeTwoFix.Application.ProviderServices.Dtos;
 using TimeTwoFix.Application.ProviderServices.Interfaces;
@@ -7,6 +8,7 @@ using TimeTwoFix.Web.Models.ProviderModels;
 
 namespace TimeTwoFix.Web.Controllers
 {
+    [Authorize(Roles = "GeneralManager")]
     public class ProviderController : BaseController<Provider
         , CreateProviderDto, ReadProviderDto, UpdateProviderDto, DeleteProviderDto
         , CreateProviderViewModel, ReadProviderViewModel, UpdateProviderViewModel, DeleteProviderViewModel>
@@ -16,6 +18,7 @@ namespace TimeTwoFix.Web.Controllers
         {
             _serviceProvider = serviceProvider;
         }
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> SearchProviders(string term)
         {
@@ -34,6 +37,13 @@ namespace TimeTwoFix.Web.Controllers
             });
 
             return Json(response);
+        }
+        [AllowAnonymous]
+        [Authorize(Roles = "GeneralManager,WareHouseManager,WorkshopManager")]
+        [HttpGet]
+        public override Task<IActionResult> Index()
+        {
+            return base.Index();
         }
     }
 }

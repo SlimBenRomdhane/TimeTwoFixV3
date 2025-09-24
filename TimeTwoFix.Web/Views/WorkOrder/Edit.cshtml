@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Edit Work Order";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    bool isAssistant = User.IsInRole("FrontDeskAssistant");
 }
 
 <div class="container my-5">
@@ -14,31 +15,43 @@
             <form asp-action="Edit">
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
                 <input type="hidden" asp-for="Id" />
+
                 <div class="row g-3">
+                    <!-- Vehicle -->
                     <div class="col-md-6">
                         <label asp-for="VehicleId" class="form-label">Vehicle</label>
-                        <select asp-for="VehicleId" class="form-select" asp-items="ViewBag.VehicleList">
+                        <select asp-for="VehicleId" class="form-select" asp-items="ViewBag.VehicleList"
+                                disabled="@(isAssistant)">
                             <option value="">-- Select Vehicle --</option>
                         </select>
                         <span asp-validation-for="VehicleId" class="text-danger small"></span>
                     </div>
+
+                    <!-- Mileage -->
                     <div class="col-md-6">
                         <label asp-for="Mileage" class="form-label">Mileage</label>
-                        <input asp-for="Mileage" class="form-control" />
+                        <input asp-for="Mileage" class="form-control" readonly="@(isAssistant)" />
                         <span asp-validation-for="Mileage" class="text-danger small"></span>
                     </div>
+
+                    <!-- Labor Cost -->
                     <div class="col-md-6">
                         <label asp-for="TolalLaborCost" class="form-label">Total Labor Cost</label>
-                        <input asp-for="TolalLaborCost" class="form-control" type="number" />
+                        <input asp-for="TolalLaborCost" class="form-control" type="number" readonly="@(isAssistant)" />
                         <span asp-validation-for="TolalLaborCost" class="text-danger small"></span>
                     </div>
+
+                    <!-- Status -->
                     <div class="col-md-6">
                         <label asp-for="Status" class="form-label">Status</label>
-                        <select asp-for="Status" class="form-select" asp-items="ViewBag.WorkOrderStatusList">
+                        <select asp-for="Status" class="form-select" asp-items="ViewBag.WorkOrderStatusList"
+                                disabled="@(isAssistant)">
                             <option value="">-- Select Status --</option>
                         </select>
                         <span asp-validation-for="Status" class="text-danger small"></span>
                     </div>
+
+                    <!-- Payment Status (always editable) -->
                     <div class="col-md-6">
                         <label asp-for="Paid" class="form-label">Payment Status</label>
                         <select asp-for="Paid" class="form-select">
@@ -48,18 +61,22 @@
                         </select>
                         <span asp-validation-for="Paid" class="text-danger small"></span>
                     </div>
-                   
+
+                    <!-- Payment Date (always editable) -->
                     <div class="col-md-6">
                         <label asp-for="PaymentDate" class="form-label">Payment Date</label>
                         <input asp-for="PaymentDate" class="form-control" type="datetime-local" />
                         <span asp-validation-for="PaymentDate" class="text-danger small"></span>
                     </div>
+
+                    <!-- Notes -->
                     <div class="col-12">
                         <label asp-for="Notes" class="form-label">Notes</label>
-                        <input asp-for="Notes" class="form-control" />
+                        <input asp-for="Notes" class="form-control" readonly="@(isAssistant)" />
                         <span asp-validation-for="Notes" class="text-danger small"></span>
                     </div>
                 </div>
+
                 <div class="d-grid mt-4">
                     <button type="submit" class="btn btn-primary btn-lg">
                         <i class="bi bi-save me-1"></i> Save Changes
@@ -99,5 +116,4 @@
             togglePaymentDateRequired(); // run on initial load
         });
     </script>
-
 }

@@ -9,7 +9,7 @@ using TimeTwoFix.Web.Models.LiftingBridgeModels;
 
 namespace TimeTwoFix.Web.Controllers
 {
-    [Authorize(Roles = "GeneralManager,WorkshopManager")]
+    [Authorize(Roles = "GeneralManager")]
     public class LiftingBridgeController : BaseController<LiftingBridge, CreateLiftingBridgeDto, ReadLiftingBridgeDto, UpdateLiftingBridgeDto, DeleteLiftingBridgeDto,
         CreateLiftingBridgeViewModel, ReadLiftingBridgeViewModel, UpdateLiftingBridgeViewModel, DeleteLiftingBridgeViewModel>
     {

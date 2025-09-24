@@ -3,12 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using TimeTwoFix.Application.VehicleServices.Interfaces;
 using TimeTwoFix.Application.WorkOrderService.Dtos;
 using TimeTwoFix.Application.WorkOrderService.Interfaces;
 using TimeTwoFix.Core.Entities.WorkOrderManagement;
-using TimeTwoFix.Infrastructure.Persistence.Includes;
 using TimeTwoFix.Web.Models.InterventionModels;
 using TimeTwoFix.Web.Models.VehicleModels;
 using TimeTwoFix.Web.Models.WorkOrderModels;
@@ -254,7 +252,7 @@ namespace TimeTwoFix.Web.Controllers
                     TempData["WorkOrderError"] = "WorkOrder not found";
                     return NotFound();
                 }
-                if (workOrder.Paid == true)
+                if (workOrder.Paid == true && !User.IsInRole("GeneralManager"))
                 {
                     TempData["WorkOrderError"] = "Paid work orders cannot be modified.";
                     return RedirectToAction("Index");
@@ -263,6 +261,29 @@ namespace TimeTwoFix.Web.Controllers
                 {
                     return View(updateWorkOrderViewModel);
                 }
+                // 🔎 Role‑based restriction
+                if (User.IsInRole("FrontDeskAssistant"))
+                {
+                    // Check if fields other than Paid/PaymentDate are being changed
+                    bool otherFieldsChanged =
+
+                        updateWorkOrderViewModel.Mileage != workOrder.Mileage ||
+                        updateWorkOrderViewModel.StartDate != workOrder.StartDate ||
+                        updateWorkOrderViewModel.StartTime != workOrder.StartTime ||
+                        updateWorkOrderViewModel.EndDate != workOrder.EndDate ||
+                        updateWorkOrderViewModel.EndTime != workOrder.EndTime ||
+                        updateWorkOrderViewModel.TolalLaborCost != workOrder.TolalLaborCost ||
+                        updateWorkOrderViewModel.Status != workOrder.Status ||
+                        updateWorkOrderViewModel.Notes != workOrder.Notes;
+
+                    if (otherFieldsChanged)
+                    {
+                        TempData["ErrorMessage"] = "Front desk assistants can only update payment fields.";
+                        return RedirectToAction("Index");
+                    }
+                }
+
+
                 var workOrderDto = _mapper.Map<UpdateWorkOrderDto>(updateWorkOrderViewModel);
                 workOrderDto.UpdatedBy = User.Identity?.Name;
                 var updatedWorkOrder = _mapper.Map(workOrderDto, workOrder);

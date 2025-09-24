@@ -15,6 +15,8 @@ using TimeTwoFix.Application.ProviderServices.Interfaces;
 using TimeTwoFix.Application.ProviderServices.Services;
 using TimeTwoFix.Application.ProviderSparePartServices.Interfaces;
 using TimeTwoFix.Application.ProviderSparePartServices.Services;
+using TimeTwoFix.Application.ReportingServices.Interfaces;
+using TimeTwoFix.Application.ReportingServices.Services;
 using TimeTwoFix.Application.SparePartCategoryServices.Interfaces;
 using TimeTwoFix.Application.SparePartCategoryServices.Services;
 using TimeTwoFix.Application.SparePartServices.Interfaces;
@@ -47,6 +49,7 @@ namespace TimeTwoFix.Application.Extension
             services.AddScoped<IProviderService, ProviderService>();
             services.AddScoped<ISparePartCategoryService, SparePartCategoryService>();
             services.AddScoped<IProviderSparePartService, ProviderSparePartService>();
+            services.AddScoped<IReportingService, ReportingService>();
 
             return services;
         }
