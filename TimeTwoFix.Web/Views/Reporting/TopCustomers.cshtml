@@ -1,0 +1,249 @@
+﻿@using TimeTwoFix.Web.Models.ReportingModels
+@model IEnumerable<CustomerInsightViewModel>
+
+<form asp-action="TopCustomers" method="get" class="row g-3 mb-3">
+    <div class="col-auto">
+        <label for="from" class="form-label">From</label>
+        <input type="date" id="from" name="from" class="form-control" value="@ViewData["From"]" />
+    </div>
+    <div class="col-auto">
+        <label for="to" class="form-label">To</label>
+        <input type="date" id="to" name="to" class="form-control" value="@ViewData["To"]" />
+    </div>
+    <div class="col-auto align-self-end">
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Please select a date range and click Filter to view top customers.</div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Customer</th>
+                <th>Total Visits</th>
+                <th>Total Spend</th>
+                @* <th>Repeat?</th> *@
+                <th>Avg Invoice</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in Model)
+            {
+                <tr>
+                    <td>@customer.CustomerName</td>
+                    <td>@customer.TotalVisits</td>
+                    <td>@customer.TotalSpend.ToString("N3")</td>
+                    @* <td>@(customer.IsRepeatCustomer ? "Yes" : "No")</td> *@
+                    <td>@customer.AverageInvoice.ToString("N3") </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <h3 class="mt-4">Customer Insights Charts</h3>
+
+    <ul class="nav nav-tabs mb-3" id="chartTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="spend-tab" data-bs-toggle="tab" data-bs-target="#spend" type="button" role="tab">
+                Top Customers by Spend
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="loyalty-tab" data-bs-toggle="tab" data-bs-target="#loyalty" type="button" role="tab">
+                Repeat vs One‑Time
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="scatter-tab" data-bs-toggle="tab" data-bs-target="#scatter" type="button" role="tab">
+                Visits vs Spend
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="trend-tab" data-bs-toggle="tab" data-bs-target="#trend" type="button" role="tab">
+                Avg Invoice Trend
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="spend" role="tabpanel">
+            <div class="chart-container">
+                <canvas id="topCustomersChart"></canvas>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="loyalty" role="tabpanel">
+            <div class="chart-container">
+                <canvas id="loyaltyChart"></canvas>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="scatter" role="tabpanel">
+            <div class="chart-container">
+                <canvas id="scatterChart"></canvas>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="trend" role="tabpanel">
+            <div class="chart-container">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+    </div>
+}
+@section Scripts {
+    <script src="~/lib/chartjs/chart.min.js"></script>
+    <script>
+        // Data from model
+        const customerLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Select(c => c.CustomerName)));
+        const spendData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Select(c => c.TotalSpend)));
+        const visitsData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Select(c => c.TotalVisits)));
+        const avgInvoiceData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Select(c => c.AverageInvoice)));
+        const repeatFlags = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Select(c => c.IsRepeatCustomer)));
+
+        // --- Chart 1: Top Customers by Spend (Bar) ---
+        new Chart(document.getElementById('topCustomersChart'), {
+            type: 'bar',
+            data: {
+                labels: customerLabels,
+                datasets: [{
+                    label: 'Total Spend (TND)',
+                    data: spendData,
+                    backgroundColor: '#00BFFF'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => ctx.parsed.y.toLocaleString(undefined, { minimumFractionDigits: 3 }) + ' TND'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        ticks: {
+                            callback: v => v.toLocaleString(undefined, { minimumFractionDigits: 3 }) + ' TND'
+                        }
+                    }
+                }
+            }
+        });
+
+        // --- Chart 2: Repeat vs One-Time (Pie) ---
+        const repeatCount = repeatFlags.filter(x => x).length;
+        const oneTimeCount = repeatFlags.length - repeatCount;
+
+        new Chart(document.getElementById('loyaltyChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Repeat Customers', 'One-Time Customers'],
+                datasets: [{
+                    data: [repeatCount, oneTimeCount],
+                    backgroundColor: ['#28a745', '#dc3545']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        // --- Chart 3: Visits vs Spend (Scatter) ---
+        const scatterPoints = customerLabels.map((name, i) => ({
+            x: visitsData[i],
+            y: spendData[i],
+            r: Math.max(5, avgInvoiceData[i] / 50) // bubble size scaled by avg invoice
+        }));
+
+        new Chart(document.getElementById('scatterChart'), {
+            type: 'bubble',
+            data: {
+                datasets: [{
+                    label: 'Customer Spend vs Visits',
+                    data: scatterPoints,
+                    backgroundColor: '#FFD700'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Total Visits' }
+                    },
+                    y: {
+                        title: { display: true, text: 'Total Spend (TND)' },
+                        ticks: {
+                            callback: v => v.toLocaleString(undefined, { minimumFractionDigits: 3 }) + ' TND'
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => {
+                                const cIndex = ctx.dataIndex;
+                                return customerLabels[cIndex] + ': ' +
+                                    ctx.raw.x + ' visits, ' +
+                                    ctx.raw.y.toLocaleString(undefined, { minimumFractionDigits: 3 }) + ' TND';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        //Chart 4
+            const trendLabels = customerLabels; // could be months if you aggregate
+        const avgInvoiceTrend = avgInvoiceData;
+
+        new Chart(document.getElementById('trendChart'), {
+            type: 'line',
+            data: {
+                labels: trendLabels,
+                datasets: [{
+                    label: 'Average Invoice (TND)',
+                    data: avgInvoiceTrend,
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0,123,255,0.2)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => ctx.parsed.y.toLocaleString(undefined, { minimumFractionDigits: 3 }) + ' TND'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        title: { display: true, text: 'Average Invoice (TND)' },
+                        ticks: {
+                            callback: v => v.toLocaleString(undefined, { minimumFractionDigits: 3 }) + ' TND'
+                        }
+                    },
+                    x: {
+                        title: { display: true, text: 'Customer / Period' }
+                    }
+                }
+            }
+        });
+    
+
+    </script>
+}

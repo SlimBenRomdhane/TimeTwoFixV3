@@ -1,27 +1,33 @@
-﻿@model IEnumerable<TimeTwoFix.Application.ReportingServices.Dtos.MechanicPerformanceDto>
-
+﻿@model IEnumerable<TimeTwoFix.Web.Models.ReportingModels.MechanicPerformanceViewModel>
 
 <h2>Mechanic Performance</h2>
 
+<style>
+    .chart-container {
+        max-width: 600px;
+        height: 300px;
+        margin: 2rem auto;
+    }
+</style>
+
+<!-- Date filter form -->
 <form asp-action="MechanicPerformance" method="get" class="row g-3 mb-3">
     <div class="col-auto">
         <label for="from" class="form-label">From</label>
-        <input type="date" id="from" name="from" class="form-control"
-               value="@ViewData["From"]" />
+        <input type="date" id="from" name="from" class="form-control" value="@ViewData["From"]" />
     </div>
     <div class="col-auto">
         <label for="to" class="form-label">To</label>
-        <input type="date" id="to" name="to" class="form-control"
-               value="@ViewData["To"]" />
+        <input type="date" id="to" name="to" class="form-control" value="@ViewData["To"]" />
     </div>
     <div class="col-auto align-self-end">
         <button type="submit" class="btn btn-primary">Filter</button>
     </div>
 </form>
 
-
 @if (Model != null && Model.Any())
 {
+    <!-- Data table -->
     <table class="table table-striped">
         <thead>
             <tr>
@@ -32,17 +38,91 @@
             </tr>
         </thead>
         <tbody>
-        @foreach (var m in Model)
-        {
-            <tr>
-                <td>@m.MechanicName</td>
-                <td>@m.JobsCompleted</td>
-                <td>@m.AverageCompletionHours.ToString("N2")</td>
-                <td>@m.TotalRevenue.ToString("C")</td>
-            </tr>
-        }
+            @foreach (var m in Model)
+            {
+                <tr>
+                    <td>@m.MechanicName</td>
+                    <td>@m.JobsCompleted</td>
+                    <td>@m.AverageCompletionHours.ToString("N2")</td>
+                    <td>@m.TotalRevenue.ToString("N3")</td>
+                </tr>
+            }
         </tbody>
     </table>
+
+    <!-- Tabbed charts -->
+    <h3 class="mt-4">Visual comparison</h3>
+
+    <ul class="nav nav-tabs mb-3" id="chartTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="jobs-tab" data-bs-toggle="tab" data-bs-target="#jobs" type="button" role="tab">Jobs Completed</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="revenue-tab" data-bs-toggle="tab" data-bs-target="#revenue" type="button" role="tab">Total Revenue</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="hours-tab" data-bs-toggle="tab" data-bs-target="#hours" type="button" role="tab">Avg. Completion Hours</button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active chart-container" id="jobs" role="tabpanel">
+            <canvas id="jobsChart"></canvas>
+        </div>
+        <div class="tab-pane fade chart-container" id="revenue" role="tabpanel">
+            <canvas id="revenueChart"></canvas>
+        </div>
+        <div class="tab-pane fade chart-container" id="hours" role="tabpanel">
+            <canvas id="hoursChart"></canvas>
+        </div>
+    </div>
+
+    @section Scripts {
+        <script src="~/lib/chartjs/chart.min.js"></script>
+        <script>
+            const mechanicLabels = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Select(m => m.MechanicName)));
+            const jobsData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Select(m => m.JobsCompleted)));
+            const revenueData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Select(m => m.TotalRevenue)));
+            const avgCompletion = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Select(m => m.AverageCompletionHours)));
+
+            // ✅ Declare chart variables
+            const jobsChart = new Chart(document.getElementById('jobsChart'), {
+                type: 'bar',
+                data: {
+                    labels: mechanicLabels,
+                    datasets: [{
+                        label: 'Jobs Completed',
+                        data: jobsData,
+                        backgroundColor: '#00BFFF'
+                    }]
+                }
+            });
+
+            const revenueChart = new Chart(document.getElementById('revenueChart'), {
+                type: 'bar',
+                data: {
+                    labels: mechanicLabels,
+                    datasets: [{
+                        label: 'Total Revenue',
+                        data: revenueData,
+                        backgroundColor: '#FF4500'
+                    }]
+                }
+            });
+
+            const hoursChart = new Chart(document.getElementById('hoursChart'), {
+                type: 'bar',
+                data: {
+                    labels: mechanicLabels,
+                    datasets: [{
+                        label: 'Avg. Completion Hours',
+                        data: avgCompletion,
+                        backgroundColor: '#FFD700'
+                    }]
+                }
+            });
+        </script>
+    }
 }
 else
 {

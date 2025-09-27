@@ -126,3 +126,9 @@ table.table {
 .bg-workshop-card {
     background-color: #e1b382; /* Soft gray — adjust to match your palette */
 }
+.chart-container {
+    position: relative;
+    height: 400px; /* adjust height as needed */
+    width: 100%; /* responsive width */
+    margin-bottom: 2rem;
+}

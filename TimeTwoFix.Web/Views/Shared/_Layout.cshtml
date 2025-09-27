@@ -32,8 +32,21 @@
                             <li class="nav-item">
                                 <a class="nav-link text-light" asp-controller="Home" asp-action="Privacy"><i class="fas fa-shield-alt"></i> Privacy</a>
                             </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-light" asp-controller="Reporting" asp-action="MechanicPerformance"><i class="fas fa-home"></i> Reporting</a>
+                                
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle text-light" data-bs-toggle="dropdown">
+                                        <i class="fas fa-tools"></i> Reportings
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" asp-controller="Reporting" asp-action="MechanicPerformance"><i class="fas fa-calendar-check"></i>Mechanic Performance</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Reporting" asp-action="MechanicPerformanceTrend"><i class="fas fa-building"></i> Mechanic Performance Trends</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" asp-controller="Reporting" asp-action="TopCustomers"><i class="fas fa-truck"></i>Customer Insights</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" asp-controller="LiftingBridge" asp-action="Index"><i class="fas fa-building"></i> Bridges</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item" asp-controller="User" asp-action="Index"><i class="fas fa-building"></i> User Management</a></li>
+                                    </ul>
                                 </li>
                                 @if (User.IsInRole("GeneralManager"))
                                 {
@@ -187,7 +200,10 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @* <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script> *@
+    @* <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> *@
     <script src="~/lib/signalr/signalr.min.js" asp-append-version="true"></script>
+    <script src="~/lib/chartjs/chart.min.js"></script>
+
     <script>
         const interventionConnection = new signalR.HubConnectionBuilder()
             .withUrl("/interventionHub")

@@ -1,0 +1,135 @@
+﻿@model IEnumerable<TimeTwoFix.Web.Models.ReportingModels.MechanicPerformanceTrendViewModel>
+
+@{
+    ViewData["Title"] = "Mechanic Performance Trend";
+}
+
+<h2>Mechanic Performance Trend</h2>
+
+<style>
+    .chart-container {
+        max-width: 900px;
+        height: 400px;
+        margin: 2rem auto;
+    }
+</style>
+
+<!-- Date filter form -->
+<form asp-action="MechanicPerformanceTrend" method="get" class="row g-3 mb-3">
+    <div class="col-auto">
+        <label for="from" class="form-label">From</label>
+        <input type="date" id="from" name="from" class="form-control" value="@ViewData["From"]" />
+    </div>
+    <div class="col-auto">
+        <label for="to" class="form-label">To</label>
+        <input type="date" id="to" name="to" class="form-control" value="@ViewData["To"]" />
+    </div>
+    <div class="col-auto align-self-end">
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+</form>
+
+@if (Model != null && Model.Any())
+{
+    <!-- Optional: Data table -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Mechanic</th>
+                <th>Period</th>
+                <th>Jobs Completed</th>
+                <th>Avg. Hours</th>
+                <th>Total Revenue</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var m in Model)
+            {
+                <tr>
+                    <td>@m.MechanicName</td>
+                    <td>@m.Period</td>
+                    <td>@m.JobsCompleted</td>
+                    <td>@m.AverageCompletionHours.ToString("N2")</td>
+                    <td>@m.TotalRevenue.ToString("N3")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Chart with metric selector -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Performance Trend</h3>
+        <select id="metricSelector" class="form-select w-auto">
+            <option value="JobsCompleted" selected>Jobs Completed</option>
+            <option value="TotalRevenue">Total Revenue</option>
+            <option value="AverageCompletionHours">Avg. Completion Hours</option>
+        </select>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="trendChart"></canvas>
+    </div>
+
+    @section Scripts {
+        <script src="~/lib/chartjs/chart.min.js"></script>
+        <script>
+            // Serialize the entire model into JS
+            const trendData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+
+            // Extract unique labels (periods) and mechanics
+            const trendLabels = [...new Set(trendData.map(m => m.Period))];
+            const mechanics = [...new Set(trendData.map(m => m.MechanicName))];
+
+            // Function to build datasets for a given metric
+            function buildDatasets(metric) {
+                return mechanics.map(name => ({
+                    label: name,
+                    data: trendLabels.map(period => {
+                        const point = trendData.find(m => m.MechanicName === name && m.Period === period);
+                        return point ? point[metric] : 0;
+                    }),
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.3
+                }));
+            }
+
+            // Initial chart (Jobs Completed)
+            let trendChart = new Chart(document.getElementById('trendChart'), {
+                type: 'line',
+                data: {
+                    labels: trendLabels,
+                    datasets: buildDatasets("JobsCompleted")
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } },
+                    scales: {
+                        y: { title: { display: true, text: 'Jobs Completed' } },
+                        x: { title: { display: true, text: 'Period' } }
+                    }
+                }
+            });
+
+            // Handle metric change
+            document.getElementById('metricSelector').addEventListener('change', function () {
+                const metric = this.value;
+                trendChart.data.datasets = buildDatasets(metric);
+
+                // Update Y-axis label dynamically
+                let yLabel = '';
+                if (metric === 'JobsCompleted') yLabel = 'Jobs Completed';
+                if (metric === 'TotalRevenue') yLabel = 'Total Revenue (TND)';
+                if (metric === 'AverageCompletionHours') yLabel = 'Avg. Completion Hours';
+
+                trendChart.options.scales.y.title.text = yLabel;
+                trendChart.update();
+            });
+        </script>
+    }
+}
+else
+{
+    <p>No data available for the selected range.</p>
+}

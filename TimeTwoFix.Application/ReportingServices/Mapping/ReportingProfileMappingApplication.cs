@@ -21,6 +21,7 @@ namespace TimeTwoFix.Application.ReportingServices.Mapping
 
             // Mechanics
             CreateMap<MechanicPerformanceResult, MechanicPerformanceDto>();
+            CreateMap<MechanicPerformanceTrendResult, MechanicPerformanceTrendDto>();
 
             // Parts & Suppliers
             CreateMap<PartConsumptionResult, PartConsumptionDto>();

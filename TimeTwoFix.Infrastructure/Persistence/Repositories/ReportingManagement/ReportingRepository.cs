@@ -1,9 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TimeTwoFix.Core.Interfaces.Repositories.ReportingManagement;
 using TimeTwoFix.Core.Interfaces.Repositories.ReportingModels;
 
@@ -19,20 +14,7 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.ReportingManagement
 
         public async Task<IEnumerable<MechanicPerformanceResult>> GetMechanicPerformanceAsync(DateTime from, DateTime to)
         {
-            //return await _timeTwoFixDbContext.Interventions
-            //    .Include(i => i.Mechanic)
-            //    .Where(i => i.StartDate >= from && i.StartDate <= to && i.Status == "Completed")
-            //    .GroupBy(i => new { i.MechanicId, i.Mechanic.FirstName, i.Mechanic.LastName })
-            //    .Select(g => new MechanicPerformanceResult
-            //    {
-            //        MechanicId = g.Key.MechanicId,
-            //        MechanicName = g.Key.FirstName + " " + g.Key.LastName,
-            //        JobsCompleted = g.Count(),
-            //        AverageCompletionHours = g.Average(i => i.ActualTimeSpent.HasValue ? i.ActualTimeSpent.Value.TotalHours : 0),
-            //        TotalRevenue = g.Sum(i => i.InterventionPrice +
-            //            i.InterventionSpareParts.Sum(sp => sp.Quantity * sp.SparePart.UnitPrice))
-            //    })
-            //    .ToListAsync();
+
             var data = await _timeTwoFixDbContext.Interventions
                     .Include(i => i.Mechanic)
                     .Where(i => i.StartDate >= from && i.StartDate <= to && i.Status == "Completed")
@@ -59,6 +41,38 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.ReportingManagement
                 })
                 .ToList();
 
+        }
+
+        public async Task<IEnumerable<MechanicPerformanceTrendResult>> GetMechanicPerformanceTrendAsync(DateTime from, DateTime to)
+        {
+            var data = await _timeTwoFixDbContext.Interventions
+                .Include(i => i.Mechanic)
+                .Where(i => i.StartDate >= from && i.StartDate <= to && i.Status == "Completed")
+                .Select(i => new
+                {
+                    i.MechanicId,
+                    i.Mechanic.FirstName,
+                    i.Mechanic.LastName,
+                    i.StartDate,
+                    i.ActualTimeSpent,
+                    Revenue = i.InterventionPrice +
+                              i.InterventionSpareParts.Sum(sp => sp.Quantity * sp.SparePart.UnitPrice)
+                })
+                .ToListAsync();
+
+            return data
+                .GroupBy(x => new { x.MechanicId, x.FirstName, x.LastName, x.StartDate.Year, x.StartDate.Month })
+                .Select(g => new MechanicPerformanceTrendResult
+                {
+                    MechanicId = g.Key.MechanicId,
+                    MechanicName = g.Key.FirstName + " " + g.Key.LastName,
+                    Period = new DateTime(g.Key.Year, g.Key.Month, 1),
+                    JobsCompleted = g.Count(),
+                    AverageCompletionHours = (decimal)g.Average(x => x.ActualTimeSpent?.TotalHours ?? 0),
+                    TotalRevenue = g.Sum(x => x.Revenue)
+                })
+                .OrderBy(r => r.Period)
+                .ToList();
         }
 
         public async Task<IEnumerable<PauseAnalysisResult>> GetPauseAnalysisAsync(DateTime from, DateTime to)

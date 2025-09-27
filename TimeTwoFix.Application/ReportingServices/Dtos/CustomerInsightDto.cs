@@ -13,9 +13,9 @@ namespace TimeTwoFix.Application.ReportingServices.Dtos
 
         // Presentation-friendly values
         public int TotalVisits { get; set; }
-        public string TotalSpend { get; set; } = string.Empty;   // formatted as currency
+        public decimal TotalSpend { get; set; }    // formatted as currency
         public bool IsRepeatCustomer { get; set; }
-        public string AverageInvoice { get; set; } = string.Empty; // formatted as currency
+        public decimal AverageInvoice { get; set; } // formatted as currency
     }
 
 

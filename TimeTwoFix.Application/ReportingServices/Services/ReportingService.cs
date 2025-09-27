@@ -22,6 +22,13 @@ namespace TimeTwoFix.Application.ReportingServices.Services
 
         }
 
+        public async Task<IEnumerable<MechanicPerformanceTrendDto>> GetMechanicPerformanceTrendAsync(DateTime from, DateTime to)
+        {
+            var result = await _reportingRepository.GetMechanicPerformanceTrendAsync(from, to);
+            var dto = _mapper.Map<IEnumerable<MechanicPerformanceTrendDto>>(result);
+            return dto;
+        }
+
         public async Task<IEnumerable<PauseAnalysisDto>> GetPauseAnalysisAsync(DateTime from, DateTime to)
         {
             var result = await _reportingRepository.GetPauseAnalysisAsync(from, to);

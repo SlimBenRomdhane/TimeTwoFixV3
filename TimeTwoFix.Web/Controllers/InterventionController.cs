@@ -9,6 +9,8 @@ using TimeTwoFix.Application.InterventionSparePartServices.Interfaces;
 using TimeTwoFix.Application.LiftingBridgeServices.Interfaces;
 using TimeTwoFix.Application.PauseRecordService.Interfaces;
 using TimeTwoFix.Application.ProvidedServicesService.Interfaces;
+using TimeTwoFix.Application.ReportingServices.Interfaces;
+using TimeTwoFix.Application.ReportingServices.Services;
 using TimeTwoFix.Application.UserServices.Interfaces;
 using TimeTwoFix.Application.WorkOrderService.Interfaces;
 using TimeTwoFix.Core.Entities.WorkOrderManagement;
@@ -47,6 +49,7 @@ namespace TimeTwoFix.Web.Controllers
             _pauseRecordService = pauseRecordService;
             _interventionSparePartService = interventionSparePartService;
             _unitOfWork = unitOfWork;
+
         }
 
         [HttpGet]

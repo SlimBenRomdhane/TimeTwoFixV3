@@ -51,12 +51,12 @@ namespace TimeTwoFix.Web
             //        .Build();
             //}
             //    );
-
+            builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
             //Configuring SignalR
             builder.Services.AddSignalR();
-            builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
             builder.Services.AddHostedService<InterventionStatusUpdater>();
             builder.Services.AddHostedService<StockChecker>();
+
             QuestPDF.Settings.License = LicenseType.Community;
             var app = builder.Build();
 
@@ -83,6 +83,7 @@ namespace TimeTwoFix.Web
             app.MapHub<InterventionHub>("/interventionHub");
             app.MapHub<SparePartHub>("/sparePartHub"); // frontend connection
             app.MapHub<ChatHub>("/chathub");
+            app.MapHub<MechanicPerformanceHub>("/mechanicPerformanceHub");
 
 
             app.Run();

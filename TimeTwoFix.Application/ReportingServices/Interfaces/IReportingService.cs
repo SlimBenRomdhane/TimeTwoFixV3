@@ -14,5 +14,6 @@ namespace TimeTwoFix.Application.ReportingServices.Interfaces
         Task<IEnumerable<PartConsumptionDto>> GetTopConsumedPartsAsync(DateTime from, DateTime to, int top = 10);
         Task<IEnumerable<SupplierSpendDto>> GetSupplierSpendAsync(DateTime from, DateTime to);
         Task<IEnumerable<PauseAnalysisDto>> GetPauseAnalysisAsync(DateTime from, DateTime to);
+        Task<IEnumerable<MechanicPerformanceTrendDto>> GetMechanicPerformanceTrendAsync(DateTime from, DateTime to);
     }
 }

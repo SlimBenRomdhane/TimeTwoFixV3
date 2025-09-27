@@ -20,14 +20,16 @@ public static class WorkOrderPdfGenerator
                     {
                         col.Item().Text("TimeTwoFix Workshop").FontSize(18).Bold();
                         col.Item().Text("Tunis, Tunisia");
-                        col.Item().Text("Phone: +216 XX XXX XXX");
+                        col.Item().Text("Phone: +216 22 421 375");
                         col.Item().Text("Email: contact@timetwofix.tn");
                     });
 
                     row.ConstantItem(150).Column(col =>
                     {
                         col.Item().Text($"Invoice #WO-{model.Id}").FontSize(14).Bold();
-                        col.Item().Text($"Date: {DateTime.Now:yyyy-MM-dd}");
+                        // Keep the print date
+                        col.Item().Text($"Print Date: {DateTime.Now:yyyy-MM-dd}");
+
                     });
                 });
 
@@ -35,19 +37,38 @@ public static class WorkOrderPdfGenerator
                 page.Content().Column(col =>
                 {
                     // Customer & Vehicle Info
+                    //col.Item().PaddingVertical(10).Row(row =>
+                    //{
+                    //    row.RelativeItem().Column(c =>
+                    //    {
+                    //        c.Item().Text("Customer Information").Bold();
+                    //        c.Item().Text($"{model.CustomerName} {model.CustomerLastName}");
+                    //        c.Item().Text($"Phone: {model.CustomerPhone}");
+                    //        c.Item().Text($"Email: {model.CustomerEmail}");
+                    //    });
+
+                    //    row.RelativeItem().Column(c =>
+                    //    {
+
+                    //        c.Item().Text("Vehicle Information").Bold();
+                    //        c.Item().Text($"Brand: {model.VehicleViewModel?.Brand}");
+                    //        c.Item().Text($"Model: {model.VehicleViewModel?.Model}");
+                    //        c.Item().Text($"License Plate: {model.VehicleViewModel?.LicensePlate}");
+                    //        c.Item().Text($"VIN: {model.VehicleViewModel?.Vin}");
+                    //    });
+                    //});
                     col.Item().PaddingVertical(10).Row(row =>
                     {
-                        row.RelativeItem().Column(c =>
+                        row.RelativeItem(); // Left filler
+
+                        row.RelativeItem().AlignRight().Column(c =>
                         {
                             c.Item().Text("Customer Information").Bold();
                             c.Item().Text($"{model.CustomerName} {model.CustomerLastName}");
                             c.Item().Text($"Phone: {model.CustomerPhone}");
                             c.Item().Text($"Email: {model.CustomerEmail}");
-                        });
 
-                        row.RelativeItem().Column(c =>
-                        {
-                            c.Item().Text("Vehicle Information").Bold();
+                            c.Item().PaddingTop(10).Text("Vehicle Information").Bold();
                             c.Item().Text($"Brand: {model.VehicleViewModel?.Brand}");
                             c.Item().Text($"Model: {model.VehicleViewModel?.Model}");
                             c.Item().Text($"License Plate: {model.VehicleViewModel?.LicensePlate}");
