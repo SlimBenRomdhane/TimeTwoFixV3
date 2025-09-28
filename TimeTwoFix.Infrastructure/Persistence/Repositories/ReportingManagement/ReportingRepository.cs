@@ -90,38 +90,118 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.ReportingManagement
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<PauseAnalysisTrendResult>> GetPauseAnalysisTrendAsync(DateTime from, DateTime to)
+        {
+
+
+            // Step 1: Pull raw data from EF (only simple fields EF can translate)
+            var rawPauses = await _timeTwoFixDbContext.PauseRecords
+                .Where(p => p.StartTime >= from && p.StartTime <= to)
+                .Select(p => new
+                {
+                    p.Reason,
+                    p.StartTime,
+                    p.EndTime
+                })
+                .ToListAsync(); // 👈 ensures EF only executes what it can translate
+
+            // Step 2: Do the time math and grouping in memory
+            var grouped = rawPauses
+                .Select(p => new
+                {
+                    p.Reason,
+                    Period = new DateTime(p.StartTime.Year, p.StartTime.Month, 1),
+                    DurationHours = p.EndTime.HasValue
+                        ? (p.EndTime.Value - p.StartTime).TotalMinutes / 60.0
+                        : 0
+                })
+                .GroupBy(x => new { x.Reason, x.Period })
+                .Select(g => new PauseAnalysisTrendResult
+                {
+                    Reason = g.Key.Reason,
+                    Period = g.Key.Period,
+                    HoursLost = g.Sum(x => x.DurationHours)
+                })
+                .OrderBy(r => r.Period)
+                .ToList();
+
+            return grouped;
+
+        }
+
         public async Task<IEnumerable<PaymentAgingResult>> GetPaymentAgingAsync(DateTime asOfDate)
         {
-            return await _timeTwoFixDbContext.WorkOrders
+            var rawData = await _timeTwoFixDbContext.WorkOrders
                 .Include(w => w.Vehicle).ThenInclude(v => v.Client)
                 .Where(w => !w.Paid)
-                .Select(w => new PaymentAgingResult
+                .Select(w => new
                 {
-                    WorkOrderId = w.Id,
+                    w.Id,
                     ClientName = w.Vehicle.Client.FirstName + " " + w.Vehicle.Client.LastName,
                     AmountDue = w.TolalLaborCost,
-                    DaysOutstanding = EF.Functions.DateDiffDay(w.EndDate.ToDateTime(w.EndTime), asOfDate),
-                    AgingBucket =
-                        EF.Functions.DateDiffDay(w.EndDate.ToDateTime(w.EndTime), asOfDate) <= 30 ? "0-30" :
-                        EF.Functions.DateDiffDay(w.EndDate.ToDateTime(w.EndTime), asOfDate) <= 60 ? "31-60" :
-                        EF.Functions.DateDiffDay(w.EndDate.ToDateTime(w.EndTime), asOfDate) <= 90 ? "61-90" : "90+"
+                    EndDateTime = w.EndDate, // capture raw DateOnly
+                    EndTime = w.EndTime      // capture raw TimeOnly
                 })
                 .ToListAsync();
+
+            // Now compute DateDiffDay safely in memory
+            return rawData.Select(x =>
+            {
+                var endDateTime = x.EndDateTime.ToDateTime(x.EndTime);
+                var daysOutstanding = (asOfDate.Date - endDateTime.Date).Days;
+
+                return new PaymentAgingResult
+                {
+                    WorkOrderId = x.Id,
+                    ClientName = x.ClientName,
+                    AmountDue = x.AmountDue,
+                    DaysOutstanding = daysOutstanding,
+                    AgingBucket =
+                        daysOutstanding <= 30 ? "0-30" :
+                        daysOutstanding <= 60 ? "31-60" :
+                        daysOutstanding <= 90 ? "61-90" : "90+"
+                };
+            }).ToList();
         }
 
         public async Task<IEnumerable<RevenueByMonthResult>> GetRevenueByMonthAsync(DateTime from, DateTime to)
         {
-            return await _timeTwoFixDbContext.WorkOrders
-                .Where(w => w.CreatedAt >= from && w.CreatedAt <= to && w.Status == "Completed")
-                .GroupBy(w => new { w.PaymentDate!.Value.Year, w.PaymentDate!.Value.Month })
+            var toInclusive = to.Date.AddDays(1).AddTicks(-1);
+
+            // Query actual revenue data
+            var revenueData = await _timeTwoFixDbContext.WorkOrders
+                .Where(w => w.PaymentDate != null
+                         && w.PaymentDate >= from
+                         && w.PaymentDate <= toInclusive
+                         && w.Status == "Completed")
+                .GroupBy(w => new { w.PaymentDate.Value.Year, w.PaymentDate.Value.Month })
                 .Select(g => new RevenueByMonthResult
                 {
                     Year = g.Key.Year,
                     Month = g.Key.Month,
                     Revenue = g.Sum(w => w.TolalLaborCost)
                 })
-                .OrderBy(r => r.Year).ThenBy(r => r.Month)
                 .ToListAsync();
+
+            // Build full month sequence
+            var results = new List<RevenueByMonthResult>();
+            var current = new DateTime(from.Year, from.Month, 1);
+
+            while (current <= to)
+            {
+                var match = revenueData.FirstOrDefault(r => r.Year == current.Year && r.Month == current.Month);
+
+                results.Add(new RevenueByMonthResult
+                {
+                    Year = current.Year,
+                    Month = current.Month,
+                    Revenue = match?.Revenue ?? 0m
+                });
+
+                current = current.AddMonths(1);
+            }
+
+            return results;
         }
 
         public async Task<IEnumerable<ServiceCategoryResult>> GetRevenueByServiceCategoryAsync(DateTime from, DateTime to)

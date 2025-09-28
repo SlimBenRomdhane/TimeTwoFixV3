@@ -1,0 +1,185 @@
+﻿@using System.Text.Json
+@using TimeTwoFix.Web.Models.ReportingModels
+@model IEnumerable<PaymentAgingViewModel>
+
+<form asp-action="PaymentAging" method="get" class="row g-3 mb-3">
+    <div class="col-auto">
+        <label for="asOfDate" class="form-label">As of Date</label>
+        <input type="date" id="asOfDate" name="asOfDate" class="form-control" value="@ViewData["AsOfDate"]" />
+    </div>
+    <div class="col-auto align-self-end">
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No aging data available for the selected date.</div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Work Order</th>
+                <th>Client</th>
+                <th>Amount Due</th>
+                <th>Days Outstanding</th>
+                <th>Aging Bucket</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.WorkOrderId</td>
+                    <td>@item.ClientName</td>
+                    <td>@item.AmountDue.ToString("N3")</td>
+                    <td>@item.DaysOutstanding</td>
+                    <td>@item.AgingBucket</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3 class="mt-4">Payment Aging Charts</h3>
+
+    <ul class="nav nav-tabs mb-3" id="agingTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="bucket-tab" data-bs-toggle="tab" data-bs-target="#bucket" type="button" role="tab">
+                Aging Distribution
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="breakdown-tab" data-bs-toggle="tab" data-bs-target="#breakdown" type="button" role="tab">
+                Aging Breakdown
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="scatter-tab" data-bs-toggle="tab" data-bs-target="#scatter" type="button" role="tab">
+                Amount vs Days
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="bucket" role="tabpanel">
+            <div class="chart-container">
+                <canvas id="agingBucketChart"></canvas>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="breakdown" role="tabpanel">
+            <div class="chart-container">
+                <canvas id="agingBreakdownChart"></canvas>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="scatter" role="tabpanel">
+            <div class="chart-container">
+                <canvas id="agingScatterChart"></canvas>
+            </div>
+        </div>
+    </div>
+}
+@section Scripts {
+    <script src="~/lib/chartjs/chart.min.js"></script>
+    <script>
+        const agingBuckets = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            Model.Select(x => x.AgingBucket).Distinct()
+        ));
+
+        const bucketTotals = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            Model.GroupBy(x => x.AgingBucket).Select(g => g.Sum(x => x.AmountDue))
+        ));
+
+        const scatterPoints = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(
+            Model.Select(x => new {
+                x = x.DaysOutstanding,
+                y = x.AmountDue,
+                r = Math.Max(5, x.AmountDue / 50)
+            })
+        ));
+
+
+    // Chart 1: Aging Distribution (Bar)
+    new Chart(document.getElementById('agingBucketChart'), {
+        type: 'bar',
+        data: {
+            labels: agingBuckets,
+            datasets: [{
+                label: 'Amount Due (TND)',
+                data: bucketTotals,
+                backgroundColor: '#00BFFF'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ctx.parsed.y.toLocaleString(undefined, { minimumFractionDigits: 3 }) + ' TND'
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    ticks: {
+                        callback: v => v.toLocaleString(undefined, { minimumFractionDigits: 3 }) + ' TND'
+                    }
+                }
+            }
+        }
+    });
+
+    // Chart 2: Aging Breakdown (Pie)
+    new Chart(document.getElementById('agingBreakdownChart'), {
+        type: 'pie',
+        data: {
+            labels: agingBuckets,
+            datasets: [{
+                data: bucketTotals,
+                backgroundColor: ['#4e79a7', '#f28e2b', '#e15759', '#76b7b2']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+
+    // Chart 3: Amount vs Days Outstanding (Scatter)
+    new Chart(document.getElementById('agingScatterChart'), {
+        type: 'bubble',
+        data: {
+            datasets: [{
+                label: 'Amount vs Days Outstanding',
+                data: scatterPoints,
+                backgroundColor: '#FFD700'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: { display: true, text: 'Days Outstanding' }
+                },
+                y: {
+                    title: { display: true, text: 'Amount Due (TND)' },
+                    ticks: {
+                        callback: v => v.toLocaleString(undefined, { minimumFractionDigits: 3 }) + ' TND'
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: ctx => `${ctx.raw.x} days, ${ctx.raw.y.toLocaleString(undefined, { minimumFractionDigits: 3 })} TND`
+                    }
+                }
+            }
+        }
+    });
+</script>
+}

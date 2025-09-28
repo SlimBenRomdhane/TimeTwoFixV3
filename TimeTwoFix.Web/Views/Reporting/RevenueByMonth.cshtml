@@ -1,0 +1,120 @@
+﻿@using System.Text.Json
+@using TimeTwoFix.Web.Models.ReportingModels
+@model IEnumerable<RevenueByMonthViewModel>
+
+<h2>Revenue by Month</h2>
+
+<form asp-action="RevenueByMonth" method="get" class="row g-3 mb-3">
+    <div class="col-auto">
+        <label for="from" class="form-label">From</label>
+        <input type="date" id="from" name="from" class="form-control" value="@ViewData["From"]" />
+    </div>
+    <div class="col-auto">
+        <label for="to" class="form-label">To</label>
+        <input type="date" id="to" name="to" class="form-control" value="@ViewData["To"]" />
+    </div>
+    <div class="col-auto align-self-end">
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No revenue data available for the selected period.</div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>Month</th>
+                <th>Revenue</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Year</td>
+                    <td>@System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(item.Month)</td>
+                    <td>@item.Revenue.ToString("N3")</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+        <tr class="fw-bold">
+            <td colspan="2" class="text-end">Total</td>
+            <td>@Model.Sum(x => x.Revenue).ToString("N3")</td>
+        </tr>
+    </tfoot>
+
+    </table>
+
+    <h3 class="mt-4">Revenue Trend</h3>
+    <canvas id="revenueChart"></canvas>
+}
+
+@section Scripts {
+    <script src="~/lib/chartjs/chart.min.js"></script>
+    <script>
+        const labels = @Html.Raw(JsonSerializer.Serialize(
+                    Model.Select(x => $"{System.Globalization.CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(x.Month)} {x.Year}").ToList()
+            ));
+
+    const revenueData = @Html.Raw(JsonSerializer.Serialize(
+                Model.Select(x => x.Revenue).ToList()
+        ));
+
+    const cumulativeData = revenueData.reduce((acc, val, i) => {
+        if (i === 0) acc.push(val);
+        else acc.push(acc[i - 1] + val);
+        return acc;
+    }, []);
+
+        new Chart(document.getElementById('revenueChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Monthly Revenue (TND)',
+                        data: revenueData,
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0,123,255,0.2)',
+                        fill: true,
+                        tension: 0.3
+                    },
+                    {
+                        label: 'Cumulative Revenue (TND)',
+                        data: cumulativeData,
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40,167,69,0.2)',
+                        fill: false,
+                        tension: 0.3,
+                        borderDash: [5, 5]
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => ctx.parsed.y.toLocaleString(undefined, { minimumFractionDigits: 3 }) + ' TND'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        title: { display: true, text: 'Revenue (TND)' },
+                        ticks: {
+                            callback: v => v.toLocaleString(undefined, { minimumFractionDigits: 3 }) + ' TND'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

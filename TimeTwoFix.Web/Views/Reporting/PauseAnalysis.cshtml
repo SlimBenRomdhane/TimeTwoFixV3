@@ -1,0 +1,118 @@
+﻿@model IEnumerable<TimeTwoFix.Web.Models.ReportingModels.PauseAnalysisViewModel>
+
+@{
+    ViewData["Title"] = "Pause Reason Analysis";
+}
+
+<h2>Pause Reason Analysis</h2>
+
+
+
+<!-- Date filter form -->
+<form asp-action="PauseAnalysis" method="get" class="row g-3 mb-3">
+    <div class="col-auto">
+        <label for="from" class="form-label">From</label>
+        <input type="date" id="from" name="from" class="form-control" value="@ViewData["From"]" />
+    </div>
+    <div class="col-auto">
+        <label for="to" class="form-label">To</label>
+        <input type="date" id="to" name="to" class="form-control" value="@ViewData["To"]" />
+    </div>
+    <div class="col-auto align-self-end">
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+</form>
+
+@if (Model != null && Model.Any())
+{
+    <!-- Data table -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Reason</th>
+                <th>Occurrences</th>
+                <th>Total Hours Lost</th>
+                <th>Avg. Pause Minutes</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pause in Model)
+            {
+                <tr>
+                    <td>@pause.Reason</td>
+                    <td>@pause.Occurrences</td>
+                    <td>@pause.TotalHoursLost.ToString("N2")</td>
+                    <td>@pause.AveragePauseMinutes.ToString("N2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Chart selector -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Visual Breakdown</h3>
+        <select id="metricSelector" class="form-select w-auto">
+            <option value="TotalHoursLost" selected>Total Hours Lost</option>
+            <option value="Occurrences">Occurrences</option>
+            <option value="AveragePauseMinutes">Avg. Pause Minutes</option>
+        </select>
+    </div>
+
+    <div class="chart-container">
+        <canvas id="pauseChart"></canvas>
+    </div>
+
+    @section Scripts {
+        <script src="~/lib/chartjs/chart.min.js"></script>
+        <script>
+            const pauseData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+            const pauseLabels = pauseData.map(p => p.Reason);
+
+            function buildDataset(metric) {
+                return [{
+                    label: metric === "TotalHoursLost" ? "Total Hours Lost" :
+                           metric === "Occurrences" ? "Occurrences" : "Avg. Pause Minutes",
+                    data: pauseData.map(p => p[metric]),
+                    backgroundColor: "#9370DB"
+                }];
+            }
+
+            let pauseChart = new Chart(document.getElementById('pauseChart'), {
+                type: 'bar',
+                data: {
+                    labels: pauseLabels,
+                    datasets: buildDataset("TotalHoursLost")
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: "Total Hours Lost" }
+                        },
+                        x: {
+                            title: { display: true, text: "Pause Reason" }
+                        }
+                    }
+                }
+            });
+
+            document.getElementById('metricSelector').addEventListener('change', function () {
+                const metric = this.value;
+                pauseChart.data.datasets = buildDataset(metric);
+                let yLabel = metric === "TotalHoursLost" ? "Total Hours Lost" :
+                             metric === "Occurrences" ? "Occurrences" : "Avg. Pause Minutes";
+                pauseChart.options.scales.y.title.text = yLabel;
+                pauseChart.update();
+            });
+        </script>
+    }
+}
+else
+{
+    <p>No pause data available for the selected range.</p>
+}

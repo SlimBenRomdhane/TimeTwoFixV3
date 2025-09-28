@@ -23,12 +23,23 @@
                            style="background: var(--glass-bg); border: 1px solid var(--shadow-color); padding: 10px; border-radius: 8px;">
                 </div>
 
-                <div class="mb-4">
+                @* <div class="mb-4">
                     <input asp-for="Password" id="PasswordInput" class="form-control" placeholder="Password" type="password"
                            style="background: var(--glass-bg); border: 1px solid var(--shadow-color); padding: 10px; border-radius: 8px;">
 
+                </div> *@
+                <div class="mb-4 position-relative">
+                    <input asp-for="Password" id="PasswordInput" class="form-control pe-5"
+                           placeholder="Password" type="password"
+                           style="background: var(--glass-bg); border: 1px solid var(--shadow-color); padding: 10px; border-radius: 8px;">
+
+                    <!-- Bouton œil -->
+                    <span id="togglePassword"
+                          class="position-absolute top-50 end-0 translate-middle-y me-3"
+                          style="cursor: pointer;">
+                        <i class="bi bi-eye" id="toggleIcon"></i>
+                    </span>
                 </div>
-                
                 <button type="submit" class="btn w-100 py-2 fw-bold"
                         style="background: var(--gradient-primary); color: var(--text-light); border-radius: 8px; border: none;">
                     SIGN IN
@@ -40,4 +51,20 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById("togglePassword").addEventListener("click", function () {
+            const passwordInput = document.getElementById("PasswordInput");
+            const toggleIcon = document.getElementById("toggleIcon");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleIcon.classList.remove("bi-eye");
+                toggleIcon.classList.add("bi-eye-slash");
+            } else {
+                passwordInput.type = "password";
+                toggleIcon.classList.remove("bi-eye-slash");
+                toggleIcon.classList.add("bi-eye");
+            }
+        });
+    </script>
 }

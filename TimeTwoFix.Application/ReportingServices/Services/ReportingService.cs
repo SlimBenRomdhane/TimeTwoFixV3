@@ -36,6 +36,13 @@ namespace TimeTwoFix.Application.ReportingServices.Services
             return dto;
         }
 
+        public async Task<IEnumerable<PauseAnalysisTrendDto>> GetPauseAnalysisTrendAsync(DateTime from, DateTime to)
+        {
+            var result = await _reportingRepository.GetPauseAnalysisTrendAsync(from, to);
+            var dto = _mapper.Map<IEnumerable<PauseAnalysisTrendDto>>(result);
+            return dto;
+        }
+
         public async Task<IEnumerable<PaymentAgingDto>> GetPaymentAgingAsync(DateTime asOfDate)
         {
             var result = await _reportingRepository.GetPaymentAgingAsync(asOfDate);

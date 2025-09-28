@@ -25,7 +25,8 @@ namespace TimeTwoFix.Web.Controllers
             DateTime toDate;
 
             // Apply defaults if missing
-            fromDate = from ?? DateTime.Now.AddMonths(-1);
+            //fromDate = from ?? DateTime.Now.AddMonths(-1);
+            fromDate = from ?? new DateTime(DateTime.Now.Year, 1, 1);
             toDate = to ?? DateTime.Now;
 
             var dataDto = await _reportingService.GetMechanicPerformanceAsync(fromDate, toDate);
@@ -39,7 +40,8 @@ namespace TimeTwoFix.Web.Controllers
         }
         public async Task<IActionResult> MechanicPerformanceTrend(DateTime? from, DateTime? to)
         {
-            var fromDate = from ?? DateTime.Now.AddMonths(-6);
+            //var fromDate = from ?? DateTime.Now.AddMonths(-6);
+            var fromDate = from ?? new DateTime(DateTime.Now.Year, 1, 1);
             var toDate = to ?? DateTime.Now;
 
             var dto = await _reportingService.GetMechanicPerformanceTrendAsync(fromDate, toDate);
@@ -50,7 +52,6 @@ namespace TimeTwoFix.Web.Controllers
 
             return View(vm);
         }
-
         public async Task<IActionResult> TopCustomers(DateTime? from, DateTime? to)
         {
             DateTime fromDate;
@@ -58,7 +59,8 @@ namespace TimeTwoFix.Web.Controllers
 
 
             // Apply defaults if missing
-            fromDate = from ?? DateTime.Now.AddMonths(-1);
+            //fromDate = from ?? DateTime.Now.AddMonths(-1);
+            fromDate = from ?? new DateTime(DateTime.Now.Year, 1, 1);
             toDate = to ?? DateTime.Now;
 
             var dataDto = await _reportingService.GetTopCustomersAsync(fromDate, toDate, top: 10);
@@ -69,13 +71,76 @@ namespace TimeTwoFix.Web.Controllers
 
             return View(data);
         }
+        public async Task<IActionResult> TopConsumedParts(DateTime? from, DateTime? to)
+        {
+            //var fromDate = from ?? DateTime.Now.AddMonths(-1);
+            var fromDate = from ?? new DateTime(DateTime.Now.Year, 1, 1);
+            var toDate = to ?? DateTime.Now;
+
+            var dto = await _reportingService.GetTopConsumedPartsAsync(fromDate, toDate);
+            var vm = _mapper.Map<IEnumerable<PartConsumptionViewModel>>(dto);
+
+            ViewData["From"] = fromDate.ToString("yyyy-MM-dd");
+            ViewData["To"] = toDate.ToString("yyyy-MM-dd");
+
+            return View(vm);
+        }
+        public async Task<IActionResult> PauseAnalysis(DateTime? from, DateTime? to)
+        {
+            //var fromDate = from ?? DateTime.Now.AddMonths(-1);
+            var fromDate = from ?? new DateTime(DateTime.Now.Year, 1, 1);
+            var toDate = to ?? DateTime.Now;
+
+            var dto = await _reportingService.GetPauseAnalysisAsync(fromDate, toDate);
+            var vm = _mapper.Map<IEnumerable<PauseAnalysisViewModel>>(dto);
+
+            ViewData["From"] = fromDate.ToString("yyyy-MM-dd");
+            ViewData["To"] = toDate.ToString("yyyy-MM-dd");
+
+            return View(vm);
+        }
+        public async Task<IActionResult> PauseAnalysisTrend(DateTime? from, DateTime? to)
+        {
+            //var fromDate = from ?? DateTime.Now.AddMonths(-3);
+            var fromDate = from ?? new DateTime(DateTime.Now.Year, 1, 1);
+            var toDate = to ?? DateTime.Now;
+
+            var dto = await _reportingService.GetPauseAnalysisTrendAsync(fromDate, toDate);
+            var vm = _mapper.Map<IEnumerable<PauseAnalysisTrendViewModel>>(dto);
+
+            ViewData["From"] = fromDate.ToString("yyyy-MM-dd");
+            ViewData["To"] = toDate.ToString("yyyy-MM-dd");
+
+            return View(vm);
+        }
+        public async Task<IActionResult> PaymentAging(DateTime? asOfDate)
+        {
+
+            var toDate = asOfDate ?? DateTime.Now;
+
+            var dto = await _reportingService.GetPaymentAgingAsync(toDate);
+            var vm = _mapper.Map<IEnumerable<PaymentAgingViewModel>>(dto);
+
+            ViewData["AsOfDate"] = toDate.ToString("yyyy-MM-dd");
+
+            return View(vm);
+        }
+
+        public async Task<IActionResult> RevenueByMonth(DateTime? from, DateTime? to)
+        {
+            //var fromDate = from ?? DateTime.Now.AddYears(-1);
+            var fromDate = from ?? new DateTime(DateTime.Now.Year, 1, 1);
+            var toDate = to ?? DateTime.Now;
+
+            var dto = await _reportingService.GetRevenueByMonthAsync(fromDate, toDate);
+            var vm = _mapper.Map<IEnumerable<RevenueByMonthViewModel>>(dto);
 
 
+            ViewData["From"] = fromDate.ToString("yyyy-MM-dd");
+            ViewData["To"] = toDate.ToString("yyyy-MM-dd");
 
-
-
-
-
+            return View(vm);
+        }
 
 
 

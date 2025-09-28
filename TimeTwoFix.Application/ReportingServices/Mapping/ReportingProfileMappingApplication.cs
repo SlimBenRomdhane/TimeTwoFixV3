@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System.Globalization;
 using TimeTwoFix.Application.ReportingServices.Dtos;
 using TimeTwoFix.Core.Interfaces.Repositories.ReportingModels;
 
@@ -21,7 +22,13 @@ namespace TimeTwoFix.Application.ReportingServices.Mapping
 
             // Mechanics
             CreateMap<MechanicPerformanceResult, MechanicPerformanceDto>();
-            CreateMap<MechanicPerformanceTrendResult, MechanicPerformanceTrendDto>();
+            //CreateMap<MechanicPerformanceTrendResult, MechanicPerformanceTrendDto>();
+            CreateMap<MechanicPerformanceTrendResult, MechanicPerformanceTrendDto>()
+            .ForMember(dest => dest.Period,
+                       opt => opt.MapFrom(src =>
+                           src.Period.ToString("MMM yyyy", CultureInfo.InvariantCulture)));
+
+
 
             // Parts & Suppliers
             CreateMap<PartConsumptionResult, PartConsumptionDto>();
@@ -30,6 +37,8 @@ namespace TimeTwoFix.Application.ReportingServices.Mapping
             // Bridges & Pauses
             //CreateMap<BridgeUtilizationResult, BridgeUtilizationDto>();
             CreateMap<PauseAnalysisResult, PauseAnalysisDto>();
+            CreateMap<PauseAnalysisTrendResult, PauseAnalysisTrendDto>()
+                .ForMember(dest => dest.Period, opt => opt.MapFrom(src => src.Period.ToString("MMM yyyy")));
 
             // Payments
             CreateMap<PaymentAgingResult, PaymentAgingDto>();

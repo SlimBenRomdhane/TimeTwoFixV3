@@ -1,0 +1,80 @@
+﻿@model IEnumerable<TimeTwoFix.Web.Models.ReportingModels.PauseAnalysisTrendViewModel>
+
+@{
+    ViewData["Title"] = "Pause Trend Analysis";
+}
+
+<h2>Pause Trend Analysis</h2>
+
+
+<!-- Date filter form -->
+<form asp-action="PauseAnalysisTrend" method="get" class="row g-3 mb-3">
+    <div class="col-auto">
+        <label for="from" class="form-label">From</label>
+        <input type="date" id="from" name="from" class="form-control" value="@ViewData["From"]" />
+    </div>
+    <div class="col-auto">
+        <label for="to" class="form-label">To</label>
+        <input type="date" id="to" name="to" class="form-control" value="@ViewData["To"]" />
+    </div>
+    <div class="col-auto align-self-end">
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+</form>
+
+@if (Model != null && Model.Any())
+{
+    <div class="chart-container">
+        <canvas id="pauseTrendChart"></canvas>
+    </div>
+
+    @section Scripts {
+        <script src="~/lib/chartjs/chart.min.js"></script>
+        <script>
+            const trendData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+            const periods = [...new Set(trendData.map(p => p.Period))];
+            const reasons = [...new Set(trendData.map(p => p.Reason))];
+
+            const datasets = reasons.map((reason, index) => ({
+                label: reason,
+                data: periods.map(period => {
+                    const match = trendData.find(p => p.Reason === reason && p.Period === period);
+                    return match ? match.HoursLost : 0;
+                }),
+                borderColor: `hsl(${index * 40}, 70%, 50%)`,
+                backgroundColor: `hsla(${index * 40}, 70%, 50%, 0.2)`,
+                borderWidth: 2,
+                fill: false,
+                tension: 0.3
+            }));
+
+            new Chart(document.getElementById('pauseTrendChart'), {
+                type: 'line',
+                data: {
+                    labels: periods,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    },
+                    scales: {
+                        y: {
+                            title: { display: true, text: "Hours Lost" },
+                            beginAtZero: true
+                        },
+                        x: {
+                            title: { display: true, text: "Period" }
+                        }
+                    }
+                }
+            });
+        </script>
+    }
+}
+else
+{
+    <p>No pause trend data available for the selected range.</p>
+}

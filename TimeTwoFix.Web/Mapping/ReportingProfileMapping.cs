@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System.Globalization;
 using TimeTwoFix.Application.ReportingServices.Dtos;
 using TimeTwoFix.Web.Models.ReportingModels;
 
@@ -13,6 +14,7 @@ namespace TimeTwoFix.Web.Mapping
             CreateMap<CustomerInsightDto, CustomerInsightViewModel>();
             CreateMap<PartConsumptionDto, PartConsumptionViewModel>();
             CreateMap<PauseAnalysisDto, PauseAnalysisViewModel>();
+            CreateMap<PauseAnalysisTrendDto, PauseAnalysisTrendViewModel>();
             CreateMap<PaymentAgingDto, PaymentAgingViewModel>();
             CreateMap<RevenueByMonthDto, RevenueByMonthViewModel>();
             CreateMap<ServiceCategoryDto, ServiceCategoryViewModel>();
