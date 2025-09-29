@@ -13,7 +13,7 @@ namespace TimeTwoFix.Application.WorkOrderService.Services
         {
         }
 
-        public async Task<IEnumerable<ReadWorkOrderDto>> GetWorkOrdersByDateRange(DateOnly startDate, DateOnly endDate)
+        public async Task<IEnumerable<ReadWorkOrderDto>> GetWorkOrdersByDateRange(DateTime startDate, DateTime endDate)
         {
             var workOrders = await _unitOfWork.WorkOrders.GetWorkOrdersByDateRangeAsync(startDate, endDate);
             if (workOrders == null || !workOrders.Any())

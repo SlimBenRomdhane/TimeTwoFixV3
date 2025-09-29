@@ -27,7 +27,7 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.WorkOrderManagement
             return workOrders;
         }
 
-        public async Task<IEnumerable<WorkOrder>> GetWorkOrdersByDateRangeAsync(DateOnly startDate, DateOnly endDate)
+        public async Task<IEnumerable<WorkOrder>> GetWorkOrdersByDateRangeAsync(DateTime startDate, DateTime endDate)
         {
             var workOrders = await _context.WorkOrders
                 .Where(w => w.StartDate >= startDate && w.EndDate <= endDate)

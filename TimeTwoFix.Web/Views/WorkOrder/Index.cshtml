@@ -84,8 +84,8 @@
                                             <th>ID</th>
                                             <th>Vehicle</th>
                                             @* <th>Mileage</th> *@
-                                            @* <th>Start</th>
-                                            <th>End</th> *@
+                                             <th>Start</th>
+                                            <th>End</th> 
                                             <th>Labor Cost</th>
                                             <th>Status</th>
                                             <th>Paid</th>
@@ -101,7 +101,7 @@
                                                 <td>@item.Id</td>
                                                 <td>@item.VehicleViewModel.Vin</td>
                                                 @* <td>@item.Mileage</td> *@
-                                                @* <td>
+                                                 <td>
                                                     <span class="text-nowrap">
                                                         @item.StartDate.ToString("yyyy-MM-dd")<br />
                                                         <small class="text-muted">@item.StartTime.ToString("hh\\:mm")</small>
@@ -112,7 +112,7 @@
                                                         @item.EndDate.ToString("yyyy-MM-dd")<br />
                                                         <small class="text-muted">@item.EndTime.ToString("hh\\:mm")</small>
                                                     </span>
-                                                </td> *@
+                                                </td> 
                                                 <td>@($"{item.TolalLaborCost:N3} TND")</td>
                                                 <td><span class="badge bg-secondary">@item.Status</span></td>
                                                 <td>

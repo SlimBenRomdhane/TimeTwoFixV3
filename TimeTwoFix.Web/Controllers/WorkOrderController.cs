@@ -269,9 +269,9 @@ namespace TimeTwoFix.Web.Controllers
 
                         updateWorkOrderViewModel.Mileage != workOrder.Mileage ||
                         updateWorkOrderViewModel.StartDate != workOrder.StartDate ||
-                        updateWorkOrderViewModel.StartTime != workOrder.StartTime ||
+                        //updateWorkOrderViewModel.StartTime != workOrder.StartTime ||
                         updateWorkOrderViewModel.EndDate != workOrder.EndDate ||
-                        updateWorkOrderViewModel.EndTime != workOrder.EndTime ||
+                        // updateWorkOrderViewModel.EndTime != workOrder.EndTime ||
                         updateWorkOrderViewModel.TolalLaborCost != workOrder.TolalLaborCost ||
                         updateWorkOrderViewModel.Status != workOrder.Status ||
                         updateWorkOrderViewModel.Notes != workOrder.Notes;

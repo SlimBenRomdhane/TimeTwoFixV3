@@ -1,0 +1,432 @@
+@model IEnumerable<TimeTwoFix.Web.Models.ReportingModels.SupplierSpendViewModel>
+
+@{
+    ViewData["Title"] = "Supplier Spending Analysis";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h2>🏪 Supplier Spending Analysis</h2>
+            <p class="lead">Analysis of spending patterns with different suppliers and parts providers</p>
+        </div>
+    </div>
+
+    <!-- Date filter form -->
+    <form asp-action="SupplierSpend" method="get" class="row g-3 mb-4">
+        <div class="col-auto">
+            <label for="from" class="form-label">From</label>
+            <input type="date" id="from" name="from" class="form-control" value="@ViewData["From"]" />
+        </div>
+        <div class="col-auto">
+            <label for="to" class="form-label">To</label>
+            <input type="date" id="to" name="to" class="form-control" value="@ViewData["To"]" />
+        </div>
+        <div class="col-auto align-self-end">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+    </form>
+
+    @if (Model != null && Model.Any())
+    {
+        <!-- Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">@Model.Count()</h4>
+                                <p class="card-text">Suppliers</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-truck fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">@Model.Sum(x => x.TotalSpend).ToString("N0")</h4>
+                                <p class="card-text">Total Spend</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-dollar-sign fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">@Model.Sum(x => x.DeliveriesCount)</h4>
+                                <p class="card-text">Total Deliveries</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-shopping-cart fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">@(Model.Count() > 0 ? (Model.Sum(x => x.TotalSpend) / Model.Count()).ToString("N0") : "0")</h4>
+                                <p class="card-text">Avg. Spend per Supplier</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-chart-bar fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">📊 Supplier Spending Breakdown</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Supplier</th>
+                                        <th>Contact Info</th>
+                                        <th>Deliveries Count</th>
+                                        <th>Total Spend</th>
+                                        <th>Average Order</th>
+                                        <th>Spend %</th>
+                                        <th>Rating</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var supplier in Model.OrderByDescending(x => x.TotalSpend))
+                                    {
+                                        var spendPercentage = Model.Sum(x => x.TotalSpend) > 0 
+                                            ? (supplier.TotalSpend / Model.Sum(x => x.TotalSpend)) * 100 
+                                            : 0;
+                                        
+                                        <tr>
+                                            <td>
+                                        <strong>@supplier.ProviderName</strong>
+                                            </td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(supplier.ContactEmail))
+                                                {
+                                                    <div><i class="fas fa-envelope"></i> @supplier.ContactEmail</div>
+                                                }
+                                                @if (!string.IsNullOrEmpty(supplier.ContactPhone))
+                                                {
+                                                    <div><i class="fas fa-phone"></i> @supplier.ContactPhone</div>
+                                                }
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-primary">@supplier.DeliveriesCount</span>
+                                            </td>
+                                            <td>
+                                                <strong class="text-success">@supplier.TotalSpend.ToString("N0")</strong>
+                                            </td>
+                                            <td>
+                                                @(supplier.DeliveriesCount > 0 ? (supplier.TotalSpend / supplier.DeliveriesCount).ToString("N0") : "0")
+                                            </td>
+                                            <td>
+                                                <div class="progress" style="height: 20px;">
+                                                    <div class="progress-bar bg-success" 
+                                                         role="progressbar" 
+                                                         style="width: @spendPercentage.ToString("F1")%" 
+                                                         aria-valuenow="@spendPercentage" 
+                                                         aria-valuemin="0" 
+                                                         aria-valuemax="100">
+                                                        @spendPercentage.ToString("F1")%
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                @{
+                                                    var avgOrderValue = supplier.DeliveriesCount > 0 ? supplier.TotalSpend / supplier.DeliveriesCount : 0;
+                                                    var rating = avgOrderValue > 0 ? Math.Min(5, (int)(supplier.TotalSpend / avgOrderValue / 10)) : 0;
+                                                }
+                                                <div class="rating">
+                                                    @for (int i = 1; i <= 5; i++)
+                                                    {
+                                                        <i class="fas fa-star @(i <= rating ? "text-warning" : "text-muted")"></i>
+                                                    }
+                                                </div>
+                                                <small class="text-muted">@rating/5</small>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-info" 
+                                                        onclick="showSupplierDetails('@supplier.ProviderName', @supplier.DeliveriesCount, @supplier.TotalSpend, @(supplier.DeliveriesCount > 0 ? supplier.TotalSpend / supplier.DeliveriesCount : 0))">
+                                                    <i class="fas fa-eye"></i> Details
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">📊 Spending Distribution</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="spendingChart" width="400" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">📈 Purchase Frequency</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="purchaseChart" width="400" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Suppliers -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">🏆 Top Spending Suppliers</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="list-group list-group-numbered">
+                            @foreach (var supplier in Model.OrderByDescending(x => x.TotalSpend).Take(5))
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">@supplier.ProviderName</div>
+                                        <small class="text-muted">@supplier.DeliveriesCount deliveries</small>
+                                    </div>
+                                    <span class="badge bg-success rounded-pill">@supplier.TotalSpend.ToString("N0")</span>
+                                </li>
+                            }
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">🛒 Most Frequent Suppliers</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="list-group list-group-numbered">
+                            @foreach (var supplier in Model.OrderByDescending(x => x.DeliveriesCount).Take(5))
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">@supplier.ProviderName</div>
+                                        <small class="text-muted">@(supplier.DeliveriesCount > 0 ? (supplier.TotalSpend / supplier.DeliveriesCount).ToString("N0") : "0") avg. order</small>
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">@supplier.DeliveriesCount</span>
+                                </li>
+                            }
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cost Analysis -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">💰 Cost Analysis & Recommendations</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="alert alert-info">
+                                    <h6><i class="fas fa-chart-line"></i> Spending Trends</h6>
+                                    <p class="mb-0">
+                                        @{
+                                            var topSupplier = Model.OrderByDescending(x => x.TotalSpend).First();
+                                            var topSupplierPercentage = (topSupplier.TotalSpend / Model.Sum(x => x.TotalSpend)) * 100;
+                                        }
+                                        Your top supplier (@topSupplier.SupplierName) represents @topSupplierPercentage.ToString("F1")% of total spending.
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="alert alert-warning">
+                                    <h6><i class="fas fa-balance-scale"></i> Diversification</h6>
+                                    <p class="mb-0">
+                                        @if (Model.Count() >= 5)
+                                        {
+                                            <span class="text-success">Good supplier diversification with @Model.Count() suppliers.</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-warning">Consider diversifying your supplier base. Currently using only @Model.Count() suppliers.</span>
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="alert alert-success">
+                                    <h6><i class="fas fa-handshake"></i> Relationship Value</h6>
+                                    <p class="mb-0">
+                                        @{
+                                            var overallAvgOrderValue = Model.Average(x => x.DeliveriesCount > 0 ? x.TotalSpend / x.DeliveriesCount : 0);
+                                        }
+                                        Average order value is @overallAvgOrderValue.ToString("N0"). Consider bulk purchasing for better rates.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <h4>No Data Available</h4>
+            <p>No supplier spending data found for the selected date range. Try adjusting your filter criteria.</p>
+        </div>
+    }
+</div>
+
+<!-- Supplier Details Modal -->
+<div class="modal fade" id="supplierDetailsModal" tabindex="-1" aria-labelledby="supplierDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="supplierDetailsModalLabel">Supplier Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="supplierDetailsContent">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/chartjs/chart.min.js"></script>
+    <script>
+        @if (Model != null && Model.Any())
+        {
+            <text>
+            const supplierData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model));
+            
+            // Spending Distribution Chart
+            const spendingCtx = document.getElementById('spendingChart').getContext('2d');
+            new Chart(spendingCtx, {
+                type: 'pie',
+                data: {
+                    labels: supplierData.map(s => s.providerName),
+                    datasets: [{
+                        data: supplierData.map(s => s.totalSpend),
+                        backgroundColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', 
+                            '#9966FF', '#FF9F40', '#FF6384', '#C9CBCF'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Spending by Supplier'
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Purchase Frequency Chart
+            const purchaseCtx = document.getElementById('purchaseChart').getContext('2d');
+            new Chart(purchaseCtx, {
+                type: 'bar',
+                data: {
+                    labels: supplierData.map(s => s.providerName),
+                    datasets: [{
+                        label: 'Delivery Count',
+                        data: supplierData.map(s => s.deliveriesCount),
+                        backgroundColor: '#36A2EB',
+                        borderColor: '#36A2EB',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Delivery Frequency by Supplier'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            function showSupplierDetails(providerName, deliveriesCount, totalSpend, averageOrderValue) {
+                const modal = new bootstrap.Modal(document.getElementById('supplierDetailsModal'));
+                const content = document.getElementById('supplierDetailsContent');
+                
+                content.innerHTML = `
+                    <h6>Supplier: ${providerName}</h6>
+                    <p><strong>Delivery Count:</strong> ${deliveriesCount}</p>
+                    <p><strong>Total Spend:</strong> ${totalSpend.toLocaleString()}</p>
+                    <p><strong>Average Order Value:</strong> ${averageOrderValue.toLocaleString()}</p>
+                    <p><strong>Total Orders Value:</strong> ${(deliveriesCount * averageOrderValue).toLocaleString()}</p>
+                `;
+                
+                modal.show();
+            }
+            </text>
+        }
+    </script>
+}

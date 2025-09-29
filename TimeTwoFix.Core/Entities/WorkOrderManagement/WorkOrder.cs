@@ -13,10 +13,8 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
         [Required]
         public int Mileage { get; set; }
 
-        public DateOnly StartDate { get; set; }
-        public TimeOnly StartTime { get; set; }
-        public DateOnly EndDate { get; set; }
-        public TimeOnly EndTime { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
         public bool Paid { get; set; }
         public DateTime? PaymentDate { get; set; }
 
@@ -103,10 +101,7 @@ namespace TimeTwoFix.Core.Entities.WorkOrderManagement
                     .Max(i => i.EndDate.Value);
                 var earliestStartDateTime = completedInterventions
                     .Min(i => i.StartDate);
-                StartDate = DateOnly.FromDateTime(earliestStartDateTime);
-                StartTime = TimeOnly.FromDateTime(earliestStartDateTime);
-                EndDate = DateOnly.FromDateTime(latestEndDateTime);
-                EndTime = TimeOnly.FromDateTime(latestEndDateTime);
+
             }
             else
             {

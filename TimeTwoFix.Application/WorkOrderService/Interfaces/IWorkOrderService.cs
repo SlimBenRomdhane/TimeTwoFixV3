@@ -10,6 +10,6 @@ namespace TimeTwoFix.Application.WorkOrderService.Interfaces
 
         Task<IEnumerable<ReadWorkOrderDto>> GetWorkOrdersByVehicleId(int vehicleId);
 
-        Task<IEnumerable<ReadWorkOrderDto>> GetWorkOrdersByDateRange(DateOnly startDate, DateOnly endDate);
+        Task<IEnumerable<ReadWorkOrderDto>> GetWorkOrdersByDateRange(DateTime startDate, DateTime endDate);
     }
 }

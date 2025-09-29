@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using TimeTwoFix.Application.ReportingServices.Interfaces;
@@ -7,6 +8,7 @@ using TimeTwoFix.Web.Models.ReportingModels;
 
 namespace TimeTwoFix.Web.Controllers
 {
+    [Authorize(Roles = "GeneralManager, WorkshopManager")]
     public class ReportingController : Controller
     {
 
@@ -142,32 +144,127 @@ namespace TimeTwoFix.Web.Controllers
             return View(vm);
         }
 
+        public async Task<IActionResult> WorkOrderSummary(DateTime? from, DateTime? to)
+        {
+            try
+            {
+                var fromDate = from ?? new DateTime(DateTime.Now.Year, 1, 1);
+                var toDate = to ?? DateTime.Now;
 
+                if (fromDate > toDate)
+                {
+                    TempData["ErrorMessage"] = "Start date cannot be greater than end date.";
+                    fromDate = new DateTime(DateTime.Now.Year, 1, 1);
+                    toDate = DateTime.Now;
+                }
 
+                var dto = await _reportingService.GetWorkOrderSummaryAsync(fromDate, toDate);
+                var vm = _mapper.Map<WorkOrderSummaryViewModel>(dto);
 
+                ViewData["From"] = fromDate.ToString("yyyy-MM-dd");
+                ViewData["To"] = toDate.ToString("yyyy-MM-dd");
 
+                return View(vm);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading work order summary data.";
+                return View(new WorkOrderSummaryViewModel());
+            }
+        }
 
+        public async Task<IActionResult> ServiceCategory(DateTime? from, DateTime? to)
+        {
+            try
+            {
+                var fromDate = from ?? new DateTime(DateTime.Now.Year, 1, 1);
+                var toDate = to ?? DateTime.Now;
 
+                if (fromDate > toDate)
+                {
+                    TempData["ErrorMessage"] = "Start date cannot be greater than end date.";
+                    fromDate = new DateTime(DateTime.Now.Year, 1, 1);
+                    toDate = DateTime.Now;
+                }
 
+                var dto = await _reportingService.GetRevenueByServiceCategoryAsync(fromDate, toDate);
+                var vm = _mapper.Map<IEnumerable<ServiceCategoryViewModel>>(dto);
 
+                ViewData["From"] = fromDate.ToString("yyyy-MM-dd");
+                ViewData["To"] = toDate.ToString("yyyy-MM-dd");
 
+                return View(vm);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading service category data.";
+                return View(Enumerable.Empty<ServiceCategoryViewModel>());
+            }
+        }
 
+        public async Task<IActionResult> SupplierSpend(DateTime? from, DateTime? to)
+        {
+            try
+            {
+                var fromDate = from ?? new DateTime(DateTime.Now.Year, 1, 1);
+                var toDate = to ?? DateTime.Now;
 
+                if (fromDate > toDate)
+                {
+                    TempData["ErrorMessage"] = "Start date cannot be greater than end date.";
+                    fromDate = new DateTime(DateTime.Now.Year, 1, 1);
+                    toDate = DateTime.Now;
+                }
 
+                var dto = await _reportingService.GetSupplierSpendAsync(fromDate, toDate);
+                var vm = _mapper.Map<IEnumerable<SupplierSpendViewModel>>(dto);
 
+                ViewData["From"] = fromDate.ToString("yyyy-MM-dd");
+                ViewData["To"] = toDate.ToString("yyyy-MM-dd");
 
+                return View(vm);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading supplier spending data.";
+                return View(Enumerable.Empty<SupplierSpendViewModel>());
+            }
+        }
 
+        public async Task<IActionResult> VehicleInsight(DateTime? from, DateTime? to)
+        {
+            try
+            {
+                var fromDate = from ?? new DateTime(DateTime.Now.Year, 1, 1);
+                var toDate = to ?? DateTime.Now;
 
+                if (fromDate > toDate)
+                {
+                    TempData["ErrorMessage"] = "Start date cannot be greater than end date.";
+                    fromDate = new DateTime(DateTime.Now.Year, 1, 1);
+                    toDate = DateTime.Now;
+                }
 
+                var dto = await _reportingService.GetTopVehiclesAsync(fromDate, toDate, top: 10);
+                var vm = _mapper.Map<IEnumerable<VehicleInsightViewModel>>(dto);
 
+                ViewData["From"] = fromDate.ToString("yyyy-MM-dd");
+                ViewData["To"] = toDate.ToString("yyyy-MM-dd");
 
+                return View(vm);
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "An error occurred while loading vehicle insight data.";
+                return View(Enumerable.Empty<VehicleInsightViewModel>());
+            }
+        }
 
-
-
-
-
-
-
+        public async Task<IActionResult> Index()
+        {
+            // Main reporting dashboard
+            return View();
+        }
 
         public async Task BroadcastPerformance(DateTime? from = null, DateTime? to = null)
         {

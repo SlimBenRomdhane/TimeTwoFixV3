@@ -139,16 +139,16 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.ReportingManagement
                     w.Id,
                     ClientName = w.Vehicle.Client.FirstName + " " + w.Vehicle.Client.LastName,
                     AmountDue = w.TolalLaborCost,
-                    EndDateTime = w.EndDate, // capture raw DateOnly
-                    EndTime = w.EndTime      // capture raw TimeOnly
+                    EndDate = w.EndDate.Value, // capture raw DateOnly
+
                 })
                 .ToListAsync();
 
             // Now compute DateDiffDay safely in memory
             return rawData.Select(x =>
             {
-                var endDateTime = x.EndDateTime.ToDateTime(x.EndTime);
-                var daysOutstanding = (asOfDate.Date - endDateTime.Date).Days;
+                //var endDateTime = x.EndDateTime.ToDateTime(x.EndTime);
+                var daysOutstanding = (asOfDate.Date - x.EndDate).Days;
 
                 return new PaymentAgingResult
                 {
@@ -260,9 +260,11 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.ReportingManagement
 
         public async Task<IEnumerable<CustomerInsightResult>> GetTopCustomersAsync(DateTime from, DateTime to, int top = 10)
         {
+            //var fromDateOnly = DateOnly.FromDateTime(from);
+            //var toDateOnly = DateOnly.FromDateTime(to);
             return await _timeTwoFixDbContext.WorkOrders
                 .Include(w => w.Vehicle).ThenInclude(v => v.Client)
-                .Where(w => w.CreatedAt >= from && w.CreatedAt <= to && w.Status == "Completed")
+                .Where(w => w.StartDate >= from && w.StartDate <= to && w.Status == "Completed")
                 .GroupBy(w => new { w.Vehicle.ClientId, w.Vehicle.Client.FirstName, w.Vehicle.Client.LastName })
                 .Select(g => new CustomerInsightResult
                 {
@@ -297,23 +299,61 @@ namespace TimeTwoFix.Infrastructure.Persistence.Repositories.ReportingManagement
                 .ToListAsync();
         }
 
+        //public async Task<WorkOrderSummaryResult> GetWorkOrderSummaryAsync(DateTime from, DateTime to)
+        //{
+        //    var query = _timeTwoFixDbContext.WorkOrders
+        //        .Include(w => w.Interventions)
+        //        .ThenInclude(i => i.InterventionSpareParts)
+        //        .Where(w => w.CreatedAt >= from && w.CreatedAt <= to);
+        //    var closed = query.Where(w => w.Status == "Completed");
+        //    var avgHours = await closed
+        //        .Select(w => EF.Functions.DateDiffHour(w.StartDate.ToDateTime(w.StartTime), w.EndDate.ToDateTime(w.EndTime)))
+        //        .Where(h => h != null)
+        //        .AverageAsync(h => (double)h!);
+
+        //    return new WorkOrderSummaryResult
+        //    {
+        //        TotalCreated = await query.CountAsync(),
+        //        TotalClosed = await closed.CountAsync(),
+        //        AverageDurationHours = double.IsNaN(avgHours) ? 0 : avgHours,
+        //        PaidCount = await query.CountAsync(w => w.Paid == true),
+        //        UnpaidCount = await query.CountAsync(w => w.Paid == false)
+        //    };
+        //}
         public async Task<WorkOrderSummaryResult> GetWorkOrderSummaryAsync(DateTime from, DateTime to)
         {
+
+
             var query = _timeTwoFixDbContext.WorkOrders
                 .Include(w => w.Interventions)
                 .ThenInclude(i => i.InterventionSpareParts)
-                .Where(w => w.CreatedAt >= from && w.CreatedAt <= to);
-            var closed = query.Where(w => w.Status == "Completed");
-            var avgHours = await closed
-                .Select(w => EF.Functions.DateDiffHour(w.StartDate.ToDateTime(w.StartTime), w.EndDate.ToDateTime(w.EndTime)))
-                .Where(h => h != null)
-                .AverageAsync(h => (double)h!);
+                .Where(w => w.EndDate >= from && w.EndDate <= to);
+
+            var closed = await query
+                .Where(w => w.Status == "Completed")
+                .ToListAsync(); // materialize here
+
+            // Compute average in memory
+            var durations = closed
+                    .Where(w => w.EndDate.HasValue)
+                    .Select(w =>
+                     {
+                         var start = w.StartDate;          // DateTime
+                         var end = w.EndDate.Value;        // unwrap DateTime?
+                         return (end - start).TotalHours;  // now a TimeSpan, so TotalHours works
+                     })
+                    .ToList();
+
+
+            var avgHours = durations.Any() ? durations.Average() : 0;
+            var avgSpend = closed.Any() ? closed.Average(w => w.TolalLaborCost) : 0;
 
             return new WorkOrderSummaryResult
             {
                 TotalCreated = await query.CountAsync(),
-                TotalClosed = await closed.CountAsync(),
-                AverageDurationHours = double.IsNaN(avgHours) ? 0 : avgHours,
+                TotalClosed = closed.Count,
+                AverageDurationHours = avgHours,
+                AverageRevenue = avgSpend,
                 PaidCount = await query.CountAsync(w => w.Paid == true),
                 UnpaidCount = await query.CountAsync(w => w.Paid == false)
             };

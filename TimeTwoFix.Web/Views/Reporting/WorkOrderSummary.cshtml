@@ -1,0 +1,342 @@
+@model TimeTwoFix.Web.Models.ReportingModels.WorkOrderSummaryViewModel
+
+@{
+    ViewData["Title"] = "Work Order Summary";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h2>📋 Work Order Summary</h2>
+            <p class="lead">Overview of work order performance and completion metrics</p>
+        </div>
+    </div>
+
+    <!-- Date filter form -->
+    <form asp-action="WorkOrderSummary" method="get" class="row g-3 mb-4">
+        <div class="col-auto">
+            <label for="from" class="form-label">From</label>
+            <input type="date" id="from" name="from" class="form-control" value="@ViewData["From"]" />
+        </div>
+        <div class="col-auto">
+            <label for="to" class="form-label">To</label>
+            <input type="date" id="to" name="to" class="form-control" value="@ViewData["To"]" />
+        </div>
+        <div class="col-auto align-self-end">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+    </form>
+
+    @if (Model != null)
+    {
+        <!-- Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">@Model.TotalCreated</h4>
+                                <p class="card-text">Total Created</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-plus-circle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">@Model.TotalClosed</h4>
+                                <p class="card-text">Total Closed</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-check-circle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">@Model.AverageDurationHours.ToString("N1")</h4>
+                                <p class="card-text">Avg. Duration (Hours)</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-clock fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">@Model.AverageRevenue.ToString("N1")</h4>
+                                <p class="card-text">Avg. Spent </p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-clock fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 class="card-title">@Model.PaidCount</h4>
+                                <p class="card-text">Paid Orders</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-dollar-sign fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Statistics -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">📊 Completion Rate Analysis</h5>
+                    </div>
+                    <div class="card-body">
+                        @{
+                            var completionRate = Model.TotalCreated > 0 ? (double)Model.TotalClosed / Model.TotalCreated * 100 : 0;
+                            var paymentRate = Model.TotalClosed > 0 ? (double)Model.PaidCount / Model.TotalClosed * 100 : 0;
+                        }
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Completion Rate</h6>
+                                <div class="progress mb-3" style="height: 25px;">
+                                    <div class="progress-bar bg-success" role="progressbar" 
+                                         style="width: @completionRate.ToString("F1")%" 
+                                         aria-valuenow="@completionRate" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                        @completionRate.ToString("F1")%
+                                    </div>
+                                </div>
+                                <small class="text-muted">@Model.TotalClosed of @Model.TotalCreated work orders completed</small>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h6>Payment Rate</h6>
+                                <div class="progress mb-3" style="height: 25px;">
+                                    <div class="progress-bar bg-warning" role="progressbar" 
+                                         style="width: @paymentRate.ToString("F1")%" 
+                                         aria-valuenow="@paymentRate" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                        @paymentRate.ToString("F1")%
+                                    </div>
+                                </div>
+                                <small class="text-muted">@Model.PaidCount of @Model.TotalClosed completed orders paid</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">💰 Payment Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Paid Orders:</span>
+                            <span class="badge bg-success">@Model.PaidCount</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Unpaid Orders:</span>
+                            <span class="badge bg-danger">@Model.UnpaidCount</span>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between">
+                            <strong>Total Completed:</strong>
+                            <strong>@Model.TotalClosed</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">📈 Visual Analysis</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <canvas id="completionChart" width="400" height="200"></canvas>
+                            </div>
+                            <div class="col-md-6">
+                                <canvas id="paymentChart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Insights -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">💡 Key Insights</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="alert alert-info">
+                                    <h6><i class="fas fa-info-circle"></i> Completion Efficiency</h6>
+                                    <p class="mb-0">
+                                        @if (completionRate >= 80)
+                                        {
+                                            <span class="text-success">Excellent completion rate! Your team is performing well.</span>
+                                        }
+                                        else if (completionRate >= 60)
+                                        {
+                                            <span class="text-warning">Good completion rate, but there's room for improvement.</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-danger">Low completion rate. Consider reviewing processes.</span>
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="alert alert-warning">
+                                    <h6><i class="fas fa-clock"></i> Average Duration</h6>
+                                    <p class="mb-0">
+                                        @if (Model.AverageDurationHours <= 4)
+                                        {
+                                            <span class="text-success">Fast completion times! Great efficiency.</span>
+                                        }
+                                        else if (Model.AverageDurationHours <= 8)
+                                        {
+                                            <span class="text-info">Reasonable completion times.</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-warning">Long completion times. Consider process optimization.</span>
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="alert alert-success">
+                                    <h6><i class="fas fa-dollar-sign"></i> Payment Status</h6>
+                                    <p class="mb-0">
+                                        @if (paymentRate >= 90)
+                                        {
+                                            <span class="text-success">Excellent payment collection rate!</span>
+                                        }
+                                        else if (paymentRate >= 70)
+                                        {
+                                            <span class="text-warning">Good payment rate, but could be improved.</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-danger">Low payment rate. Review collection processes.</span>
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <h4>No Data Available</h4>
+            <p>No work order data found for the selected date range. Try adjusting your filter criteria.</p>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="~/lib/chartjs/chart.min.js"></script>
+    <script>
+        @if (Model != null)
+        {
+            <text>
+            // Completion Status Chart
+            const completionCtx = document.getElementById('completionChart').getContext('2d');
+            new Chart(completionCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Completed', 'In Progress'],
+                    datasets: [{
+                        data: [@Model.TotalClosed, @(Model.TotalCreated - Model.TotalClosed)],
+                        backgroundColor: ['#28a745', '#ffc107'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Work Order Completion Status'
+                        }
+                    }
+                }
+            });
+
+            // Payment Status Chart
+            const paymentCtx = document.getElementById('paymentChart').getContext('2d');
+            new Chart(paymentCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Paid', 'Unpaid'],
+                    datasets: [{
+                        data: [@Model.PaidCount, @Model.UnpaidCount],
+                        backgroundColor: ['#28a745', '#dc3545'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Payment Status'
+                        }
+                    }
+                }
+            });
+            </text>
+        }
+    </script>
+}

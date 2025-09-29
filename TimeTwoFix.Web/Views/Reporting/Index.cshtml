@@ -1,0 +1,254 @@
+@{
+    ViewData["Title"] = "Reporting Dashboard";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">📊 Reporting Dashboard</h1>
+            <p class="lead">Comprehensive analytics and insights for your workshop operations</p>
+        </div>
+    </div>
+
+    <!-- Quick Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">Work Orders</h4>
+                            <p class="card-text">Summary & Analytics</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-clipboard-list fa-2x"></i>
+                        </div>
+                    </div>
+                    <a href="@Url.Action("WorkOrderSummary")" class="btn btn-light btn-sm">View Report</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">Revenue</h4>
+                            <p class="card-text">Monthly & Category Analysis</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-chart-line fa-2x"></i>
+                        </div>
+                    </div>
+                    <a href="@Url.Action("RevenueByMonth")" class="btn btn-light btn-sm">View Report</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">Performance</h4>
+                            <p class="card-text">Mechanic & Team Analytics</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-users fa-2x"></i>
+                        </div>
+                    </div>
+                    <a href="@Url.Action("MechanicPerformance")" class="btn btn-light btn-sm">View Report</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title">Inventory</h4>
+                            <p class="card-text">Parts & Supplier Analysis</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-boxes fa-2x"></i>
+                        </div>
+                    </div>
+                    <a href="@Url.Action("TopConsumedParts")" class="btn btn-light btn-sm">View Report</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Reports Grid -->
+    <div class="row">
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">📈 Work Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Overview of work orders, completion rates, and payment status.</p>
+                    <ul class="list-unstyled">
+                        <li>• Total created vs completed</li>
+                        <li>• Average duration</li>
+                        <li>• Payment status breakdown</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("WorkOrderSummary")" class="btn btn-primary">View Report</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">💰 Revenue Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Financial performance and revenue trends.</p>
+                    <ul class="list-unstyled">
+                        <li>• Monthly revenue trends</li>
+                        <li>• Service category breakdown</li>
+                        <li>• Payment aging analysis</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <div class="btn-group" role="group">
+                        <a href="@Url.Action("RevenueByMonth")" class="btn btn-outline-primary btn-sm">Monthly</a>
+                        <a href="@Url.Action("ServiceCategory")" class="btn btn-outline-primary btn-sm">By Category</a>
+                        <a href="@Url.Action("PaymentAging")" class="btn btn-outline-primary btn-sm">Aging</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">👥 Team Performance</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Mechanic productivity and performance metrics.</p>
+                    <ul class="list-unstyled">
+                        <li>• Individual mechanic stats</li>
+                        <li>• Performance trends</li>
+                        <li>• Efficiency analysis</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <div class="btn-group" role="group">
+                        <a href="@Url.Action("MechanicPerformance")" class="btn btn-outline-success btn-sm">Current</a>
+                        <a href="@Url.Action("MechanicPerformanceTrend")" class="btn btn-outline-success btn-sm">Trends</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">🔧 Parts & Inventory</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Inventory management and parts consumption analysis.</p>
+                    <ul class="list-unstyled">
+                        <li>• Top consumed parts</li>
+                        <li>• Supplier spending</li>
+                        <li>• Stock level insights</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <div class="btn-group" role="group">
+                        <a href="@Url.Action("TopConsumedParts")" class="btn btn-outline-info btn-sm">Parts</a>
+                        <a href="@Url.Action("SupplierSpend")" class="btn btn-outline-info btn-sm">Suppliers</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">🚗 Vehicle Insights</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Vehicle service patterns and customer insights.</p>
+                    <ul class="list-unstyled">
+                        <li>• Most serviced vehicles</li>
+                        <li>• Customer service frequency</li>
+                        <li>• Vehicle maintenance patterns</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <div class="btn-group" role="group">
+                        <a href="@Url.Action("VehicleInsight")" class="btn btn-outline-warning btn-sm">Vehicles</a>
+                        <a href="@Url.Action("TopCustomers")" class="btn btn-outline-warning btn-sm">Customers</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">⏱️ Time Analysis</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">Work time analysis and pause pattern insights.</p>
+                    <ul class="list-unstyled">
+                        <li>• Pause pattern analysis</li>
+                        <li>• Time efficiency trends</li>
+                        <li>• Productivity insights</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <div class="btn-group" role="group">
+                        <a href="@Url.Action("PauseAnalysis")" class="btn btn-outline-secondary btn-sm">Pauses</a>
+                        <a href="@Url.Action("PauseAnalysisTrend")" class="btn btn-outline-secondary btn-sm">Trends</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">⚡ Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <a href="@Url.Action("WorkOrderSummary", new { from = DateTime.Now.AddDays(-30), to = DateTime.Now })" 
+                               class="btn btn-outline-primary w-100 mb-2">Last 30 Days</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="@Url.Action("RevenueByMonth", new { from = DateTime.Now.AddMonths(-6), to = DateTime.Now })" 
+                               class="btn btn-outline-success w-100 mb-2">6 Month Revenue</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="@Url.Action("MechanicPerformance", new { from = DateTime.Now.AddDays(-7), to = DateTime.Now })" 
+                               class="btn btn-outline-info w-100 mb-2">This Week</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="@Url.Action("TopConsumedParts", new { from = DateTime.Now.AddDays(-30), to = DateTime.Now })" 
+                               class="btn btn-outline-warning w-100 mb-2">Monthly Parts</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Add any dashboard-specific JavaScript here
+        console.log('Reporting Dashboard loaded');
+    </script>
+}
