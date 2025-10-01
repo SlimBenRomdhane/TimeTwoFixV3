@@ -21,4 +21,8 @@
 		<ProjectReference Include="..\TimeTwoFix.Infrastructure\TimeTwoFix.Infrastructure.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Controllers\Base\" />
+	</ItemGroup>
+
 </Project>

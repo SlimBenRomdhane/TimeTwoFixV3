@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.SignalR;
 using QuestPDF.Infrastructure;
 using TimeTwoFix.Application.Extension;
 using TimeTwoFix.Infrastructure.Extension;
-using TimeTwoFix.Web.Extensions;
 using TimeTwoFix.Web.Hubs;
 using TimeTwoFix.Web.OtherTools;
 

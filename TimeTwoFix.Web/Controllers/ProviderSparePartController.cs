@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage;
-using System.Transactions;
 using TimeTwoFix.Application.ProviderSparePartServices.Dtos;
 using TimeTwoFix.Application.ProviderSparePartServices.Interfaces;
 using TimeTwoFix.Application.SparePartServices.Interfaces;
@@ -9,7 +8,6 @@ using TimeTwoFix.Core.Common;
 using TimeTwoFix.Core.Entities.SparePartManagement;
 using TimeTwoFix.Core.Interfaces;
 using TimeTwoFix.Web.Models.ProviderSparePartModels;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace TimeTwoFix.Web.Controllers
 {

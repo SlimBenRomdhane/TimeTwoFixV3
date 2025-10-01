@@ -104,13 +104,13 @@
                                                  <td>
                                                     <span class="text-nowrap">
                                                         @item.StartDate.ToString("yyyy-MM-dd")<br />
-                                                        <small class="text-muted">@item.StartTime.ToString("hh\\:mm")</small>
+                                                        <small class="text-muted">@item.StartDate.TimeOfDay.ToString("hh\\:mm")</small>
                                                     </span>
                                                 </td>
                                                 <td>
                                                     <span class="text-nowrap">
                                                         @item.EndDate.ToString("yyyy-MM-dd")<br />
-                                                        <small class="text-muted">@item.EndTime.ToString("hh\\:mm")</small>
+                                                        <small class="text-muted">@item.EndDate.TimeOfDay.ToString("hh\\:mm")</small>
                                                     </span>
                                                 </td> 
                                                 <td>@($"{item.TolalLaborCost:N3} TND")</td>

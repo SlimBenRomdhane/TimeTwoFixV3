@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TimeTwoFix.Application.Base;
 using TimeTwoFix.Core.Common;
+using TimeTwoFix.Core.Common.Exceptions;
 
 namespace TimeTwoFix.Web.Controllers
 {
@@ -36,17 +37,22 @@ namespace TimeTwoFix.Web.Controllers
                 var activeEntities = entities.Where(e => !(e is BaseEntity be) || !be.IsDeleted);
                 if (entities == null || !activeEntities.Any())
                 {
-                    TempData["ErrorMessage"] = $"No entities found";
+                    TempData["ErrorMessage"] = $"No {EntityName.ToLower()} found";
                     return View(Enumerable.Empty<TReadViewModel>());
                 }
                 var dtos = _mapper.Map<IEnumerable<TReadDto>>(activeEntities);
                 var viewModels = _mapper.Map<IEnumerable<TReadViewModel>>(dtos);
-                TempData["SuccessMessage"] = $"Loaded {viewModels.Count()} items.";
+                TempData["SuccessMessage"] = $"Successfully loaded {viewModels.Count()} {EntityName.ToLower()}{(viewModels.Count() == 1 ? "" : "s")}.";
                 return View(viewModels);
+            }
+            catch (AppException ex)
+            {
+                TempData["ErrorMessage"] = ex.UserFriendlyMessage;
+                return View(Enumerable.Empty<TReadViewModel>());
             }
             catch (Exception)
             {
-                TempData["ErrorMessage"] = "An error occured while loading data";
+                TempData["ErrorMessage"] = $"An unexpected error occurred while loading {EntityName.ToLower()} data.";
                 return View(Enumerable.Empty<TReadViewModel>());
             }
         }
@@ -58,16 +64,22 @@ namespace TimeTwoFix.Web.Controllers
                 var entity = await _baseService.GetByIdAsyncServiceGeneric(id);
                 if (entity == null)
                 {
-                    TempData["ErrorMessage"] = $"{EntityName} Entity not found";
+                    TempData["ErrorMessage"] = $"{EntityName} not found";
                     return NotFound();
                 }
                 var dto = _mapper.Map<TReadDto>(entity);
                 var viewModel = _mapper.Map<TReadViewModel>(dto);
+                TempData["SuccessMessage"] = $"{EntityName} details loaded successfully.";
                 return View(viewModel);
+            }
+            catch (AppException ex)
+            {
+                TempData["ErrorMessage"] = ex.UserFriendlyMessage;
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception)
             {
-                TempData["ErrorMessage"] = "An error occured while loading data";
+                TempData["ErrorMessage"] = $"An unexpected error occurred while loading {EntityName.ToLower()} details.";
                 return RedirectToAction(nameof(Index));
             }
         }
@@ -103,12 +115,29 @@ namespace TimeTwoFix.Web.Controllers
                     baseEntity.CreatedBy = User.Identity?.Name;
                 }
                 await _baseService.AddAsyncServiceGeneric(entity);
-                TempData["SuccessMessage"] = $"{EntityName} Entity created successfully";
+                TempData["SuccessMessage"] = $"{EntityName} created successfully";
                 return RedirectToAction(nameof(Index));
+            }
+            catch (ValidationException ex)
+            {
+                TempData["ErrorMessage"] = ex.UserFriendlyMessage;
+                // Add validation errors to ModelState for display
+                ModelState.AddModelError("", ex.Message);
+                return View(viewModel);
+            }
+            catch (BusinessRuleException ex)
+            {
+                TempData["BusinessErrorMessage"] = ex.UserFriendlyMessage;
+                return View(viewModel);
+            }
+            catch (AppException ex)
+            {
+                TempData["ErrorMessage"] = ex.UserFriendlyMessage;
+                return View(viewModel);
             }
             catch (Exception)
             {
-                TempData["ErrorMessage"] = "An error occured while creating the entity";
+                TempData["ErrorMessage"] = $"An unexpected error occurred while creating the {EntityName.ToLower()}.";
                 return View(viewModel);
             }
         }
@@ -153,7 +182,7 @@ namespace TimeTwoFix.Web.Controllers
                 var existingEntity = await _baseService.GetByIdAsyncServiceGeneric(id/*, includes*/);
                 if (existingEntity == null)
                 {
-                    TempData["ErrorMessage"] = $"{EntityName} Entity not found";
+                    TempData["ErrorMessage"] = $"{EntityName} not found";
                     return NotFound();
                 }
                 var dto = _mapper.Map<TUpdateDto>(viewModel);
@@ -168,9 +197,25 @@ namespace TimeTwoFix.Web.Controllers
                 TempData["SuccessMessage"] = $"{EntityName} updated successfully";
                 return RedirectToAction(nameof(Index));
             }
+            catch (ValidationException ex)
+            {
+                TempData["ErrorMessage"] = ex.UserFriendlyMessage;
+                ModelState.AddModelError("", ex.Message);
+                return View(viewModel);
+            }
+            catch (BusinessRuleException ex)
+            {
+                TempData["BusinessErrorMessage"] = ex.UserFriendlyMessage;
+                return View(viewModel);
+            }
+            catch (AppException ex)
+            {
+                TempData["ErrorMessage"] = ex.UserFriendlyMessage;
+                return View(viewModel);
+            }
             catch (Exception)
             {
-                TempData["ErrorMessage"] = "An error occured while updating the entity";
+                TempData["ErrorMessage"] = $"An unexpected error occurred while updating the {EntityName.ToLower()}.";
                 return View(viewModel);
             }
         }
@@ -183,16 +228,22 @@ namespace TimeTwoFix.Web.Controllers
                 var entity = await _baseService.GetByIdAsyncServiceGeneric(id);
                 if (entity == null)
                 {
-                    TempData["ErrorMessage"] = $"{EntityName} Entity not found";
+                    TempData["ErrorMessage"] = $"{EntityName} not found";
                     return NotFound();
                 }
                 var dto = _mapper.Map<TDeleteDto>(entity);
                 var viewModel = _mapper.Map<TDeleteViewModel>(dto);
+                TempData["SuccessMessage"] = $"{EntityName} details loaded for deletion.";
                 return View(viewModel);
+            }
+            catch (AppException ex)
+            {
+                TempData["ErrorMessage"] = ex.UserFriendlyMessage;
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception)
             {
-                TempData["ErrorMessage"] = "An error occured while loading data";
+                TempData["ErrorMessage"] = $"An unexpected error occurred while loading {EntityName.ToLower()} details for deletion.";
                 return RedirectToAction(nameof(Index));
             }
         }
@@ -206,7 +257,7 @@ namespace TimeTwoFix.Web.Controllers
                 var entity = await _baseService.GetByIdAsyncServiceGeneric(id);
                 if (entity == null)
                 {
-                    TempData["ErrorMessage"] = $"{EntityName} Entity not found";
+                    TempData["ErrorMessage"] = $"{EntityName} not found";
                     return NotFound();
                 }
                 if (entity is BaseEntity baseEntity)
@@ -215,7 +266,7 @@ namespace TimeTwoFix.Web.Controllers
                     baseEntity.DeletedAt = DateTime.Now;
                     baseEntity.DeletedBy = User.Identity?.Name;
                     await _baseService.UpdateAsyncServiceGeneric(entity);
-                    TempData["SuccessMessage"] = $"{EntityName} Entity deleted successfully";
+                    TempData["SuccessMessage"] = $"{EntityName} deleted successfully";
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -226,9 +277,19 @@ namespace TimeTwoFix.Web.Controllers
 
                 return RedirectToAction(nameof(Index));
             }
+            catch (BusinessRuleException ex)
+            {
+                TempData["BusinessErrorMessage"] = ex.UserFriendlyMessage;
+                return View(viewModel);
+            }
+            catch (AppException ex)
+            {
+                TempData["ErrorMessage"] = ex.UserFriendlyMessage;
+                return View(viewModel);
+            }
             catch (Exception)
             {
-                TempData["ErrorMessage"] = "An error occured while deleting the entity";
+                TempData["ErrorMessage"] = $"An unexpected error occurred while deleting the {EntityName.ToLower()}.";
                 return View(viewModel);
             }
         }

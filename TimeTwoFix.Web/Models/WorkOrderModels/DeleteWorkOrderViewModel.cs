@@ -8,10 +8,10 @@ namespace TimeTwoFix.Web.Models.WorkOrderModels
         public int VehicleId { get; set; }
         public DeleteVehicleViewModel VehicleViewModel { get; set; }
         public int Mileage { get; set; }
-        public DateOnly StartDate { get; set; }
-        public TimeOnly StartTime { get; set; }
-        public DateOnly EndDate { get; set; }
-        public TimeOnly EndTime { get; set; }
+        public DateTime StartDate { get; set; }
+        // public TimeOnly StartTime { get; set; }
+        public DateTime EndDate { get; set; }
+        //public TimeOnly EndTime { get; set; }
         public decimal TolalLaborCost { get; set; }
         public string Status { get; set; }
         public bool? Paid { get; set; }

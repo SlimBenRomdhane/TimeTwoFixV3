@@ -77,7 +77,8 @@ namespace TimeTwoFix.Core.Entities.SparePartManagement
             decimal margin = source.Margin;
 
             decimal priceAfterDiscount = basePrice - (basePrice * (discount / 100));
-            decimal priceAfterVAT = priceAfterDiscount + (priceAfterDiscount * (vat / 100));
+            decimal vatAmount = priceAfterDiscount * (vat / 100);
+            decimal priceAfterVAT = priceAfterDiscount + vatAmount;
             UnitPrice = priceAfterVAT + (priceAfterVAT * (margin / 100));
         }
 
