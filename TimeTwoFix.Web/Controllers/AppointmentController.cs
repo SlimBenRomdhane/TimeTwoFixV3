@@ -5,13 +5,14 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using TimeTwoFix.Application.AppointmentServices.Dtos;
 using TimeTwoFix.Application.AppointmentServices.Interfaces;
 using TimeTwoFix.Application.VehicleServices.Interfaces;
+using TimeTwoFix.Core.Common.Constants;
 using TimeTwoFix.Core.Entities.AppointmentManagement;
 using TimeTwoFix.Core.Interfaces;
 using TimeTwoFix.Web.Models.AppointmentModels;
 
 namespace TimeTwoFix.Web.Controllers
 {
-    [Authorize(Roles = "FrontDeskAssistant,GeneralManager")]
+    [Authorize(Roles = RoleNames.Combined.FrontDeskAndGeneralManager)]
     public class AppointmentController : Controller
     {
         private readonly IMapper _mapper;
@@ -45,7 +46,7 @@ namespace TimeTwoFix.Web.Controllers
             }
             catch (Exception)
             {
-                TempData["AppointmentError"] = "No appointments found for today";
+                TempData["ErrorMessage"] = "No appointments found for today";
                 return View(Enumerable.Empty<ReadAppointmentViewModel>());
             }
         }
@@ -55,7 +56,7 @@ namespace TimeTwoFix.Web.Controllers
         {
             if (endDate < startDate)
             {
-                TempData["AppointmentError"] = "End Date must be equal to or later than Start Date.";
+                TempData["ErrorMessage"] = "End Date must be equal to or later than Start Date.";
                 return View(Enumerable.Empty<ReadAppointmentViewModel>());
             }
 
@@ -65,8 +66,8 @@ namespace TimeTwoFix.Web.Controllers
                 if (appointments == null || !appointments.Any())
                 {
                     // Handle the case where no appointments are found
-                    TempData["AppointmentError"] = "No appointments found for this date range";
-                    return View(Enumerable.Empty<ReadAppointmentViewModel>());
+                TempData["ErrorMessage"] = "No appointments found for this date range";
+                return View(Enumerable.Empty<ReadAppointmentViewModel>());
                 }
                 var appointmentsDto = _mapper.Map<IEnumerable<ReadAppointmentDto>>(appointments);
                 var appointmentsViewModel = _mapper.Map<IEnumerable<ReadAppointmentViewModel>>(appointmentsDto);
@@ -74,7 +75,7 @@ namespace TimeTwoFix.Web.Controllers
             }
             catch (Exception ex)
             {
-                TempData["AppointmentError"] = ex.Message;
+                TempData["ErrorMessage"] = ex.Message;
                 return View(Enumerable.Empty<ReadAppointmentViewModel>());
             }
         }
@@ -232,7 +233,7 @@ namespace TimeTwoFix.Web.Controllers
         }
 
         // GET: AppointmentController/Delete/5
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         [HttpGet]
         public async Task<ActionResult> Delete(int id)
         {
@@ -251,7 +252,7 @@ namespace TimeTwoFix.Web.Controllers
         // POST: AppointmentController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         public async Task<ActionResult> Delete(DeleteAppointmentViewModel deleteAppointmentViewModel)
         {
             try

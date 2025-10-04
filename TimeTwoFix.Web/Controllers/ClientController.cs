@@ -4,13 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TimeTwoFix.Application.ClientServices.Dtos;
 using TimeTwoFix.Application.ClientServices.Interfaces;
+using TimeTwoFix.Core.Common.Constants;
 using TimeTwoFix.Core.Entities.ClientManagement;
 using TimeTwoFix.Core.Interfaces;
 using TimeTwoFix.Web.Models.ClientModels;
 
 namespace TimeTwoFix.Web.Controllers
 {
-    [Authorize(Roles = "FrontDeskAssistant,GeneralManager")]
+    [Authorize(Roles = RoleNames.Combined.FrontDeskAndGeneralManager)]
     public class ClientController : Controller
     {
         private readonly IMapper _mapper;
@@ -48,7 +49,7 @@ namespace TimeTwoFix.Web.Controllers
             }
         }
 
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         public async Task<IActionResult> LoadDeleted()
         {
             var clients = await _clientServices.GetAllDeletedClients();
@@ -204,7 +205,7 @@ namespace TimeTwoFix.Web.Controllers
         }
 
         // GET: ClientController/Delete/5
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         public async Task<ActionResult> Delete(int id)
         {
             var client = await _clientServices.GetByIdAsyncServiceGeneric(id);
@@ -222,7 +223,7 @@ namespace TimeTwoFix.Web.Controllers
         // POST: ClientController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         public async Task<ActionResult> Delete(DeleteClientViewModel deleteClientViewModel)
         {
             var clientToDetete = await _clientServices.GetByIdAsyncServiceGeneric(deleteClientViewModel.Id);
@@ -253,7 +254,7 @@ namespace TimeTwoFix.Web.Controllers
             }
         }
 
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         public async Task<IActionResult> Restore(int id)
         {
             try
@@ -277,7 +278,7 @@ namespace TimeTwoFix.Web.Controllers
             }
         }
 
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         public async Task<IActionResult> DeletePermanently(int id)
         {
             try

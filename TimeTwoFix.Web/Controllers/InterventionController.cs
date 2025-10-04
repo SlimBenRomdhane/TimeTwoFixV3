@@ -2,6 +2,12 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using TimeTwoFix.Core.Common.Constants;
+using TimeTwoFix.Core.Entities.WorkOrderManagement;
+using TimeTwoFix.Core.Interfaces;
+using TimeTwoFix.Infrastructure.Persistence.Includes;
+using TimeTwoFix.Web.Models.InterventionModels;
+using TimeTwoFix.Web.Models.PauseRecordModel;
 using TimeTwoFix.Application.Base.BaseDtos;
 using TimeTwoFix.Application.InterventionService.Dtos;
 using TimeTwoFix.Application.InterventionService.Interfaces;
@@ -13,15 +19,10 @@ using TimeTwoFix.Application.ReportingServices.Interfaces;
 using TimeTwoFix.Application.ReportingServices.Services;
 using TimeTwoFix.Application.UserServices.Interfaces;
 using TimeTwoFix.Application.WorkOrderService.Interfaces;
-using TimeTwoFix.Core.Entities.WorkOrderManagement;
-using TimeTwoFix.Core.Interfaces;
-using TimeTwoFix.Infrastructure.Persistence.Includes;
-using TimeTwoFix.Web.Models.InterventionModels;
-using TimeTwoFix.Web.Models.PauseRecordModel;
 
 namespace TimeTwoFix.Web.Controllers
 {
-    [Authorize(Roles = "GeneralManager,WorkshopManager")]
+    [Authorize(Roles = RoleNames.Combined.AllManagers)]
     public class InterventionController : BaseController<Intervention
         , CreateInterventionDto, ReadInterventionDto, UpdateInterventionDto, DeleteInterventionDto,
         CreateInterventionViewModel, ReadInterventionViewModel, UpdateInterventionViewModel, DeleteInterventionViewModel>
@@ -279,7 +280,7 @@ namespace TimeTwoFix.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            if (intervention.Status == "Completed" && !User.IsInRole("GeneralManager"))
+            if (intervention.Status == "Completed" && !User.IsInRole(RoleNames.GeneralManager))
             {
                 TempData["ErrorMessage"] = "Completed interventions cannot be modified.";
                 return RedirectToAction("Details", "Intervention", new { id = id });
@@ -300,7 +301,7 @@ namespace TimeTwoFix.Web.Controllers
                 return RedirectToAction(nameof(Index));
                 //return NotFound();
             }
-            if (intervention.Status == "Completed" && !User.IsInRole("GeneralManager"))
+            if (intervention.Status == "Completed" && !User.IsInRole(RoleNames.GeneralManager))
             {
                 TempData["ErrorMessage"] = "Completed interventions cannot be modified.";
                 return RedirectToAction("Details", "Intervention", new { id = id });
@@ -423,12 +424,12 @@ namespace TimeTwoFix.Web.Controllers
             var workOrder = await _workOrderService.GetByIdAsyncServiceGeneric(workOrderId);
             if (workOrder == null)
             {
-                TempData["WorkOrderError"] = "Work Order not found.";
+                TempData["ErrorMessage"] = "Work Order not found.";
                 return RedirectToAction("Index", "WorkOrder");
             }
-            if (workOrder.Paid == true && !User.IsInRole("GeneralManager"))
+            if (workOrder.Paid == true && !User.IsInRole(RoleNames.GeneralManager))
             {
-                TempData["WorkOrderError"] = "Paid work orders cannot be modified.";
+                TempData["ErrorMessage"] = "Paid work orders cannot be modified.";
                 return RedirectToAction("Index", "WorkOrder");
             }
             var activeProvidedServices = (await _providedServiceService.GetAllAsyncServiceGeneric())
@@ -482,7 +483,7 @@ namespace TimeTwoFix.Web.Controllers
             var workOrder = await _workOrderService.GetByIdAsyncServiceGeneric(createInterventionViewModel.WorkOrderId);
             if (workOrder.Paid == true)
             {
-                TempData["WorkOrderError"] = "Paid work orders cannot be modified.";
+                TempData["ErrorMessage"] = "Paid work orders cannot be modified.";
                 return RedirectToAction("Index");
             }
             var activeProvidedServices = (await _providedServiceService.GetAllAsyncServiceGeneric()).Where(ps => !ps.IsDeleted);
@@ -541,12 +542,12 @@ namespace TimeTwoFix.Web.Controllers
                     intervention.Status = "In Progress"; // Set default status
                 }
                 await _interventionService.AddAsyncServiceGeneric(intervention);
-                TempData["InterventionSuccess"] = "Intervention created successfully";
+                TempData["SuccessMessage"] = "Intervention created successfully";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                TempData["WorkOrderError"] = $"An error occurred while creating the Work Order: {ex.Message}";
+                TempData["ErrorMessage"] = $"An error occurred while creating the Work Order: {ex.Message}";
                 return View(createInterventionViewModel);
             }
         }

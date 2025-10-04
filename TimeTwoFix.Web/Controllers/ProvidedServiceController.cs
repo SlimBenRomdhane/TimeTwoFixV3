@@ -2,15 +2,16 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using TimeTwoFix.Core.Common.Constants;
+using TimeTwoFix.Core.Entities.ServiceManagement;
+using TimeTwoFix.Web.Models.ProvidedServiceModels;
 using TimeTwoFix.Application.CategoryService.Interfaces;
 using TimeTwoFix.Application.ProvidedServicesService.Dtos;
 using TimeTwoFix.Application.ProvidedServicesService.Interfaces;
-using TimeTwoFix.Core.Entities.ServiceManagement;
-using TimeTwoFix.Web.Models.ProvidedServiceModels;
 
 namespace TimeTwoFix.Web.Controllers
 {
-    [Authorize(Roles = "GeneralManager")]
+    [Authorize(Roles = RoleNames.GeneralManager)]
     public class ProvidedServiceController : Controller
     {
         private readonly IMapper _mapper;
@@ -35,7 +36,7 @@ namespace TimeTwoFix.Web.Controllers
             if (activeServices == null || !activeServices.Any())
             {
                 // Handle the case where no active services are found
-                TempData["ServiceError"] = "No provided services found in the database.";
+                TempData["ErrorMessage"] = "No provided services found in the database.";
                 return View(Enumerable.Empty<ReadProvidedServiceViewModel>());
             }
 
@@ -151,7 +152,7 @@ namespace TimeTwoFix.Web.Controllers
                 var service = await _providedServiceService.GetByIdAsyncServiceGeneric(updateProvidedServiceViewModel.Id);
                 if (service == null)
                 {
-                    TempData["ProvidedServiceError"] = "Service not found";
+                    TempData["ErrorMessage"] = "Service not found";
                     return RedirectToAction(nameof(Index));
                 }
 
@@ -180,7 +181,7 @@ namespace TimeTwoFix.Web.Controllers
         }
 
         // GET: ProvidedServiceController/Delete/5
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         public async Task<ActionResult> Delete(int id)
         {
             var service = await _providedServiceService.GetByIdAsyncServiceGeneric(id, null, c => c.Category);
@@ -196,7 +197,7 @@ namespace TimeTwoFix.Web.Controllers
         // POST: ProvidedServiceController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         public async Task<ActionResult> Delete(DeleteProvidedServiceViewModel deleteProvidedServiceViewModel)
         {
             try
@@ -204,7 +205,7 @@ namespace TimeTwoFix.Web.Controllers
                 var serviceToDelete = await _providedServiceService.GetByIdAsyncServiceGeneric(deleteProvidedServiceViewModel.Id);
                 if (serviceToDelete == null)
                 {
-                    TempData["ProvidedServiceError"] = "Service not found";
+                    TempData["ErrorMessage"] = "Service not found";
                     return NotFound();
                 }
 

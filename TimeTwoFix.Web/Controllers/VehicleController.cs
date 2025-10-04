@@ -3,16 +3,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using TimeTwoFix.Application.ClientServices.Interfaces;
-using TimeTwoFix.Application.VehicleServices.Dtos;
-using TimeTwoFix.Application.VehicleServices.Interfaces;
+using TimeTwoFix.Core.Common.Constants;
 using TimeTwoFix.Core.Entities.VehicleManagement;
 using TimeTwoFix.Infrastructure.Persistence.Includes;
 using TimeTwoFix.Web.Models.VehicleModels;
+using TimeTwoFix.Application.ClientServices.Interfaces;
+using TimeTwoFix.Application.VehicleServices.Dtos;
+using TimeTwoFix.Application.VehicleServices.Interfaces;
 
 namespace TimeTwoFix.Web.Controllers
 {
-    [Authorize(Roles = "FrontDeskAssistant,GeneralManager")]
+    [Authorize(Roles = RoleNames.Combined.FrontDeskAndGeneralManager)]
     public class VehicleController : Controller
     {
         private readonly IVehicleService _vehicleService;
@@ -40,7 +41,7 @@ namespace TimeTwoFix.Web.Controllers
 
                 if (vehicleDto == null)
                 {
-                    TempData["VehicleError"] = "No matching VIN found.";
+                    TempData["ErrorMessage"] = "No matching VIN found.";
                     return View(Enumerable.Empty<ReadVehicleViewModel>());
                 }
 
@@ -231,7 +232,7 @@ namespace TimeTwoFix.Web.Controllers
         }
 
         // GET: VehicleController/Delete/5
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         public async Task<ActionResult> Delete(int id)
         {
             var vehicle = await _vehicleService.GetByIdAsyncServiceGeneric(id);
@@ -248,7 +249,7 @@ namespace TimeTwoFix.Web.Controllers
         // POST: VehicleController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         public async Task<ActionResult> Delete(DeleteVehicleViewModel deleteVehicleViewModel)
         {
             try

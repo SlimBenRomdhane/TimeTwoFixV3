@@ -3,17 +3,18 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using TimeTwoFix.Application.VehicleServices.Interfaces;
-using TimeTwoFix.Application.WorkOrderService.Dtos;
-using TimeTwoFix.Application.WorkOrderService.Interfaces;
+using TimeTwoFix.Core.Common.Constants;
 using TimeTwoFix.Core.Entities.WorkOrderManagement;
 using TimeTwoFix.Web.Models.InterventionModels;
 using TimeTwoFix.Web.Models.VehicleModels;
 using TimeTwoFix.Web.Models.WorkOrderModels;
+using TimeTwoFix.Application.VehicleServices.Interfaces;
+using TimeTwoFix.Application.WorkOrderService.Dtos;
+using TimeTwoFix.Application.WorkOrderService.Interfaces;
 
 namespace TimeTwoFix.Web.Controllers
 {
-    [Authorize(Roles = "GeneralManager, WorkshopManager, FrontDeskAssistant")]
+    [Authorize(Roles = RoleNames.Combined.AllManagers)]
     public class WorkOrderController : Controller
     {
         private readonly IWorkOrderService _workOrderService;
@@ -34,11 +35,11 @@ namespace TimeTwoFix.Web.Controllers
             var workOrders = await _workOrderService.GetAllWithIncludesAsyncServiceGeneric(includeBuilder: query => query
             .Include(wo => wo.Vehicle)
             .Include(wo => wo.Interventions).ThenInclude(inter => inter.InterventionSpareParts).ThenInclude(isp => isp.SparePart)
-
+            .OrderByDescending(wo =>wo.PaymentDate)
             );
             if (workOrders == null || !workOrders.Any())
             {
-                TempData["WorkOrderError"] = "No WorkOrder found in the database";
+                TempData["ErrorMessage"] = "No WorkOrder found in the database";
                 return View(Enumerable.Empty<ReadWorkOrderViewModel>());
             }
             workOrders = workOrders.Where(wo => !wo.IsDeleted);
@@ -65,7 +66,7 @@ namespace TimeTwoFix.Web.Controllers
 
             if (workOrders == null || !workOrders.Any())
             {
-                TempData["WorkOrderError"] = "No WorkOrder found in the database";
+                TempData["ErrorMessage"] = "No WorkOrder found in the database";
                 return View("Index", Enumerable.Empty<ReadWorkOrderViewModel>());
             }
 
@@ -108,7 +109,7 @@ namespace TimeTwoFix.Web.Controllers
                 .ThenInclude(inter => inter.Mechanic));
             if (workOrder == null)
             {
-                TempData["WorkOrderError"] = "WorkOrder not found";
+                TempData["ErrorMessage"] = "WorkOrder not found";
                 return RedirectToAction(nameof(Index));
             }
             foreach (var intervention in workOrder.Interventions)
@@ -148,7 +149,7 @@ namespace TimeTwoFix.Web.Controllers
                 .FirstOrDefault();
             if (lastWorkOrder == null)
             {
-                TempData["WorkOrderInfo"] = "This is the first recorded work order for this vehicle.";
+                TempData["SuccessMessage"] = "This is the first recorded work order for this vehicle.";
             }
             if (createWorkOrderViewModel.Mileage <= lastWorkOrder?.Mileage)
             {
@@ -160,7 +161,7 @@ namespace TimeTwoFix.Web.Controllers
             ViewBag.VehicleList = new SelectList(vehicles, "Id", "Vin");
             if (!ModelState.IsValid)
             {
-                TempData["WorkOrderError"] = "Invalid data provided";
+                TempData["ErrorMessage"] = "Invalid data provided";
                 return View(createWorkOrderViewModel);
             }
             try
@@ -169,12 +170,12 @@ namespace TimeTwoFix.Web.Controllers
                 workOrderDto.CreatedBy = User.Identity?.Name;
                 var workOrder = _mapper.Map<WorkOrder>(workOrderDto);
                 await _workOrderService.AddAsyncServiceGeneric(workOrder);
-                TempData["WorkOrderSuccess"] = "Work Order created successfully";
+                TempData["SuccessMessage"] = "Work Order created successfully";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                TempData["WorkOrderError"] = $"An error occurred while creating the Work Order: {ex.Message}";
+                TempData["ErrorMessage"] = $"An error occurred while creating the Work Order: {ex.Message}";
                 return View(createWorkOrderViewModel);
             }
         }
@@ -194,12 +195,12 @@ namespace TimeTwoFix.Web.Controllers
                 workOrderDto.CreatedBy = User.Identity?.Name;
                 var workOrder = _mapper.Map<WorkOrder>(workOrderDto);
                 await _workOrderService.AddAsyncServiceGeneric(workOrder);
-                TempData["WorkOrderSuccess"] = "Work Order created successfully";
+                TempData["SuccessMessage"] = "Work Order created successfully";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                TempData["WorkOrderError"] = $"An error occurred while creating the Work Order: {ex.Message}";
+                TempData["ErrorMessage"] = $"An error occurred while creating the Work Order: {ex.Message}";
                 return View(createWorkOrderViewModel);
             }
         }
@@ -210,12 +211,12 @@ namespace TimeTwoFix.Web.Controllers
             var workOrder = await _workOrderService.GetByIdAsyncServiceGeneric(id);
             if (workOrder == null)
             {
-                TempData["WorkOrderError"] = "Work Order not found";
+                TempData["ErrorMessage"] = "Work Order not found";
                 return RedirectToAction(nameof(Index));
             }
             if (workOrder.Paid == true)
             {
-                TempData["WorkOrderError"] = "Paid work orders cannot be modified.";
+                TempData["ErrorMessage"] = "Paid work orders cannot be modified.";
                 return RedirectToAction("Index");
             }
             var allowedStatus = new List<SelectListItem>
@@ -249,12 +250,12 @@ namespace TimeTwoFix.Web.Controllers
                 var workOrder = await _workOrderService.GetByIdAsyncServiceGeneric(updateWorkOrderViewModel.Id);
                 if (workOrder == null)
                 {
-                    TempData["WorkOrderError"] = "WorkOrder not found";
+                    TempData["ErrorMessage"] = "WorkOrder not found";
                     return NotFound();
                 }
-                if (workOrder.Paid == true && !User.IsInRole("GeneralManager"))
+                if (workOrder.Paid == true && !User.IsInRole(RoleNames.GeneralManager))
                 {
-                    TempData["WorkOrderError"] = "Paid work orders cannot be modified.";
+                    TempData["ErrorMessage"] = "Paid work orders cannot be modified.";
                     return RedirectToAction("Index");
                 }
                 if (!ModelState.IsValid)
@@ -262,7 +263,7 @@ namespace TimeTwoFix.Web.Controllers
                     return View(updateWorkOrderViewModel);
                 }
                 // 🔎 Role‑based restriction
-                if (User.IsInRole("FrontDeskAssistant"))
+                if (User.IsInRole(RoleNames.FrontDeskAssistant))
                 {
                     // Check if fields other than Paid/PaymentDate are being changed
                     bool otherFieldsChanged =

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TimeTwoFix.Application.Base;
 using TimeTwoFix.Core.Common;
+using TimeTwoFix.Core.Common.Constants;
 using TimeTwoFix.Core.Common.Exceptions;
 
 namespace TimeTwoFix.Web.Controllers
@@ -31,57 +32,31 @@ namespace TimeTwoFix.Web.Controllers
 
         public virtual async Task<IActionResult> Index()
         {
-            try
+            var entities = await _baseService.GetAllAsyncServiceGeneric();
+            var activeEntities = entities.Where(e => !(e is BaseEntity be) || !be.IsDeleted);
+            if (entities == null || !activeEntities.Any())
             {
-                var entities = await _baseService.GetAllAsyncServiceGeneric();
-                var activeEntities = entities.Where(e => !(e is BaseEntity be) || !be.IsDeleted);
-                if (entities == null || !activeEntities.Any())
-                {
-                    TempData["ErrorMessage"] = $"No {EntityName.ToLower()} found";
-                    return View(Enumerable.Empty<TReadViewModel>());
-                }
-                var dtos = _mapper.Map<IEnumerable<TReadDto>>(activeEntities);
-                var viewModels = _mapper.Map<IEnumerable<TReadViewModel>>(dtos);
-                TempData["SuccessMessage"] = $"Successfully loaded {viewModels.Count()} {EntityName.ToLower()}{(viewModels.Count() == 1 ? "" : "s")}.";
-                return View(viewModels);
-            }
-            catch (AppException ex)
-            {
-                TempData["ErrorMessage"] = ex.UserFriendlyMessage;
+                TempData["ErrorMessage"] = $"No {EntityName.ToLower()} found";
                 return View(Enumerable.Empty<TReadViewModel>());
             }
-            catch (Exception)
-            {
-                TempData["ErrorMessage"] = $"An unexpected error occurred while loading {EntityName.ToLower()} data.";
-                return View(Enumerable.Empty<TReadViewModel>());
-            }
+            var dtos = _mapper.Map<IEnumerable<TReadDto>>(activeEntities);
+            var viewModels = _mapper.Map<IEnumerable<TReadViewModel>>(dtos);
+            TempData["SuccessMessage"] = $"Successfully loaded {viewModels.Count()} {EntityName.ToLower()}{(viewModels.Count() == 1 ? "" : "s")}.";
+            return View(viewModels);
         }
 
         public virtual async Task<IActionResult> Details(int id)
         {
-            try
+            var entity = await _baseService.GetByIdAsyncServiceGeneric(id);
+            if (entity == null)
             {
-                var entity = await _baseService.GetByIdAsyncServiceGeneric(id);
-                if (entity == null)
-                {
-                    TempData["ErrorMessage"] = $"{EntityName} not found";
-                    return NotFound();
-                }
-                var dto = _mapper.Map<TReadDto>(entity);
-                var viewModel = _mapper.Map<TReadViewModel>(dto);
-                TempData["SuccessMessage"] = $"{EntityName} details loaded successfully.";
-                return View(viewModel);
+                TempData["ErrorMessage"] = $"{EntityName} not found";
+                return NotFound();
             }
-            catch (AppException ex)
-            {
-                TempData["ErrorMessage"] = ex.UserFriendlyMessage;
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception)
-            {
-                TempData["ErrorMessage"] = $"An unexpected error occurred while loading {EntityName.ToLower()} details.";
-                return RedirectToAction(nameof(Index));
-            }
+            var dto = _mapper.Map<TReadDto>(entity);
+            var viewModel = _mapper.Map<TReadViewModel>(dto);
+            TempData["SuccessMessage"] = $"{EntityName} details loaded successfully.";
+            return View(viewModel);
         }
 
         // Base async method intentionally lacks 'await' to allow child controllers to override with asynchronous logic.
@@ -104,63 +79,31 @@ namespace TimeTwoFix.Web.Controllers
             {
                 return View(viewModel);
             }
-            try
-            {
-                var dto = _mapper.Map<TCreateDto>(viewModel);
-                var entity = _mapper.Map<TEntity>(dto);
 
-                if (entity is BaseEntity baseEntity)
-                {
-                    baseEntity.CreatedAt = DateTime.Now;
-                    baseEntity.CreatedBy = User.Identity?.Name;
-                }
-                await _baseService.AddAsyncServiceGeneric(entity);
-                TempData["SuccessMessage"] = $"{EntityName} created successfully";
-                return RedirectToAction(nameof(Index));
-            }
-            catch (ValidationException ex)
+            var dto = _mapper.Map<TCreateDto>(viewModel);
+            var entity = _mapper.Map<TEntity>(dto);
+
+            if (entity is BaseEntity baseEntity)
             {
-                TempData["ErrorMessage"] = ex.UserFriendlyMessage;
-                // Add validation errors to ModelState for display
-                ModelState.AddModelError("", ex.Message);
-                return View(viewModel);
+                baseEntity.CreatedAt = DateTime.Now;
+                baseEntity.CreatedBy = User.Identity?.Name;
             }
-            catch (BusinessRuleException ex)
-            {
-                TempData["BusinessErrorMessage"] = ex.UserFriendlyMessage;
-                return View(viewModel);
-            }
-            catch (AppException ex)
-            {
-                TempData["ErrorMessage"] = ex.UserFriendlyMessage;
-                return View(viewModel);
-            }
-            catch (Exception)
-            {
-                TempData["ErrorMessage"] = $"An unexpected error occurred while creating the {EntityName.ToLower()}.";
-                return View(viewModel);
-            }
+            await _baseService.AddAsyncServiceGeneric(entity);
+            TempData["SuccessMessage"] = $"{EntityName} created successfully";
+            return RedirectToAction(nameof(Index));
         }
 
         public virtual async Task<IActionResult> Edit(int id)
         {
-            try
+            var entity = await _baseService.GetByIdAsyncServiceGeneric(id);
+            if (entity == null)
             {
-                var entity = await _baseService.GetByIdAsyncServiceGeneric(id);
-                if (entity == null)
-                {
-                    TempData["ErrorMessage"] = $"{EntityName} Entity not found";
-                    return NotFound();
-                }
-                var dto = _mapper.Map<TUpdateDto>(entity);
-                var viewModel = _mapper.Map<TUpdateViewModel>(dto);
-                return View(viewModel);
+                TempData["ErrorMessage"] = $"{EntityName} Entity not found";
+                return NotFound();
             }
-            catch (Exception)
-            {
-                TempData["ErrorMessage"] = "An error occured while loading data";
-                return RedirectToAction(nameof(Index));
-            }
+            var dto = _mapper.Map<TUpdateDto>(entity);
+            var viewModel = _mapper.Map<TUpdateViewModel>(dto);
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -177,121 +120,68 @@ namespace TimeTwoFix.Web.Controllers
                 TempData["ErrorMessage"] = "Validation failed: " + string.Join(" | ", errors);
                 return View(viewModel);
             }
-            try
-            {
-                var existingEntity = await _baseService.GetByIdAsyncServiceGeneric(id/*, includes*/);
-                if (existingEntity == null)
-                {
-                    TempData["ErrorMessage"] = $"{EntityName} not found";
-                    return NotFound();
-                }
-                var dto = _mapper.Map<TUpdateDto>(viewModel);
-                var updatedEntity = _mapper.Map(dto, existingEntity);
 
-                if (updatedEntity is BaseEntity baseEntity)
-                {
-                    baseEntity.UpdatedAt = DateTime.Now;
-                    baseEntity.UpdatedBy = User.Identity?.Name;
-                }
-                await _baseService.UpdateAsyncServiceGeneric(updatedEntity);
-                TempData["SuccessMessage"] = $"{EntityName} updated successfully";
-                return RedirectToAction(nameof(Index));
-            }
-            catch (ValidationException ex)
+            var existingEntity = await _baseService.GetByIdAsyncServiceGeneric(id);
+            if (existingEntity == null)
             {
-                TempData["ErrorMessage"] = ex.UserFriendlyMessage;
-                ModelState.AddModelError("", ex.Message);
-                return View(viewModel);
+                TempData["ErrorMessage"] = $"{EntityName} not found";
+                return NotFound();
             }
-            catch (BusinessRuleException ex)
+            var dto = _mapper.Map<TUpdateDto>(viewModel);
+            var updatedEntity = _mapper.Map(dto, existingEntity);
+
+            if (updatedEntity is BaseEntity baseEntity)
             {
-                TempData["BusinessErrorMessage"] = ex.UserFriendlyMessage;
-                return View(viewModel);
+                baseEntity.UpdatedAt = DateTime.Now;
+                baseEntity.UpdatedBy = User.Identity?.Name;
             }
-            catch (AppException ex)
-            {
-                TempData["ErrorMessage"] = ex.UserFriendlyMessage;
-                return View(viewModel);
-            }
-            catch (Exception)
-            {
-                TempData["ErrorMessage"] = $"An unexpected error occurred while updating the {EntityName.ToLower()}.";
-                return View(viewModel);
-            }
+            await _baseService.UpdateAsyncServiceGeneric(updatedEntity);
+            TempData["SuccessMessage"] = $"{EntityName} updated successfully";
+            return RedirectToAction(nameof(Index));
         }
 
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         public virtual async Task<IActionResult> Delete(int id)
         {
-            try
+            var entity = await _baseService.GetByIdAsyncServiceGeneric(id);
+            if (entity == null)
             {
-                var entity = await _baseService.GetByIdAsyncServiceGeneric(id);
-                if (entity == null)
-                {
-                    TempData["ErrorMessage"] = $"{EntityName} not found";
-                    return NotFound();
-                }
-                var dto = _mapper.Map<TDeleteDto>(entity);
-                var viewModel = _mapper.Map<TDeleteViewModel>(dto);
-                TempData["SuccessMessage"] = $"{EntityName} details loaded for deletion.";
-                return View(viewModel);
+                TempData["ErrorMessage"] = $"{EntityName} not found";
+                return NotFound();
             }
-            catch (AppException ex)
-            {
-                TempData["ErrorMessage"] = ex.UserFriendlyMessage;
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception)
-            {
-                TempData["ErrorMessage"] = $"An unexpected error occurred while loading {EntityName.ToLower()} details for deletion.";
-                return RedirectToAction(nameof(Index));
-            }
+            var dto = _mapper.Map<TDeleteDto>(entity);
+            var viewModel = _mapper.Map<TDeleteViewModel>(dto);
+            TempData["SuccessMessage"] = $"{EntityName} details loaded for deletion.";
+            return View(viewModel);
         }
-        [Authorize(Roles = "GeneralManager")]
+
+        [Authorize(Roles = RoleNames.GeneralManager)]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public virtual async Task<IActionResult> Delete(int id, TDeleteViewModel viewModel)
         {
-            try
+            var entity = await _baseService.GetByIdAsyncServiceGeneric(id);
+            if (entity == null)
             {
-                var entity = await _baseService.GetByIdAsyncServiceGeneric(id);
-                if (entity == null)
-                {
-                    TempData["ErrorMessage"] = $"{EntityName} not found";
-                    return NotFound();
-                }
-                if (entity is BaseEntity baseEntity)
-                {
-                    baseEntity.IsDeleted = true;
-                    baseEntity.DeletedAt = DateTime.Now;
-                    baseEntity.DeletedBy = User.Identity?.Name;
-                    await _baseService.UpdateAsyncServiceGeneric(entity);
-                    TempData["SuccessMessage"] = $"{EntityName} deleted successfully";
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    await _baseService.DeleteAsyncServiceGeneric(id);
-                    TempData["SuccessMessage"] = "Entity deleted successfully";
-                }
-
+                TempData["ErrorMessage"] = $"{EntityName} not found";
+                return NotFound();
+            }
+            if (entity is BaseEntity baseEntity)
+            {
+                baseEntity.IsDeleted = true;
+                baseEntity.DeletedAt = DateTime.Now;
+                baseEntity.DeletedBy = User.Identity?.Name;
+                await _baseService.UpdateAsyncServiceGeneric(entity);
+                TempData["SuccessMessage"] = $"{EntityName} deleted successfully";
                 return RedirectToAction(nameof(Index));
             }
-            catch (BusinessRuleException ex)
+            else
             {
-                TempData["BusinessErrorMessage"] = ex.UserFriendlyMessage;
-                return View(viewModel);
+                await _baseService.DeleteAsyncServiceGeneric(id);
+                TempData["SuccessMessage"] = "Entity deleted successfully";
             }
-            catch (AppException ex)
-            {
-                TempData["ErrorMessage"] = ex.UserFriendlyMessage;
-                return View(viewModel);
-            }
-            catch (Exception)
-            {
-                TempData["ErrorMessage"] = $"An unexpected error occurred while deleting the {EntityName.ToLower()}.";
-                return View(viewModel);
-            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

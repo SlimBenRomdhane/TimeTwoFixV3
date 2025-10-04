@@ -29,6 +29,9 @@ namespace TimeTwoFix.Infrastructure.Persistence
     public class UnitOfWork : IUnitOfWork
     {
         protected readonly TimeTwoFixDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public UnitOfWork(TimeTwoFixDbContext context,
             UserManager<ApplicationUser> userManager,
@@ -36,40 +39,59 @@ namespace TimeTwoFix.Infrastructure.Persistence
             SignInManager<ApplicationUser> signInManager)
         {
             _context = context;
-            Clients = new ClientRepository(_context);
-            Categories = new CategoryRepository(_context);
-            ProvidedServices = new ProvidedServiceRepository(_context);
-            LiftingBridges = new LiftingBridgeRepository(_context);
-            Skills = new SkillRepository(_context);
-            Appointments = new AppointmentRepository(_context);
-            InterventionSpareParts = new InterventionSparePartRepository(_context);
-            SpareParts = new SparePartRepository(_context);
-            Vehicles = new VehicleRepository(_context);
-            WorkOrders = new WorkOrderRepository(_context);
-            Interventions = new InterventionRepository(_context);
-            MechanicSkills = new MechanicSkillRepository(_context);
-            Providers = new ProviderRepository(_context);
-            SparePartCategories = new SparePartCategoryRepository(_context);
-            ProviderSpareParts = new ProviderSparePartRepository(_context);
-            ApplicationUsers = new ApplicationUserRepository(userManager, roleManager, signInManager);
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _signInManager = signInManager;
         }
 
-        public IClientRepository Clients { get; private set; }
-        public ICategoryRepository Categories { get; private set; }
-        public IProvidedServiceRepository ProvidedServices { get; private set; }
-        public ILiftingBridgeRepository LiftingBridges { get; private set; }
-        public ISkillRepository Skills { get; private set; }
-        public IAppointmentRepository Appointments { get; private set; }
-        public IInterventionSparePartRepository InterventionSpareParts { get; private set; }
-        public ISparePartRepository SpareParts { get; private set; }
-        public IVehicleRepository Vehicles { get; private set; }
-        public IWorkOrderRepository WorkOrders { get; private set; }
-        public IInterventionRepository Interventions { get; private set; }
-        public IApplicationUserRepository ApplicationUsers { get; private set; }
-        public IMechanicSkillRepository MechanicSkills { get; private set; }
-        public IProviderRepository Providers { get; private set; }
-        public ISparePartCategoryRepository SparePartCategories { get; private set; }
-        public IProviderSparePartRepository ProviderSpareParts { get; private set; }
+        // Lazy-loaded repositories to avoid instantiating all repositories at startup
+        private IClientRepository _clients;
+        public IClientRepository Clients => _clients ??= new ClientRepository(_context);
+
+        private ICategoryRepository _categories;
+        public ICategoryRepository Categories => _categories ??= new CategoryRepository(_context);
+
+        private IProvidedServiceRepository _providedServices;
+        public IProvidedServiceRepository ProvidedServices => _providedServices ??= new ProvidedServiceRepository(_context);
+
+        private ILiftingBridgeRepository _liftingBridges;
+        public ILiftingBridgeRepository LiftingBridges => _liftingBridges ??= new LiftingBridgeRepository(_context);
+
+        private ISkillRepository _skills;
+        public ISkillRepository Skills => _skills ??= new SkillRepository(_context);
+
+        private IAppointmentRepository _appointments;
+        public IAppointmentRepository Appointments => _appointments ??= new AppointmentRepository(_context);
+
+        private IInterventionSparePartRepository _interventionSpareParts;
+        public IInterventionSparePartRepository InterventionSpareParts => _interventionSpareParts ??= new InterventionSparePartRepository(_context);
+
+        private ISparePartRepository _spareParts;
+        public ISparePartRepository SpareParts => _spareParts ??= new SparePartRepository(_context);
+
+        private IVehicleRepository _vehicles;
+        public IVehicleRepository Vehicles => _vehicles ??= new VehicleRepository(_context);
+
+        private IWorkOrderRepository _workOrders;
+        public IWorkOrderRepository WorkOrders => _workOrders ??= new WorkOrderRepository(_context);
+
+        private IInterventionRepository _interventions;
+        public IInterventionRepository Interventions => _interventions ??= new InterventionRepository(_context);
+
+        private IApplicationUserRepository _applicationUsers;
+        public IApplicationUserRepository ApplicationUsers => _applicationUsers ??= new ApplicationUserRepository(_userManager, _roleManager, _signInManager);
+
+        private IMechanicSkillRepository _mechanicSkills;
+        public IMechanicSkillRepository MechanicSkills => _mechanicSkills ??= new MechanicSkillRepository(_context);
+
+        private IProviderRepository _providers;
+        public IProviderRepository Providers => _providers ??= new ProviderRepository(_context);
+
+        private ISparePartCategoryRepository _sparePartCategories;
+        public ISparePartCategoryRepository SparePartCategories => _sparePartCategories ??= new SparePartCategoryRepository(_context);
+
+        private IProviderSparePartRepository _providerSpareParts;
+        public IProviderSparePartRepository ProviderSpareParts => _providerSpareParts ??= new ProviderSparePartRepository(_context);
 
         public Task<IDbContextTransaction> BeginTransactionAsync()
         {

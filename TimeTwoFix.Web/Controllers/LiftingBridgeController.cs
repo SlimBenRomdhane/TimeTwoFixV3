@@ -2,14 +2,15 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using TimeTwoFix.Application.LiftingBridgeServices.Dtos;
-using TimeTwoFix.Application.LiftingBridgeServices.Interfaces;
+using TimeTwoFix.Core.Common.Constants;
 using TimeTwoFix.Core.Entities.BridgeManagement;
 using TimeTwoFix.Web.Models.LiftingBridgeModels;
+using TimeTwoFix.Application.LiftingBridgeServices.Dtos;
+using TimeTwoFix.Application.LiftingBridgeServices.Interfaces;
 
 namespace TimeTwoFix.Web.Controllers
 {
-    [Authorize(Roles = "GeneralManager")]
+    [Authorize(Roles = RoleNames.GeneralManager)]
     public class LiftingBridgeController : BaseController<LiftingBridge, CreateLiftingBridgeDto, ReadLiftingBridgeDto, UpdateLiftingBridgeDto, DeleteLiftingBridgeDto,
         CreateLiftingBridgeViewModel, ReadLiftingBridgeViewModel, UpdateLiftingBridgeViewModel, DeleteLiftingBridgeViewModel>
     {

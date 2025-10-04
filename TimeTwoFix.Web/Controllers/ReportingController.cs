@@ -2,13 +2,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using TimeTwoFix.Application.ReportingServices.Interfaces;
+using TimeTwoFix.Core.Common.Constants;
 using TimeTwoFix.Web.Hubs;
 using TimeTwoFix.Web.Models.ReportingModels;
+using TimeTwoFix.Application.ReportingServices.Interfaces;
 
 namespace TimeTwoFix.Web.Controllers
 {
-    [Authorize(Roles = "GeneralManager, WorkshopManager")]
+    [Authorize(Roles = RoleNames.Combined.AllManagers)]
     public class ReportingController : Controller
     {
 

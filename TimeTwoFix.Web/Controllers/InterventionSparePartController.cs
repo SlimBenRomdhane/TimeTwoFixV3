@@ -2,19 +2,20 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using TimeTwoFix.Core.Common.Constants;
+using TimeTwoFix.Core.Entities.SparePartManagement;
+using TimeTwoFix.Infrastructure.Persistence.Includes;
+using TimeTwoFix.Web.Models.InterventionSparePartModel;
 using TimeTwoFix.Application.InterventionService.Interfaces;
 using TimeTwoFix.Application.InterventionSparePartServices.Dtos;
 using TimeTwoFix.Application.InterventionSparePartServices.Interfaces;
 using TimeTwoFix.Application.SparePartServices.Interfaces;
 using TimeTwoFix.Application.WorkOrderService.Interfaces;
 using TimeTwoFix.Core.Common;
-using TimeTwoFix.Core.Entities.SparePartManagement;
-using TimeTwoFix.Infrastructure.Persistence.Includes;
-using TimeTwoFix.Web.Models.InterventionSparePartModel;
 
 namespace TimeTwoFix.Web.Controllers
 {
-    [Authorize(Roles = "WareHouseManager, GeneralManager")]
+    [Authorize(Roles = $"{RoleNames.WareHouseManager},{RoleNames.GeneralManager}")]
     public class InterventionSparePartController : BaseController<InterventionSparePart
         , CreateInterventionSparePartDto
         , ReadInterventionSparePartDto
@@ -141,7 +142,7 @@ namespace TimeTwoFix.Web.Controllers
                 TempData["ErrorMessage"] = "Intervention not found.";
                 return RedirectToAction("Index", "Intervention");
             }
-            if (intervention.Status == "Completed" && !User.IsInRole("GeneralManager"))
+            if (intervention.Status == "Completed" && !User.IsInRole(RoleNames.GeneralManager))
             {
                 TempData["ErrorMessage"] = "Cannot add spare parts to an intervention that is  completed.";
                 return RedirectToAction("Details", "Intervention", new { id = interventionId });

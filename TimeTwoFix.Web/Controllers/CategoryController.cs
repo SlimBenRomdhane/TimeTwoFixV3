@@ -1,14 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TimeTwoFix.Application.CategoryService.Dtos;
-using TimeTwoFix.Application.CategoryService.Interfaces;
+using TimeTwoFix.Core.Common.Constants;
 using TimeTwoFix.Core.Entities.ServiceManagement;
 using TimeTwoFix.Web.Models.CategoryModels;
+using TimeTwoFix.Application.CategoryService.Dtos;
+using TimeTwoFix.Application.CategoryService.Interfaces;
 
 namespace TimeTwoFix.Web.Controllers
 {
-    [Authorize(Roles = "GeneralManager,WorkshopManager")]
+    [Authorize(Roles = RoleNames.Combined.AllManagers)]
     public class CategoryController : BaseController<Category
         , CreateCategoryDto, ReadCategoryDto, UpdateCategoryDto, DeleteCategoryDto,
         CreateCategoryViewModel, ReadCategoryViewModel, UpdateCategoryViewModel, DeleteCategoryViewModel>

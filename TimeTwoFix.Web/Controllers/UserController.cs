@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TimeTwoFix.Application.UserServices.Dtos.Roles;
-using TimeTwoFix.Application.UserServices.Dtos.Users;
-using TimeTwoFix.Application.UserServices.Interfaces;
+using TimeTwoFix.Core.Common.Constants;
 using TimeTwoFix.Core.Entities.UserManagement;
 using TimeTwoFix.Core.Interfaces;
 using TimeTwoFix.Web.Models.RoleModels;
 using TimeTwoFix.Web.Models.UserModels;
+using TimeTwoFix.Application.UserServices.Dtos.Roles;
+using TimeTwoFix.Application.UserServices.Dtos.Users;
+using TimeTwoFix.Application.UserServices.Interfaces;
 
 namespace TimeTwoFix.Web.Controllers
 {
@@ -26,13 +27,13 @@ namespace TimeTwoFix.Web.Controllers
             _mapper = mapper;
         }
 
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         public IActionResult CreateRole()
         {
             return View();
         }
 
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         [HttpPost]
         public async Task<IActionResult> CreateRole(CreateRoleViewModel createRoleViewModel)
         {
@@ -63,7 +64,7 @@ namespace TimeTwoFix.Web.Controllers
             return View();
         }
 
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         public async Task<IActionResult> Index()
         {
             var usersDto = await _userService.GetAllApplicationUsers();
@@ -82,13 +83,13 @@ namespace TimeTwoFix.Web.Controllers
             return View(viewModel);
         }
 
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         public IActionResult CreateMechanic()
         {
             return View();
         }
 
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         [HttpPost]
         public async Task<IActionResult> CreateMechanic(CreateMechanicViewModel createMechanicViewModel)
         {
@@ -135,13 +136,13 @@ namespace TimeTwoFix.Web.Controllers
             }
         }
 
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         public IActionResult CreateAssistant()
         {
             return View();
         }
 
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         [HttpPost]
         public async Task<IActionResult> CreateAssistant(CreateFrontDeskAssistantViewModel createFrontDeskAssistantViewModel)
         {
@@ -185,13 +186,13 @@ namespace TimeTwoFix.Web.Controllers
             }
         }
 
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         public IActionResult CreateWareHouseManager()
         {
             return View();
         }
 
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         [HttpPost]
         public async Task<IActionResult> CreateWareHouseManager(CreateWareHouseManagerViewModel createWareHouseManagerViewModel)
         {
@@ -235,13 +236,13 @@ namespace TimeTwoFix.Web.Controllers
             }
         }
 
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         public IActionResult CreateWorkshopManager()
         {
             return View();
         }
 
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         [HttpPost]
         public async Task<IActionResult> CreateWorkshopManager(CreateWorkshopManagerViewModel createWorkshopManagerViewModel)
         {
@@ -285,13 +286,13 @@ namespace TimeTwoFix.Web.Controllers
             }
         }
 
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         public IActionResult CreateGeneralManager()
         {
             return View();
         }
 
-        [Authorize(Roles = "GeneralManager")]
+        [Authorize(Roles = RoleNames.GeneralManager)]
         [HttpPost]
         public async Task<IActionResult> CreateGeneralManager(CreateGeneralManagerViewModel createGeneralManagerViewModel)
         {
@@ -392,7 +393,7 @@ namespace TimeTwoFix.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Mechanic, FrontDeskAssistant, WareHouseManager, WorkshopManager,GeneralManager")]
+        [Authorize(Roles = RoleNames.Combined.AllManagers)]
         public async Task<IActionResult> Profile(string email)
         {
             //var user = await _userManager.FindByEmailAsync(email);
